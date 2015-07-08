@@ -1,0 +1,39 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="code-editor">
+  <style>
+    #editor {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  </style>
+
+  <template>
+    <div id="editor">
+function foo(){
+  return bar;
+}
+    </div>
+  </template>
+
+  <script src="../../scripts/ace_editor/src-min/ace.js" type="application/javascript"></script>
+
+  <script>
+    Polymer({
+      is: "code-editor",
+      ready: function(){
+        console.log(this.$.editor.innerText);
+        var editor = ace.edit(this.$.editor);
+        editor.setTheme("ace/theme/iplastic");
+        editor.getSession().setMode("ace/mode/javascript");
+
+      }
+
+    });
+  </script>
+
+
+</dom-module>
