@@ -1,0 +1,30 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="home-header">
+  <template>
+    <!-- Main Toolbar -->
+    <paper-toolbar id="mainToolbar" >
+      <paper-icon-button id="paperToggle" icon="menu"></paper-icon-button>
+      <span class="flex"></span>
+
+      <!-- Toolbar icons -->
+      <paper-icon-button icon="refresh"></paper-icon-button>
+      <paper-icon-button icon="search"></paper-icon-button>
+
+      <!-- Application name -->
+      <div class="middle paper-font-display2 app-name">Instructions</div>
+
+      <!-- Application sub title -->
+      <div class="bottom title"></div>
+
+    </paper-toolbar>
+  </template>
+
+  <script>
+    Polymer({
+      is:"home-header"
+    })
+
+  </script>
+
+</dom-module>
