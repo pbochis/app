@@ -20,6 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       document.getElementById("main-page-header").innerHTML = "<home-header></home-header>"
     });
 
+    page('/token/:token', parseToken);
+
     page('/codingGround', function () {
       app.route = 'codingGround';
       document.getElementById("main-page-header").innerHTML = "<editor-header></editor-header>"
@@ -31,4 +33,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
   });
+
+  //TODO: this is still a stub. Will need to save the token in cookies and do some serious stuff
+  function parseToken(ctx){
+    var token = ctx.params.token;
+    console.log(token);
+    app.route = 'home';
+  }
+
 </script>
