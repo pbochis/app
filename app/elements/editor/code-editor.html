@@ -1,23 +1,35 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="editor-console.html">
 
+
 <dom-module id="code-editor">
   <style>
-    #editor {
+    html, body{
+      height: 100%;
+    }
+    #editor{
       position: relative;
-      height: 750px;
+      width: 100%;
+      min-height: 100%;
     }
   </style>
 
   <template>
 
-    <div class="vertical layout" style="display: block">
-      <div id="editor">function foo(){return bar;}</div>
-      <editor-console editor="{{editor}}"></editor-console>
+    <div id="code-container" class="flex">
+      <textarea id="editor"></textarea>
     </div>
+
+    <!--<paper-toolbar>-->
+      <!--<div>Toolbar</div>-->
+    <!--</paper-toolbar>-->
+
+    <editor-console editor="{{editor}}"></editor-console>
+
   </template>
 
-  <script src="../../scripts/ace_editor/src-min/ace.js" type="application/javascript"></script>
+  <script src="../../../bower_components/codemirror/lib/codemirror.js"></script>
+  <script src="../../../bower_components/codemirror/mode/javascript/javascript.js"></script>
 
   <script>
     Polymer({
@@ -26,12 +38,12 @@
           editor: Object
         },
         ready: function(){
-          console.log("The test property is:" + this.testProp);
-          //initialize the code editor
-          this.editor = ace.edit(this.$.editor);
-          this.editor.setTheme("ace/theme/iplastic");
-          //TODO: un-hardcode the programming language
-          this.editor.getSession().setMode("ace/mode/java");
+          var codeMirror = CodeMirror.fromTextArea(this.$.editor, {
+            lineNumbers: true,
+            mode: 'javascript'
+          });
+          codeMirror.setValue('function foo() {}');
+          codeMirror.refresh();
         }
       });
   </script>

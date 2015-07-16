@@ -11,8 +11,10 @@ body {
   background: #fafafa;
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
+  height: 100%;
 }
 :root {
+  height: 100%;
   --dark-primary-color: #303F9F;
   --default-primary-color: #3F51B5;
   --light-primary-color: #C5CAE9;
@@ -97,7 +99,7 @@ paper-menu a {
 
 /* Height of the scroll area */
 .content {
-  height: 900px;
+  height: 100%;
 }
 
 /* Breakpoints */
@@ -149,7 +151,6 @@ paper-menu a {
   }
 
   iron-pages {
-    padding: 48px 62px;
   }
 
 }
