@@ -40,11 +40,21 @@ body {
 
 /* General styles */
 
+.header{
+  font-size: 3.2vh;
+  text-align: center !important;
+  height: 6.5% !important;
+}
+
 #drawerToolbar {
   color: var(--secondary-text-color);
   background-color: var(--drawer-menu-color);
   border-bottom: var(--drawer-toolbar-border-color);
   height: 64px;
+}
+
+paper-header-panel #mainContainer{
+    height: 100%;
 }
 
 paper-material {
@@ -99,7 +109,7 @@ paper-menu a {
 
 /* Height of the scroll area */
 .content {
-  height: 100%;
+  height: 93.5%;
 }
 
 /* Breakpoints */
