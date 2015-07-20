@@ -1,44 +1,55 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <script src="../../bower_components/page/page.js"></script>
+<script src="../scripts/util.js"></script>
 <script>
   window.addEventListener('WebComponentsReady', function() {
-
-    // We use Page.js for routing. This is a Micro
-    // client-side router inspired by the Express router
-    // More info: https://visionmedia.github.io/page.js/
     page('/', function () {
+      checkLoggedIn()
       app.route = 'home';
       document.getElementById("main-page-header").innerHTML = "<home-header></home-header>"
     });
 
-    page('/token/:token', parseToken);
+    page('/token/:token', function(context){
+      var token = context.params.token;
+      var xmlhttp = new XMLHttpRequest();
+
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+          if(xmlhttp.status == 200){
+            document.cookie = "loggedIn=true"
+            page.redirect("/")
+          }else if(xmlhttp.status == 401){
+            page.redirect("/unauthorized")
+          }else{
+            page.redirect("/error")
+          }
+        }
+      }
+
+      xmlhttp.withCredentials = true;
+      xmlhttp.open("GET","http://localhost:8080/api/token/check/" + token,true);
+      xmlhttp.send();
+    })
 
     page('/codingGround', function () {
+      checkLoggedIn()
       app.route = 'codingGround';
       document.getElementById("main-page-header").innerHTML = "<editor-header></editor-header>"
     });
+
+    page('/unauthorized', function(){
+      app.route = 'unauthorized';
+    })
 
     // add #! before urls
     page({
       hashbang: true
     });
 
+    function checkLoggedIn(){
+      var loggedIn = getCookie("loggedIn")
+      if(loggedIn=="" || loggedIn=="false"){
+        page.redirect("/unauthorized")
+      }
+    }
   });
-
-  //TODO: this is still a stub. Will need to save the token in cookies and do some serious stuff
-  function parseToken(ctx){
-    var token = ctx.params.token;
-    console.log(token);
-    app.route = 'home';
-  }
-
 </script>
