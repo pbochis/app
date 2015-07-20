@@ -64,7 +64,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Drawer Toolbar -->
         <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Coding Ground</span>
+          <!--TODO: logo goes here, before Coduno-->
+          <span class="paper-font-title">Coduno</span>
         </paper-toolbar>
 
         <!-- Drawer Content -->
@@ -75,7 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </a>
 
               <a data-route="codingGround" href="/codingGround">
-                <iron-icon icon="info"></iron-icon>
+                <iron-icon icon="code"></iron-icon>
                 <span>Coding ground</span>
               </a>
           </paper-menu>
@@ -83,41 +84,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-header-panel main >
 
         <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" >
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
-          <span class="flex"></span>
-
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
-
-          <!-- Application name -->
-          <div class="middle paper-font-display2 app-name">Coduno Coding Ground</div>
-
-          <!-- Application sub title -->
-          <div class="bottom title"></div>
-
-        </paper-toolbar>
+        <div id="main-page-header"></div>
 
         <!-- Main Content -->
         <div class="content">
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="home">
-              <paper-material elevation="1">
-                <h1 class="paper-font-body5">Welcome to Coduno.</h1>
-                <p>To start coding for your fingerprint go to "Coding ground". Good luck!</p>
-              </paper-material>
-                <paper-material elevation="1">
-                  <h1 class="paper-font-body5">Some more info</h1>
-                  <p>Info about the task/company or things like that.</p>
-                </paper-material>
+              <home-page></home-page>
             </section>
 
             <section data-route="codingGround">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">Web IDE</h2>
-              </paper-material>
+              <code-editor></code-editor>
             </section>
           </iron-pages>
         </div>
