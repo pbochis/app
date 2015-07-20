@@ -5,7 +5,7 @@
     page('/', function () {
       checkLoggedIn()
       app.route = 'home';
-      document.getElementById("main-page-header").innerHTML = "<home-header></home-header>"
+      document.getElementById('main-page-header').innerHTML = '<home-header></home-header>';
     });
 
     page('/token/:token', function(context){
@@ -33,7 +33,7 @@
     page('/codingGround', function () {
       checkLoggedIn()
       app.route = 'codingGround';
-      document.getElementById("main-page-header").innerHTML = "<editor-header></editor-header>"
+      document.getElementById('main-page-header').innerHTML = '<editor-header></editor-header>';
     });
 
     page('/unauthorized', function(){

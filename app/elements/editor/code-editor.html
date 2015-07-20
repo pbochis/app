@@ -1,5 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="editor-console.html">
+<link rel="import" href="../editor-console/editor-console.html">
 
 
 <dom-module id="code-editor">
@@ -7,38 +7,36 @@
     #code-container{
       height: 78%;
     }
+    #editor{
+      height: 100%;
+    }
 
   </style>
 
   <template>
 
     <div id="code-container" class="flex">
-      <textarea id="editor"></textarea>
+      <div id="editor"></div>
     </div>
 
     <editor-console editor="{{editor}}"></editor-console>
 
   </template>
 
-  <script src="../../../bower_components/codemirror/lib/codemirror.js"></script>
-  <script src="../../../bower_components/codemirror/mode/javascript/javascript.js"></script>
-
+  <script src="../../../bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
   <script>
     Polymer({
-        is: "code-editor",
-        properties: {
-          editor: Object
-        },
-        ready: function(){
-          var codeMirror = CodeMirror.fromTextArea(this.$.editor, {
-            lineNumbers: true,
-            mode: 'javascript'
-          });
-          codeMirror.setValue('function foo() {}');
-          codeMirror.setSize("100%", "100%");
-          this.editor = codeMirror;
-          setTimeout(codeMirror.refresh(), 1 );
-        }
-      });
+      is: 'code-editor',
+      properties: {
+        editor: Object
+      },
+      ready: function(){
+        //initialize the code editor
+        this.editor = ace.edit(this.$.editor);
+        this.editor.setTheme('ace/theme/chrome');
+      }
+    });
+
   </script>
 </dom-module>
+
