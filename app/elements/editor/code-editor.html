@@ -4,9 +4,10 @@
 
 <dom-module id="code-editor">
   <style>
-    html, body{
-      height: 100%;
+    #code-container{
+      height: 78%;
     }
+
   </style>
 
   <template>
@@ -14,10 +15,6 @@
     <div id="code-container" class="flex">
       <textarea id="editor"></textarea>
     </div>
-
-    <!--<paper-toolbar>-->
-      <!--<div>Toolbar</div>-->
-    <!--</paper-toolbar>-->
 
     <editor-console editor="{{editor}}"></editor-console>
 
@@ -38,7 +35,9 @@
             mode: 'javascript'
           });
           codeMirror.setValue('function foo() {}');
-          codeMirror.refresh();
+          codeMirror.setSize("100%", "100%");
+          this.editor = codeMirror;
+          setTimeout(codeMirror.refresh(), 1 );
         }
       });
   </script>

@@ -7,18 +7,26 @@
 
   <style>
 
-    paper-toolbar{
-      position: relative;
+    #console-container{
+      height: 21%;
     }
 
     iron-autogrow-textarea{
       border: none;
       position: relative;
       width: 100%;
-      height: 200px;
-      max-height: 16%;
+      height: 79%;
+      max-height: 79%;
       left: 0;
       right: 0;
+    }
+
+    paper-toolbar{
+      height: 20%;
+    }
+
+    paper-toolbar button, select, paper-icon-button{
+      height: 80%;
     }
   </style>
 
@@ -32,22 +40,26 @@
       >
     </iron-ajax>
 
-    <paper-toolbar>
-      <div class="horizontal layout">
+    <div id="console-container">
 
-        <button id="runCode" on-click="runcode">Run code</button>
+      <paper-toolbar>
+        <div class="horizontal layout">
+          <paper-icon-button icon="menu"></paper-icon-button>
 
-        <select id="programmingLanguage">
-          <option>Javascript</option>
-          <option>Java</option>
-          <option>C#</option>
-          <option></option>
-        </select>
+          <button id="runCode" on-click="runcode">Run code</button>
 
-      </div>
-    </paper-toolbar>
+          <select id="programmingLanguage">
+            <option>Javascript</option>
+            <option>Java</option>
+            <option>C#</option>
+            <option></option>
+          </select>
 
-    <iron-autogrow-textarea id="console" readonly></iron-autogrow-textarea>
+        </div>
+      </paper-toolbar>
+
+      <iron-autogrow-textarea id="console" readonly></iron-autogrow-textarea>
+    </div>
 
   </template>
 
@@ -60,8 +72,6 @@
       },
      ready: function(){
        this.$.console.textarea.value = "TEST TEXR";
-        console.log(this.testProp);
-        console.log(this.editor);
       },
       runcode: function(){
         console.log(this.editor.getValue());

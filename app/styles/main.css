@@ -59,7 +59,6 @@ paper-header-panel #mainContainer{
 
 paper-material {
   border-radius: 2px;
-  height: 100%;
   padding: 16px 0 16px 0;
   width: calc(98.66% - 16px);
   margin: 16px auto;
@@ -110,6 +109,14 @@ paper-menu a {
 /* Height of the scroll area */
 .content {
   height: 93.5%;
+}
+
+.content iron-pages{
+  height: 100%;
+}
+
+.content iron-pages section{
+  height: 100%;
 }
 
 /* Breakpoints */
