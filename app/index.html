@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html lang="">
 
 <head>
+  <base href="/codeground/">
   <meta charset="utf-8">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,13 +44,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <link rel="stylesheet" href="../bower_components/codemirror/lib/codemirror.css">
   <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild-->
 
   <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <!-- endbuild -->
 
 
@@ -74,7 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Drawer Content -->
           <paper-menu class="list content" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-              <a data-route="home" href="/">
+              <a data-route="home" href="/home">
                 <iron-icon icon="home"></iron-icon>
                 <span>Home</span>
               </a>

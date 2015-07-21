@@ -23,7 +23,7 @@ Polymer({
   runCode: function(){
     this.$.ajaxRequest.method='POST';
     this.$.ajaxRequest.body = JSON.stringify({'code': this.getCode(), 'language': this.getSelectedLanguage()});
-    this.$.ajaxRequest.url='http://localhost:8080/testRoute';
+    this.$.ajaxRequest.url='/testRoute';
     this.$.ajaxRequest.generateRequest();
   },
   onResponse: function(request){
@@ -73,5 +73,3 @@ Polymer({
       this.editor.setValue('printf(\'Hi\')');
   }
 });
-
-
