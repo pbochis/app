@@ -18,18 +18,23 @@ Polymer({
   },
   ready: function(){
     this.$.console.textarea.value = 'Console';
-//       setTimeout(this.setLanguage(), 1);
   },
   runCode: function(){
     this.$.ajaxRequest.method='POST';
-    this.$.ajaxRequest.body = JSON.stringify({'code': this.getCode(), 'language': this.getSelectedLanguage()});
-    this.$.ajaxRequest.url='/testRoute';
+    this.$.ajaxRequest.body = JSON.stringify({'codeBase': this.getCode(), 'language': this.getSelectedLanguage()});
+    this.$.ajaxRequest.url='/api/run/start/simple';
     this.$.ajaxRequest.generateRequest();
+    this.$.console.textarea.value = '...';
   },
   onResponse: function(request){
-    console.log(request.detail.response);
-    //TODO: dont forget to actually update this when i get a real response
-    this.$.console.textarea.value = request.detail.response.code;
+    if(request.detail.response!=undefined){
+      var codeRun = request.detail.response;
+      if(codeRun.run==undefined || codeRun.run==""){
+        this.$.console.textarea.value = codeRun.err;
+      }else{
+        this.$.console.textarea.value = codeRun.run;
+      }
+    }
   },
   getCode: function(){
     return this.editor.getValue();
@@ -40,11 +45,7 @@ Polymer({
   setLanguage: function(){
     console.log('Setting language to ' + this.getSelectedLanguage());
     switch(this.getSelectedLanguage()){
-      case 'python2.7':
-        this.setMode('ace/mode/python');
-        this.setDefaultCodeTemplate();
-        break;
-      case 'python3.4':
+      case 'py':
         this.setMode('ace/mode/python');
         this.setDefaultCodeTemplate();
         break;
@@ -52,11 +53,15 @@ Polymer({
         this.setMode('ace/mode/java');
         this.setDefaultCodeTemplate();
         break;
+      case 'c':
+        this.setMode('ace/mode/c_cpp');
+        this.setDefaultCodeTemplate();
+        break;
       case 'cpp':
         this.setMode('ace/mode/c_cpp');
         this.setDefaultCodeTemplate();
         break;
-      case 'javascript':
+      case 'js':
         this.setMode('ace/mode/javascript');
         this.setDefaultCodeTemplate();
         break;
