@@ -3,7 +3,7 @@
 <script>
   window.addEventListener('WebComponentsReady', function() {
     page('/', function () {
-      checkLoggedIn()
+      checkLoggedIn();
       app.route = 'home';
       document.getElementById('main-page-header').innerHTML = '<home-header></home-header>';
     });
