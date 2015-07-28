@@ -62,10 +62,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
+    <iron-ajax
+      auto
+      handle-as="text"
+      url="/api/engineurl"
+      on-response="onEngineUrlResponse"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
 
-    <paper-drawer-panel id="paperDrawerPanel">
+    <iron-ajax
+      id="fingerprintRequest"
+      handle-as="json"
+      on-response="onFingerprintResponse"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
+
+    <iron-ajax
+      id="challengeRequest"
+      handle-as="json"
+      on-response="onChallengeResponse"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
+
+    <paper-drawer-panel id="paperDrawerPanel" force-narrow >
       <div drawer>
-
         <!-- Drawer Toolbar -->
         <paper-toolbar id="drawerToolbar" class="header">
           <!--TODO: logo goes here, before Coduno-->
@@ -74,11 +100,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Drawer Content -->
           <paper-menu class="list content" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-              <a data-route="home" href="/home">
-                <iron-icon icon="home"></iron-icon>
-                <span>Home</span>
-              </a>
-
               <a data-route="codingGround" href="/codingGround">
                 <iron-icon icon="code"></iron-icon>
                 <span>Coding ground</span>
@@ -86,20 +107,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-menu>
       </div>
       <paper-header-panel main>
+        <paper-toolbar>
+            <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+            <span class="paper-font-title">{{header}}</span>
+        </paper-toolbar>
 
-        <!-- Main Toolbar -->
-        <div id="main-page-header" class="header"></div>
 
         <!-- Main Content -->
         <div class="content">
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
-            <section data-route="home">
-              <home-page></home-page>
-            </section>
-
             <section data-route="codingGround">
-              <code-editor></code-editor>
+              <code-editor challenge="{{challenge}}"></code-editor>
             </section>
 
             <section data-route="unauthorized">

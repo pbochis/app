@@ -15,6 +15,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
 
+  app.properties = {
+    challenge: {
+      type: Object,
+      notify: true
+    }
+  };
+
   app.displayInstalledToast = function() {
     document.querySelector('#caching-complete').show();
   };
@@ -23,6 +30,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // have resolved and content has been stamped to the page
   app.addEventListener('dom-change', function() {
     console.log('Our app is ready to rock!');
+    var fingerprintId = localStorage.getItem("fingerprintId");
+    if(fingerprintId!="" && fingerprintId!= undefined){
+      app.requestData(fingerprintId)
+    }
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
@@ -37,5 +48,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       drawerPanel.closeDrawer();
     }
   };
+
+  app.requestData = function(fingerprintId){
+    if(fingerprintId!="" && fingerprintId!= undefined){
+      localStorage.setItem("fingerprintId", fingerprintId);
+      app.$.fingerprintRequest.url = "/api/fingerprints/" + fingerprintId;
+      app.$.fingerprintRequest.generateRequest();
+    }
+  }
+
+  app.onFingerprintResponse = function(r){
+    var data = r.detail.response;
+    for(var key in data){
+      var fingerprint = data[key];
+      fingerprint.id = key;
+    }
+    app.fingerprint = fingerprint;
+
+    var challengeId = fingerprint.challenge;
+    if(challengeId!="" && challengeId!= undefined){
+      app.$.challengeRequest.url = "/api/challenges/" + challengeId;
+      app.$.challengeRequest.generateRequest();
+    }
+  }
+
+  app.onChallengeResponse = function(r){
+    var data = r.detail.response;
+    for(var key in data){
+      var challenge = data[key];
+      challenge.id = key;
+    }
+    app.challenge = challenge;
+  }
+
+  app.onEngineUrlResponse = function(r){
+    engine_url = r.detail.response;
+  }
 
 })(document);
