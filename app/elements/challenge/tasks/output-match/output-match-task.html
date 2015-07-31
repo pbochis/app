@@ -57,14 +57,13 @@
       runCode: function(){
         var lang = this.$.languageSelector.getSelectedLanguage()
         this.$.codeEditor.runCode(lang, this.task.Key);
-        this.$.console.setConsole("1");
+        this.$.console.loading()
       },
       onResponse: function(r){
-        this.$.console.setConsole("2");
         this.$.console.setOutput(r.detail.response);
       },
       onError: function(r){
-        this.$.console.setConsole("3");
+        this.$.console.error()
       }
     });
   </script>

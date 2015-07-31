@@ -32,12 +32,7 @@
           'Code': this.getText(),
           'Task': taskKey
         }
-        console.log(data)
-      this.$.runCodeRequest.method='POST';
-      this.$.runCodeRequest.body = JSON.stringify(data);
-      this.$.runCodeRequest.headers = {"Authorization": "Token " + getCookie("token")}
-      this.$.runCodeRequest.url = '/api/results/'+ localStorage.getItem("result") + "/submissions?kind=code";
-      this.$.runCodeRequest.generateRequest();
+        post(this.$.runCodeRequest, "/results/"+ localStorage.getItem("result") + "/submissions?kind=code", data);
       },
       getText: function(){
         return this.$.editor.getValue();

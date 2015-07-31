@@ -34,10 +34,8 @@
       startChallenge: function(){
         this.loadTaskById(this.challenge.Tasks[0]);
       },
-      loadTaskById: function(id){
-        this.$.loadTaskRequest.url = "/api/task/" + id + "?result=" + localStorage.getItem("result");
-        this.$.loadTaskRequest.headers = {"Authorization": "Token " + getCookie("token")};
-        this.$.loadTaskRequest.generateRequest();
+      loadTaskById: function(key){
+        get(this.$.loadTaskRequest, "/task/" + key + "?result=" + localStorage.getItem("result"));
       },
       onTaskResponse: function(r){
         var task = r.detail.response
