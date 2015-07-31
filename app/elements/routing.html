@@ -1,5 +1,4 @@
 <script src="../bower_components/page/page.js"></script>
-<script src="../scripts/util.js"></script>
 <script src="../bower_components/js-base64/base64.js"></script>
 <script>
   window.addEventListener('WebComponentsReady', function() {
@@ -8,8 +7,7 @@
       if (Base64.extendString) {
         Base64.extendString();
         var decodedToken = token.fromBase64().split(":");
-        document.cookie = "token=" + decodedToken[1];
-        document.cookie = "loggedIn=true";
+        localStorage.setItem("token", decodedToken[1]);
         app.requestData(decodedToken[0]);
       }
       page.redirect("/codingGround")
@@ -31,8 +29,8 @@
     });
 
     function checkLoggedIn(){
-      var loggedIn = getCookie("loggedIn")
-      if(loggedIn=="" || loggedIn=="false"){
+      var loggedIn = localStorage.getItem("token")
+      if(loggedIn=="" || loggedIn==undefined){
         page.redirect("/unauthorized")
       }
     }

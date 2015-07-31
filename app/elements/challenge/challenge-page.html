@@ -1,7 +1,5 @@
 <link rel="import" href="sequential/sequential-challenge.html">
 
-<link rel="import" href="tasks/simple-code/simple-code-task.html">
-
 <dom-module id="challenge-page">
   <template>
     <div id="challenge">
@@ -17,22 +15,19 @@
           reflectToAttribute: true
         }
       },
-      attributeChanged: function(name, old){
-        // TODO(victorbalan): Use after properties set observer
-        switch(name){
-          case "challenge":
-            if(this.challenge.Endpoints.WebInterface!="sequential-challenge"){
-              alert("This type of challenge is not yet available. We are sorry!");
-              break;
-            }
-            var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
-            webInterface.challenge = this.challenge;
-            this.$.challenge.innerHTML = "";
-            this.$.challenge.appendChild(webInterface);
-            break;
+      observers: [
+        'afterPropertiesSet(challenge)'
+      ],
+      afterPropertiesSet: function(){
+        if(this.challenge.Endpoints.WebInterface!="sequential-challenge"){
+          alert("This type of challenge is not yet available. We are sorry!");
+          return;
         }
+        var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
+        webInterface.challenge = this.challenge;
+        this.$.challenge.innerHTML = "";
+        this.$.challenge.appendChild(webInterface);
       }
     });
-
   </script>
 </dom-module>

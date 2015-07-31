@@ -1,10 +1,21 @@
-function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0; i<ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0)==' ') c = c.substring(1);
-    if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-  }
-  return "";
+var BASE_URL = "/api";
+
+if(location.origin.indexOf("localhost")==-1){
+  BASE_URL = "https://api.cod.uno";
+}
+
+// TODO(victorbalan): Create methods that take in account the authorization type
+function get(ajaxRequest, route){
+  ajaxRequest.url = BASE_URL + route;
+  ajaxRequest.method = "GET";
+  ajaxRequest.headers = {"Authorization": "Token " + localStorage.getItem("token")};
+  ajaxRequest.generateRequest();
+}
+
+function post(ajaxRequest, route, body){
+  ajaxRequest.url = BASE_URL + route;
+  ajaxRequest.method = "POST";
+  ajaxRequest.headers = {"Authorization": "Token " + localStorage.getItem("token")};
+  ajaxRequest.body = JSON.stringify(body);
+  ajaxRequest.generateRequest();
 }

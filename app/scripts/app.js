@@ -52,10 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.requestData = function(challengeKey){
     if(challengeKey!="" && challengeKey!= undefined){
       localStorage.setItem("challenge", challengeKey);
-      app.$.resultRequest.url = "/api/results"
-      app.$.resultRequest.headers = {"Authorization": "Token " + getCookie("token")};
-      app.$.resultRequest.body = JSON.stringify({'ChallengeKey': challengeKey});
-      app.$.resultRequest.generateRequest();
+      post(app.$.resultRequest, "/results", {'ChallengeKey': challengeKey})
     }
   }
 
@@ -68,9 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var result = r.detail.response
     localStorage.setItem("result", result.Key);
     app.result = result
-    app.$.challengeRequest.url = "/api/challenges/" + localStorage.getItem("challenge");
-    app.$.challengeRequest.headers = {"Authorization": "Token " + getCookie("token")};
-    app.$.challengeRequest.generateRequest();
+    get(app.$.challengeRequest, "/challenges/" + localStorage.getItem("challenge"))
   }
 
 })(document);
