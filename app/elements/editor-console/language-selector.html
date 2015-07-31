@@ -1,0 +1,27 @@
+<dom-module id="language-selector">
+  <template>
+    <select id="language">
+      <template is="dom-repeat" items="{{languages}}">
+        <option value="{{item.tag}}">{{item.name}}</option>
+      </template>
+    </select>
+  </template>
+  <script>
+    Polymer({
+      is: 'language-selector',
+      properties: {
+        languages:{
+          type: Array,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      getSelectedLanguage: function(){
+        if(this.$.language.selectedIndex!=-1){
+          return this.languages[this.$.language.selectedIndex];
+        }
+      },
+    });
+
+  </script>
+</dom-module>

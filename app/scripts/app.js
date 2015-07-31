@@ -30,9 +30,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // have resolved and content has been stamped to the page
   app.addEventListener('dom-change', function() {
     console.log('Our app is ready to rock!');
-    var fingerprintId = localStorage.getItem("fingerprintId");
-    if(fingerprintId!="" && fingerprintId!= undefined){
-      app.requestData(fingerprintId)
+    var challengeKey = localStorage.getItem("challenge");
+    if(challengeKey!="" && challengeKey!= undefined){
+      app.requestData(challengeKey)
     }
   });
 
@@ -49,40 +49,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   };
 
-  app.requestData = function(fingerprintId){
-    if(fingerprintId!="" && fingerprintId!= undefined){
-      localStorage.setItem("fingerprintId", fingerprintId);
-      app.$.fingerprintRequest.url = "/api/fingerprints/" + fingerprintId;
-      app.$.fingerprintRequest.generateRequest();
-    }
-  }
-
-  app.onFingerprintResponse = function(r){
-    var data = r.detail.response;
-    for(var key in data){
-      var fingerprint = data[key];
-      fingerprint.id = key;
-    }
-    app.fingerprint = fingerprint;
-
-    var challengeId = fingerprint.challenge;
-    if(challengeId!="" && challengeId!= undefined){
-      app.$.challengeRequest.url = "/api/challenges/" + challengeId;
-      app.$.challengeRequest.generateRequest();
+  app.requestData = function(challengeKey){
+    if(challengeKey!="" && challengeKey!= undefined){
+      localStorage.setItem("challenge", challengeKey);
+      app.$.resultRequest.url = "/api/results"
+      app.$.resultRequest.headers = {"Authorization": "Token " + getCookie("token")};
+      app.$.resultRequest.body = JSON.stringify({'ChallengeKey': challengeKey});
+      app.$.resultRequest.generateRequest();
     }
   }
 
   app.onChallengeResponse = function(r){
-    var data = r.detail.response;
-    for(var key in data){
-      var challenge = data[key];
-      challenge.id = key;
-    }
+    var challenge = r.detail.response;
     app.challenge = challenge;
   }
 
-  app.onEngineUrlResponse = function(r){
-    engine_url = r.detail.response;
+  app.onResultResponse = function(r){
+    var result = r.detail.response
+    localStorage.setItem("result", result.Key);
+    app.result = result
+    app.$.challengeRequest.url = "/api/challenges/" + localStorage.getItem("challenge");
+    app.$.challengeRequest.headers = {"Authorization": "Token " + getCookie("token")};
+    app.$.challengeRequest.generateRequest();
   }
 
 })(document);

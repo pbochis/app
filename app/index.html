@@ -63,19 +63,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
     <iron-ajax
-      auto
-      handle-as="text"
-      url="/api/engineurl"
-      on-response="onEngineUrlResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
-
-    <iron-ajax
-      id="fingerprintRequest"
+      id="resultRequest"
+      method = "POST"
       handle-as="json"
-      on-response="onFingerprintResponse"
+      on-response="onResultResponse"
       debounce-duration="1000"
       content-type="application/json"
       >
@@ -118,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="codingGround">
-              <code-editor challenge="{{challenge}}"></code-editor>
+              <challenge-page challenge="{{challenge}}"></challenge-page>
             </section>
 
             <section data-route="unauthorized">

@@ -1,0 +1,52 @@
+<dom-module id="sequential-challenge">
+  <template>
+    <iron-ajax
+      id="loadTaskRequest"
+      handle-as="json"
+      on-response="onTaskResponse"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
+    <div id="content">
+      <paper-material elevation="1" style="width:35%;">
+        <div class="flex">
+          <challenge-display challenge="{{challenge}}"></challenge-display>
+          <paper-button raised on-click="startChallenge">Go</paper-button>
+        </div>
+      </paper-material>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'sequential-challenge',
+      properties: {
+        challenge: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        },
+        task: {
+          type: Object,
+          notify: true
+        }
+      },
+      startChallenge: function(){
+        this.loadTaskById(this.challenge.Tasks[0]);
+      },
+      loadTaskById: function(id){
+        this.$.loadTaskRequest.url = "/api/task/" + id + "?result=" + localStorage.getItem("result");
+        this.$.loadTaskRequest.headers = {"Authorization": "Token " + getCookie("token")};
+        this.$.loadTaskRequest.generateRequest();
+      },
+      onTaskResponse: function(r){
+        var task = r.detail.response
+        var webInterface = document.createElement(task.Endpoints.WebInterface);
+        webInterface.task = task;
+        this.$.content.innerHTML = "";
+        this.$.content.appendChild(webInterface);
+      }
+    });
+
+  </script>
+</dom-module>

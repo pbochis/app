@@ -1,0 +1,22 @@
+<dom-module id="task-display">
+  <template>
+    <h1>{{task.Name}}</h1>
+    <h3>Description</h3>
+    <p>{{task.Description}}</p>
+    <h3>Instructions</h3>
+    <p>{{task.Instructions}}</p>
+  </template>
+  <script>
+    Polymer({
+      is: 'task-display',
+      properties: {
+        task: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        }
+      }
+    });
+
+  </script>
+</dom-module>
