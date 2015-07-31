@@ -1,0 +1,50 @@
+<dom-module id="fingerprints-page">
+  <template>
+    <h3>Fingerprints</h3>
+    <ul>
+      <template is="dom-repeat" items="{{items}}">
+        <li><p>{{item.id}}</p>
+            <p>{{item.challenge}}</p>
+        </li>
+      </template>
+    </ul>
+    <iron-ajax
+      id="ajaxRequest"
+      auto
+      url="{{requestUrl}}"
+      handle-as="json"
+      on-response="onResponse"
+      on-error="onError"
+      with-credentials="true"
+      >
+    </iron-ajax>
+    <script src="../../scripts/util.js"></script>
+  </template>
+</dom-module>
+<script>
+  (function() {
+    Polymer({
+      is: 'fingerprints-page',
+      properties: {
+        requestUrl: {
+          type: String,
+          notify: true
+        },
+        items: {
+          type: String,
+          notify: true,
+        }
+      },
+      onResponse: function(response){
+        this.items = response.detail.response
+      },
+      onError: function(error){
+        console.log(error.detail)
+      },
+      ready: function(){
+        this.requestUrl = "/api/fingerprint/company/" + readCookie("companyId");
+        this.$.ajaxRequest.generateRequest();
+      }
+    });
+  })();
+</script>

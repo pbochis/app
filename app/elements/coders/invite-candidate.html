@@ -1,0 +1,94 @@
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="invite-candidate">
+  <style>
+    paper-button{
+      color: #111111;
+    }
+  </style>
+  <template>
+    <iron-ajax
+      id="getChallenges"
+      handle-as="json"
+      on-response="onResponse"
+      on-error="onError"
+      debounce-duration="1000"
+      with-credentials="true"
+      >
+    </iron-ajax>
+
+    <iron-ajax
+      id="postFingerprint"
+      handle-as="json"
+      on-response="onPostResponse"
+      on-error="onError"
+      debounce-duration="1000"
+      with-credentials="true"
+      >
+    </iron-ajax>
+
+    <h4>An email will be sent to the candidate with the link where he can access the challenge</h4>
+
+    <form is="iron-form" id="form">
+      <paper-input id="firstName" label="First Name" value="{{firstName}}"></paper-input>
+      <paper-input id="lastName" label="Last Name" value="{{lastName}}"></paper-input>
+      <paper-input id="email" label="Email" value="{{email}}"></paper-input>
+      <select id="challenge" value="{{challengeId}}"></select><br>
+      <paper-button raised="" on-click="postFingerprint">Create</paper-button>
+    </form>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'invite-candidate',
+      properties: {
+        firstName: String,
+        lastName: String,
+        email: String,
+        challengeId: String
+      },
+      ready: function(){
+        this.$.getChallenges.method='GET';
+        this.$.getChallenges.url='/api/challenge/company/' + localStorage.getItem("company") ;
+        // this.$.getChallenges.generateRequest();
+      },
+
+      postFingerprint: function(){
+        this.$.postFingerprint.method='POST';
+        this.$.postFingerprint.body = JSON.stringify({'firstName': this.firstName,
+                                                  'lastName': this.lastName,
+                                                  'email': this.email,
+                                                  "challengeId": this.getSelectedChellange()});
+        this.$.postFingerprint.url='/api/fingerprint';
+        this.$.postFingerprint.generateRequest();
+      },
+      onResponse: function(res, req) {
+        var select = this.$.chellange;
+        var challenges = res.detail.response.challenges;
+        for (var i = 0; i<chellanges.length; i++){
+          var opt = document.createElement('option');
+          opt.value = challenges[i].id;
+          opt.text = challenges[i].name;
+          select.appendChild(opt);
+        }
+      },
+      onPostResponse: function(res, req){
+        page.redirect('/fingerprints');
+      },
+      onError: function(error){
+        console.log(error.detail);
+        page.redirect('/home')
+      },
+      submitForm: function(){
+        this.$.form.submit();
+      },
+      getSelectedChallenge: function(){
+        return this.$.challenge.options[this.$.challenge.selectedIndex].value;
+      }
+    })
+  </script>
+</dom-module>

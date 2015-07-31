@@ -68,4 +68,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     get(app.$.challengeRequest, "/challenges/" + localStorage.getItem("challenge"))
   }
 
+  app.isCompany = function(){
+    return localStorage.getItem("role") == "COMPANY";
+  }
+
+  app.isCoder = function(){
+    return localStorage.getItem("role") == "CODER";
+  }
+
+  app.isLoggedIn = function(){
+    return localStorage.getItem("token") != "" && localStorage.getItem("token") != undefined;
+  }
+
 })(document);

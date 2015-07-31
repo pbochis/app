@@ -8,9 +8,10 @@
         Base64.extendString();
         var decodedToken = token.fromBase64().split(":");
         localStorage.setItem("token", decodedToken[1]);
+        localStorage.setItem("role", "CODER");
         app.requestData(decodedToken[0]);
       }
-      page.redirect("/codingGround")
+      window.location = "/codeground/#!/codingGround";
     });
 
     page('/codingGround', function () {
@@ -23,15 +24,59 @@
       app.route = 'unauthorized';
     });
 
+    // DASHBOARD
+    page('/dashboard', function () {
+      checkLoggedIn();
+      checkIsCompany();
+      app.route = 'dashboard';
+    });
+
+    page('/coders', function () {
+      checkLoggedIn();
+      checkIsCompany();
+      app.route = 'coders';
+    });
+
+    page('/coders/:id', function (data) {
+      checkLoggedIn();
+      checkIsCompany();
+      app.route = 'coder-info';
+      app.params = data.params;
+    });
+
+    page('/fingerprints', function () {
+      checkLoggedIn();
+      checkIsCompany();
+      app.route = 'fingerprints';
+    });
+
+    page('/candidate', function () {
+      checkLoggedIn();
+      checkIsCompany();
+      app.route = 'candidate';
+    });
+
+    page('/login', function(){
+      app.route = 'login';
+    });
+
     // add #! before urls
     page({
       hashbang: true
     });
 
     function checkLoggedIn(){
-      var loggedIn = localStorage.getItem("token")
+      var loggedIn = localStorage.getItem("token");
       if(loggedIn=="" || loggedIn==undefined){
-        page.redirect("/unauthorized")
+        page.redirect("/login");
+      }
+    }
+
+    function checkIsCompany(){
+      var role = localStorage.getItem("role");
+      if(role==undefined || role=="" || role!="COMPANY"){
+        console.log(role + " is not COMPANY");
+        page.redirect("/login");
       }
     }
   });

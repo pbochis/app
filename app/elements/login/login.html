@@ -1,0 +1,61 @@
+<link rel="import" href="../../bower_components/paper-input/all-imports.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="login-page">
+  <template>
+    <h2 class="paper-font-display2">Login here</h2>
+    <template is="dom-if" if="{{invalidLogin}}">
+      <p>Invalid login</p>
+    </template>
+      <paper-input type="text" label="E-mail" value="{{companyEmail}}"></paper-input>
+      <paper-input type="password" label="Password" value="{{password}}"></paper-input>
+      <paper-button raised on-click="login">Login</paper-button>
+      <iron-ajax
+        id="ajaxRequest"
+        handle-as="json"
+        on-response="onLoginResponse"
+        on-error="onLoginError"
+        debounce-duration="1000"
+        with-credentials="true"
+        >
+      </iron-ajax>
+  </template>
+</dom-module>
+<script>
+  (function() {
+    Polymer({
+      is: 'login-page',
+      properties:{
+        companyEmail: String,
+        password: String,
+        invalidLogin:{
+          type: Boolean,
+          notify: true
+        }
+      },
+      login: function(){
+        get(this.$.ajaxRequest, "/user/company", "Basic", btoa(this.companyEmail+":"+this.password))
+      },
+      onLoginResponse: function(res){
+        var response = res.detail.response
+        if(response != undefined){
+          var company = response;
+          localStorage.setItem("company", company.Key);
+          localStorage.setItem("companyName", company.Name);
+          localStorage.setItem("role", "COMPANY");
+          localStorage.setItem("token", btoa(this.companyEmail+":"+this.password));
+          window.parent.location = "/codeground/#!/dashboard";
+        }else{
+          this.invalidLogin = true;
+        }
+      },
+      onLoginError: function(error){
+        this.invalidLogin = true;
+        console.log(error.detail)
+      },
+      ready: function(){
+        this.invalidLogin = false;
+      }
+    });
+  })();
+</script>

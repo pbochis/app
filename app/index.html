@@ -83,23 +83,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-drawer-panel id="paperDrawerPanel" force-narrow >
       <div drawer>
-        <!-- Drawer Toolbar -->
         <paper-toolbar id="drawerToolbar" class="header">
-          <!--TODO: logo goes here, before Coduno-->
-          <span>Coduno</span>
+          <span class="paper-font-title">Coduno</span>
         </paper-toolbar>
 
-        <!-- Drawer Content -->
-          <paper-menu class="list content" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-              <a data-route="codingGround" href="/codingGround">
-                <iron-icon icon="code"></iron-icon>
-                <span>Coding ground</span>
-              </a>
-          </paper-menu>
+        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
+          <template is="dom-if" if="{{isCompany()}}">
+            <a data-route="dashboard" href="/dashboard">
+              <iron-icon icon="home"></iron-icon>
+              <span>Home</span>
+            </a>
+
+            <a data-route="coders" href="/coders">
+              <iron-icon icon="info"></iron-icon>
+              <span>Coders</span>
+            </a>
+
+            <a data-route="fingerprints" href="/fingerprints">
+              <iron-icon icon="mail"></iron-icon>
+              <span>Fingerprints</span>
+            </a>
+
+            <a data-route="candidate" href="/candidate">
+              <iron-icon icon="perm-identity"></iron-icon>
+              <span>Invite candidate</span>
+            </a>
+          </template>
+          <template is="dom-if" if="{{isCoder()}}">
+            <a data-route="codingGround" href="/codingGround">
+              <iron-icon icon="code"></iron-icon>
+              <span>Coding ground</span>
+            </a>
+          </template>
+        </paper-menu>
       </div>
       <paper-header-panel main>
         <paper-toolbar>
-            <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+            <template is="dom-if" if="{{isLoggedIn()}}">
+              <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+            </template>
             <span class="paper-font-title">{{header}}</span>
         </paper-toolbar>
 
@@ -107,6 +129,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Main Content -->
         <div class="content">
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
+            <section data-route="dashboard">
+              <paper-material elevation="1">
+                <chart-statistics></chart-statistics>
+                <h1 class="paper-font-body5">Here the statistics will be.</h1>
+              </paper-material>
+              <paper-material elevation="1">
+                <my-greeting></my-greeting>
+
+                <p class="paper-font-subhead">You now have:</p>
+                <my-list></my-list>
+              </paper-material>
+            </section>
+
+            <section data-route="coders">
+              <paper-material elevation="1">
+                <h2 class="paper-font-display2">Coders</h2>
+                <p>The users coding right now:</p>
+                <current-coders></current-coders>
+              </paper-material>
+            </section>
+
+            <section data-route="fingerprints">
+                <paper-material elevation="1">
+                  <template is="dom-if" if="{{fingerprints}}">
+                    <fingerprints-page></fingerprints-page>
+                  </template>
+                </paper-material>
+            </section>
+
+            <section data-route="login">
+              <paper-material elevation="1">
+                <login-page></login-page>
+              </paper-material>
+            </section>
+
+            <section data-route="candidate">
+              <paper-material elevation="1">
+                <invite-candidate></invite-candidate>
+              </paper-material>
+            </section>
 
             <section data-route="codingGround">
               <challenge-page challenge="{{challenge}}"></challenge-page>

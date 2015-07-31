@@ -12,6 +12,21 @@ function get(ajaxRequest, route){
   ajaxRequest.generateRequest();
 }
 
+function getBasic(ajaxRequest, route){
+  ajaxRequest.url = BASE_URL + route;
+  ajaxRequest.method = "GET";
+  ajaxRequest.headers = {"Authorization": "Basic " + localStorage.getItem("token")};
+  ajaxRequest.generateRequest();
+}
+
+
+function get(ajaxRequest, route, authType, authValue){
+  ajaxRequest.url = BASE_URL + route;
+  ajaxRequest.method = "GET";
+  ajaxRequest.headers = {"Authorization": authType + " " + authValue};
+  ajaxRequest.generateRequest();
+}
+
 function post(ajaxRequest, route, body){
   ajaxRequest.url = BASE_URL + route;
   ajaxRequest.method = "POST";
