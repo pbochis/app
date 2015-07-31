@@ -8,5 +8,3 @@ function getCookie(cname) {
   }
   return "";
 }
-
-var engine_url = "";

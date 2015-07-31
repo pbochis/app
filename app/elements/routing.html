@@ -5,11 +5,12 @@
   window.addEventListener('WebComponentsReady', function() {
     page('/token/:token', function(context){
       var token = context.params.token;
-      console.log(token)
       if (Base64.extendString) {
         Base64.extendString();
         var decodedToken = token.fromBase64().split(":");
-        app.requestData(decodedToken[0])
+        document.cookie = "token=" + decodedToken[1];
+        document.cookie = "loggedIn=true";
+        app.requestData(decodedToken[0]);
       }
       page.redirect("/codingGround")
     });

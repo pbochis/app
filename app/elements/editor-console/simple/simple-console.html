@@ -6,11 +6,11 @@
 
   <style>
 
-    #console-container{
+    #consoleContainer{
       height: 20%;
     }
 
-    #console-output{
+    #consoleOutput{
       border: none;
       position: relative;
       width: 100%;
@@ -20,18 +20,6 @@
       right: 0;
     }
 
-    .button-toolbar{
-      background-color: #3f51b5;
-      height: 20%;
-    }
-
-    #languageContainer{
-      padding-top: 10px;
-      padding-left: 1%;
-    }
-    paper-icon-button{
-      padding-left: 1%;
-    }
     iron-autogrow-textarea{
       border: none;
       position: relative;
@@ -43,34 +31,13 @@
     }
 
     p{
-      font-family: "Lucida Console", Monaco, monospace
+      font-family: "Lucida Console", Monaco, monospace;
     }
   </style>
 
   <template>
-    <iron-ajax
-      id="ajaxRequest"
-      handle-as="json"
-      on-response="onResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
-
-    <div id="console-container">
-
-      <div class="horizontal layout">
-        <paper-icon-button src="../../../images/start.png" on-click="runCode">Run code</paper-icon-button>
-        <div id="languageContainer">
-          <select id="language" on-change="setLanguage">
-            <template is="dom-repeat" items="{{availableLanguages}}">
-              <option value="{{item.tag}}">{{item.name}}</option>
-            </template>
-          </select>
-        </div>
-      </div>
-
-      <iron-pages id="console-output" selected="{{selectedConsole}}">
+    <div id="consoleContainer">
+      <iron-pages id="consoleOutput" selected="{{selectedConsole}}">
         <div>
           <p>Console output</p>
         </div>
@@ -81,10 +48,40 @@
           <iron-autogrow-textarea id="output" readonly>
           </iron-autogrow-textarea>
         </div>
+        <div>
+          <p>Error</p>
+        </div>
       </iron-pages>
     </div>
 
   </template>
-  <script src="../../../scripts/util.js" type="application/javascript"></script>
-  <script src="simple-console.js" type="application/javascript"></script>
+  <script src="/codeground/scripts/util.js" type="application/javascript"></script>
+  <script>
+    Polymer({
+      is: 'simple-console',
+      properties:{
+        selectedConsole:{
+          type: String,
+          notify: true
+        }
+      },
+      ready: function(){
+        this.selectedConsole = "0";
+      },
+      setOutput: function(data){
+        console.log(data)
+        var output = ""
+        if(data!=undefined){
+          output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
+        }else{
+          output = "Bad request"
+        }
+        this.$.output.textarea.value = output;
+      },
+      setConsole: function(console){
+        // TODO(victorbalan): Make console receive a text.
+        this.selectedConsole = console;
+      }
+    });
+  </script>
 </dom-module>

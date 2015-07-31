@@ -1,0 +1,53 @@
+<dom-module id="javaut-task">
+  <template>
+    <iron-ajax
+      id="ajaxRequest"
+      handle-as="json"
+      on-response="onResponse"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
+    <div class="horizontal layout">
+      <div class="flex">
+        <paper-material elevation="1" >
+          <code-editor id="codeEditor" on-response="onResponse" on-error="onError"></code-editor>
+        </paper-material>
+      </div>
+      <div class="flex">
+        <paper-material elevation="1">
+          <task-display task="{{task}}"></task-display>
+        </paper-material>
+        <paper-material elevation="1">
+          <div class="horizontal layout">
+            <paper-icon-button src="/codeground/images/start.png" on-click="runCode">Run code</paper-icon-button>
+          </div>
+          <javaut-console id="console" </javaut-console>
+        </paper-material>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'javaut-task',
+      properties: {
+        task: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      runCode: function(){
+        this.$.codeEditor.runCode("javaut", this.task.Key);
+        this.$.console.setConsole("1");
+      },
+      onResponse: function(r){
+        this.$.console.setConsole("2");
+        this.$.console.setOutput(r.detail.response);
+      },
+      onError: function(r){
+        this.$.console.setConsole("3");
+      }
+    });
+  </script>
+</dom-module>

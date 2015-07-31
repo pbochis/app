@@ -1,12 +1,7 @@
-<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../../bower_components/iron-dropdown/iron-dropdown.html">
 <link rel="import" href="javaut-output.html">
 
 <dom-module id="javaut-console">
-
   <style>
-
     #consoleContainer{
       height: 20%;
     }
@@ -20,35 +15,11 @@
       left: 0;
       right: 0;
     }
-
-    #buttonToolbar{
-      height: 20%;
-    }
-
-    #languageContainer{
-      padding-top: 10px;
-      padding-left: 1%;
-    }
-    paper-icon-button{
-      padding-left: 1%;
-    }
   </style>
 
   <template>
-    <iron-ajax
-      id="ajaxRequest"
-      handle-as="json"
-      on-response="onResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
 
     <div id="consoleContainer">
-      <div id="buttonToolbar" class="horizontal layout">
-        <paper-icon-button src="../../../images/start.png" on-click="runCode"></paper-icon-button>
-      </div>
-
       <iron-pages id="consoleOutput" selected="{{selectedConsole}}">
         <div>
           <p>Console output</p>
@@ -60,10 +31,37 @@
           <javaut-output id="unitTestConsole" run-output="{{runOutput}}">
           </javaut-output>
         </div>
+        <div>
+          <p>Error.</p>
+        </div>
       </iron-pages>
     </div>
 
   </template>
-  <script src="../../../scripts/util.js" type="application/javascript"></script>
-  <script src="javaut-console.js" type="application/javascript"></script>
+  <script src="/codeground/scripts/util.js" type="application/javascript"></script>
+  <script>
+    Polymer({
+      is: 'javaut-console',
+      properties:{
+        runOutput:{
+          type: Object,
+          notify: true
+        },
+        selectedConsole:{
+          type: String,
+          notify: true
+        }
+      },
+      ready: function(){
+        this.selectedConsole = "0";
+      },
+      setOutput: function(runOutput){
+        this.runOutput = runOutput;
+      },
+      setConsole: function(console){
+        // TODO(victorbalan): Make console receive a text.
+        this.selectedConsole = console;
+      }
+    });
+  </script>
 </dom-module>

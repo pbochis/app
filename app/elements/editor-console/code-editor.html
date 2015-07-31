@@ -1,0 +1,72 @@
+<dom-module id="code-editor">
+  <template>
+    <iron-ajax
+      id="runCodeRequest"
+      handle-as="json"
+      on-response="onResponse"
+      on-error="onError"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
+    <div id="editor" style="height: 850px;"></div>
+  </template>
+  <script src="/codeground/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
+  <script src="/codeground/bower_components/ace-min-noconflict/ext-language_tools.js" type="application/javascript"></script>
+  <script>
+    Polymer({
+      is: 'code-editor',
+      properties: {
+      },
+      ready: function(){
+        ace.require("ace/ext/language_tools");
+        this.$.editor = ace.edit(this.$.editor);
+        this.$.editor.setTheme('ace/theme/chrome');
+        this.$.editor.setOptions({
+          enableBasicAutocompletion: true
+        });
+      },
+      runCode: function(lang, taskKey){
+        var data = {
+          'Language': lang.tag,
+          'Code': this.getText(),
+          'Task': taskKey
+        }
+        console.log(data)
+      this.$.runCodeRequest.method='POST';
+      this.$.runCodeRequest.body = JSON.stringify(data);
+      this.$.runCodeRequest.headers = {"Authorization": "Token " + getCookie("token")}
+      this.$.runCodeRequest.url = '/api/results/'+ localStorage.getItem("result") + "/submissions?kind=code";
+      this.$.runCodeRequest.generateRequest();
+      },
+      getText: function(){
+        return this.$.editor.getValue();
+      },
+      setMode: function(lang){
+        var mode = "ace/mode/java"
+        switch(lang){
+          case "py":
+            mode = "ace/mode/python"
+            break;
+          case "c":
+            mode = "ace/mode/c_cpp"
+            break;
+          case "cpp":
+            mode = "ace/mode/c_cpp"
+            break;
+        }
+        this.$.editor.getSession().setMode({
+          path: mode,
+          v: Date.now()
+        });
+      },
+      onError: function(r){
+
+      },
+      onResponse: function(r){
+
+      }
+    });
+
+  </script>
+</dom-module>

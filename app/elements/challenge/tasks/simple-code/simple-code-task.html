@@ -1,0 +1,72 @@
+<dom-module id="simple-code-task">
+  <template>
+    <iron-ajax
+      id="ajaxRequest"
+      handle-as="json"
+      on-response="onResponse"
+      debounce-duration="1000"
+      content-type="application/json"
+      >
+    </iron-ajax>
+    <div class="horizontal layout">
+      <div class="flex">
+        <paper-material elevation="1" >
+          <code-editor id="codeEditor" on-response="onResponse" on-error="onError"></code-editor>
+        </paper-material>
+      </div>
+      <div class="flex">
+        <paper-material elevation="1">
+          <task-display task="{{task}}"></task-display>
+        </paper-material>
+        <paper-material elevation="1">
+          <div class="horizontal layout">
+            <paper-icon-button src="/codeground/images/start.png" on-click="runCode">Run code</paper-icon-button>
+            <language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
+          </div>
+          <simple-console id="console"</simple-console>
+        </paper-material>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'simple-code-task',
+      properties: {
+        task: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      languageChanged: function(){
+        this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag)
+      },
+      ready: function(){
+        // TODO(victorbalan): Get these from the server
+        this.languages = [
+          createLanguage("Java", "java"),
+          createLanguage("Python", "py"),
+          createLanguage("C++", "cpp"),
+          createLanguage("C", "c")
+        ];
+
+        function createLanguage(name, tag){
+          return {name: name, tag: tag};
+        }
+      },
+      runCode: function(){
+        var lang = this.$.languageSelector.getSelectedLanguage()
+        this.$.codeEditor.runCode(lang, this.task.Key);
+        this.$.console.setConsole("1");
+      },
+      onResponse: function(r){
+        console.log(r.detail.response)
+        this.$.console.setConsole("2");
+        this.$.console.setOutput(r.detail.response);
+      },
+      onError: function(r){
+        this.$.console.setConsole("3");
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,38 @@
+<link rel="import" href="sequential/sequential-challenge.html">
+
+<link rel="import" href="tasks/simple-code/simple-code-task.html">
+
+<dom-module id="challenge-page">
+  <template>
+    <div id="challenge">
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'challenge-page',
+      properties: {
+        challenge: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      attributeChanged: function(name, old){
+        // TODO(victorbalan): Use after properties set observer
+        switch(name){
+          case "challenge":
+            if(this.challenge.Endpoints.WebInterface!="sequential-challenge"){
+              alert("This type of challenge is not yet available. We are sorry!");
+              break;
+            }
+            var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
+            webInterface.challenge = this.challenge;
+            this.$.challenge.innerHTML = "";
+            this.$.challenge.appendChild(webInterface);
+            break;
+        }
+      }
+    });
+
+  </script>
+</dom-module>
