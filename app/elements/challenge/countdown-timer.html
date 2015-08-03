@@ -1,0 +1,67 @@
+<dom-module id="countdown-timer">
+  <template>
+      <div id="countdown">
+        <p>{{remainingTime}}</p>
+      </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'countdown-timer',
+      properties: {
+        duration: {
+          type: Number,
+          notify: true,
+          reflectToAttribute: true
+        },
+        remainingTime: {
+          type: String,
+          notify: true
+        },
+        timeout: {
+          notify: true,
+          reflectToAttribute: true
+        }
+      },
+      start: function(){
+        this.duration = this.duration / 1000 / 1000 / 1000;
+        if(this.duration<=0){
+          this.timeout();
+          this.clearTimer();
+          return
+        }
+        var component = this;
+        formatTime(this.duration);
+        var remainingTime = this.duration;
+        var timer = window.setInterval(function(){
+          if(remainingTime==1){
+            clearInterval(timer);
+            component.timeout();
+            component.clearTimer();
+            component.remainingTime = "";
+          }else{
+            remainingTime--;
+            formatTime(remainingTime);
+          }
+        }, 1000)
+
+        function formatTime(totalSec){
+          var hours = parseInt( totalSec / 3600 ) % 24;
+          var minutes = parseInt( totalSec / 60 ) % 60;
+          var seconds = Math.round(totalSec % 60);
+          seconds--;
+          component.remainingTime = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds  < 10 ? "0" + seconds : seconds);
+        }
+      },
+      startWithOffset: function(offsetDate){
+        var now = new Date().getTime();
+        var difference = (now - offsetDate) * 1000 * 1000;
+
+        this.duration = this.duration - difference;
+        this.start();
+      },
+      clearTimer: function(){
+        localStorage.removeItem("timer");
+      }
+    });
+  </script>
+</dom-module>

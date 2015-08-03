@@ -8,6 +8,7 @@
     <template is="dom-if" if="{{showBackArrow}}">
       <paper-icon-button icon="arrow-back" style="position: absolute; left: 2%; bottom: 2%;"></paper-icon-button>
     </template>
+    <countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}" style="position: absolute; top: 0; right: 5%;"></countdown-timer>
     <div id="content">
       <paper-material elevation="1" style="width:35%;">
         <div class="flex">
@@ -43,15 +44,36 @@
           notify: true
         }
       },
+      observers: [
+        'afterPropertiesSet(challenge)'
+      ],
+      afterPropertiesSet: function(){
+          var timer = localStorage.getItem("timer");
+          var currentTask = localStorage.getItem("currentTask");
+          if(timer != undefined && currentTask != undefined){
+            this.$.content.innerHTML = "";
+            this.loadTaskById(currentTask);
+            this.$.taskTimer.startWithOffset(timer);
+          }
+      },
       ready: function(){
         this.showForwardArrow = false;
         this.showBackArrow = false;
+        var component = this;
+        this.timeout = function(){
+          var taskTimeout = document.createElement("task-timeout");
+          component.$.content.innerHTML = "";
+          component.$.content.appendChild(taskTimeout);
+        }
       },
       startChallenge: function(){
         this.taskIndex = 0;
+        localStorage.setItem("timer", new Date().getTime());
         this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
+        this.$.taskTimer.start();
       },
       loadTaskById: function(key){
+        localStorage.setItem("currentTask", key);
         get(this.$.loadTaskRequest, "/task/" + key + "?result=" + localStorage.getItem("result"));
       },
       onTaskResponse: function(r){
