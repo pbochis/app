@@ -38,21 +38,14 @@
           reflectToAttribute: true
         }
       },
+      observers: [
+        'afterPropertiesSet(task)'
+      ],
+      afterPropertiesSet: function(){
+        this.languages = getLanguagesForTags(this.task.Languages);
+      },
       languageChanged: function(){
         this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag)
-      },
-      ready: function(){
-        // TODO(victorbalan): Get these from the server
-        this.languages = [
-          createLanguage("Java", "java"),
-          createLanguage("Python", "py"),
-          createLanguage("C++", "cpp"),
-          createLanguage("C", "c")
-        ];
-
-        function createLanguage(name, tag){
-          return {name: name, tag: tag};
-        }
       },
       runCode: function(){
         var lang = this.$.languageSelector.getSelectedLanguage().tag

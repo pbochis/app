@@ -13,7 +13,7 @@
     });
 
     page('/challenge', function() {
-      checkLoggedIn();
+      checkAuthorization();
       app.route = 'challenge';
       app.header = "Challenge"
     });
@@ -25,34 +25,34 @@
 
     // DASHBOARD
     page('/dashboard', function () {
-      checkLoggedIn();
+      checkAuthorization();
       checkIsCompany();
       app.route = 'dashboard';
       app.header = "Dashboard"
     });
 
     page('/coders', function() {
-      checkLoggedIn();
+      checkAuthorization();
       checkIsCompany();
       app.route = 'coders';
       app.header = "Coders"
     });
 
     page('/coders/:id', function(data) {
-      checkLoggedIn();
+      checkAuthorization();
       checkIsCompany();
       app.route = 'coder-info';
       app.params = data.params;
     });
 
     page('/fingerprints', function() {
-      checkLoggedIn();
+      checkAuthorization();
       checkIsCompany();
       app.route = 'fingerprints';
     });
 
     page('/candidate', function() {
-      checkLoggedIn();
+      checkAuthorization();
       checkIsCompany();
       app.route = 'candidate';
       app.header = "Candidate"
@@ -68,14 +68,13 @@
       hashbang: true
     });
 
-    // TODO(flowlo): checkLoggedIn is a bad name for this.
-    // Only because we have a token, this does not mean that
-    // we are logged in.
-    function checkLoggedIn() {
-      var loggedIn = localStorage.getItem("token");
-      if (loggedIn === "" || loggedIn === undefined) {
+    function checkAuthorization(){
+      if(!hasAuthorization()){
         page.redirect("/login");
       }
+    }
+    function hasAuthorization() {
+      return !!localStorage.getItem("authorization");
     }
 
     function checkIsCompany() {
