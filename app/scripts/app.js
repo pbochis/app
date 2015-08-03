@@ -49,6 +49,11 @@
   app.onChallengeResponse = function(r){
     var challenge = r.detail.response;
     app.challenge = challenge;
+    
+    if(challenge.Tasks.indexOf(localStorage.getItem("currentTask"))==-1){
+      localStorage.removeItem("currentTask");
+      localStorage.removeItem("timer");
+    }
   }
 
   app.onResultResponse = function(r){
