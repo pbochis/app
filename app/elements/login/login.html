@@ -10,15 +10,28 @@
       <paper-input type="text" label="E-mail" value="{{email}}"></paper-input>
       <paper-input type="password" label="Password" value="{{password}}"></paper-input>
       <paper-button raised on-click="login"><core-icon icon="favorite"></core-icon>Login</paper-button>
-      <iron-ajax
-        id="ajaxRequest"
-        handle-as="json"
-        on-response="onLoginResponse"
-        on-error="onLoginError"
-        debounce-duration="1000"
-        with-credentials="true"
-        >
-      </iron-ajax>
+
+    <iron-ajax
+      id="ajaxRequest"
+      handle-as="json"
+      on-response="onLoginResponse"
+      on-error="onError"
+      debounce-duration="1000"
+      with-credentials="true"
+      >
+    </iron-ajax>
+
+    <iron-ajax
+            id="userRequest"
+            handle-as="json"
+            on-response="onUserResponse"
+            on-error="onError"
+            debounce-duration="1000"
+            with-credentials="true"
+            >
+    </iron-ajax>
+
+
   </template>
 </dom-module>
 <script>
@@ -34,24 +47,32 @@
         }
       },
       login: function(){
-        get(this.$.ajaxRequest, "/user/company", "Basic", btoa(this.email+":"+this.password))
+        get(this.$.ajaxRequest, '/user/company', 'Basic ' + btoa(this.email+":"+this.password));
       },
       onLoginResponse: function(res){
-        var response = res.detail.response
-        if (response != undefined) {
+        var response = res.detail.response;
+        if (response != null) {
           var company = response;
-          localStorage.setItem("company", company.Key);
+          localStorage.setItem('authorization', 'Basic ' + btoa(this.email + ':' + this.password));
+          localStorage.setItem("companyKey", company.Key);
           localStorage.setItem("companyName", company.Name);
           localStorage.setItem("role", "COMPANY");
-          localStorage.setItem('authorization', 'Basic ' + btoa(this.email + ':' + this.password));
-          window.parent.location = "/codeground/#!/dashboard";
-        } else {
-          this.invalidLogin = true;
+          get(this.$.userRequest, '/user');
         }
       },
-      onLoginError: function(error) {
+      onUserResponse: function(res){
+        var response = res.detail.response;
+        if (response != null){
+          var user = response;
+          localStorage.setItem("Name", user.Name);
+          localStorage.setItem("Nick", user.Nick);
+          localStorage.setItem("Address", user.Address);
+          page.redirect('/dashboard')
+        }
+       },
+      onError: function(error) {
         this.invalidLogin = true;
-        console.log(error.detail)
+        console.log(error);
       },
       ready: function() {
         this.invalidLogin = false;
