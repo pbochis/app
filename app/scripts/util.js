@@ -1,4 +1,4 @@
-var BASE_URL = "/api";
+var BASE_URL = "http://localhost:8080";
 
 if (location.origin.indexOf("localhost") == -1) {
   BASE_URL = "https://api.cod.uno";

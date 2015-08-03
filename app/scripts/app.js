@@ -67,6 +67,6 @@
   }
 
   app.isLoggedIn = function(){
-    return localStorage.getItem("token") != "" && localStorage.getItem("token") != undefined;
+    return localStorage.getItem("authorization") != "" && localStorage.getItem("authorization") != undefined;
   }
 })(document);

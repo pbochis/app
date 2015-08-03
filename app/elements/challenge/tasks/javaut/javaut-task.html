@@ -20,7 +20,7 @@
         </paper-material>
         <paper-material elevation="1">
           <div class="horizontal layout">
-            <paper-icon-button src="/codeground/images/start.png" on-click="runCode">Run code</paper-icon-button>
+            <paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
           </div>
           <javaut-console id="console" </javaut-console>
         </paper-material>
@@ -36,6 +36,9 @@
           notify: true,
           reflectToAttribute: true
         }
+      },
+      ready: function(){
+        this.$.codeEditor.setMode("java");
       },
       runCode: function(){
         this.$.codeEditor.runCode("javaut", this.task.Key);

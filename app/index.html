@@ -97,9 +97,9 @@
             </a>
           </template>
           <template is="dom-if" if="{{isCoder()}}">
-            <a data-route="codeground" href="/codeground">
+            <a data-route="challenge" href="/challenge">
               <iron-icon icon="code"></iron-icon>
-              <span>Codeground</span>
+              <span>Challenge</span>
             </a>
           </template>
         </paper-menu>
@@ -156,7 +156,7 @@
               </paper-material>
             </section>
 
-            <section data-route="codeground">
+            <section data-route="challenge">
               <challenge-page challenge="{{challenge}}"></challenge-page>
             </section>
 

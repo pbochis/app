@@ -9,16 +9,18 @@
       localStorage.setItem("authorization", 'Token ' + decodedToken[1]);
       localStorage.setItem("role", "CODER");
       app.requestData(decodedToken[0]);
-      page('/codeground')
+      page('/challenge')
     });
 
-    page('/codeground', function() {
+    page('/challenge', function() {
       checkLoggedIn();
-      app.route = 'code';
+      app.route = 'challenge';
+      app.header = "Challenge"
     });
 
     page('/unauthorized', function() {
       app.route = 'unauthorized';
+      app.header = "Unauthorized"
     });
 
     // DASHBOARD
@@ -26,12 +28,14 @@
       checkLoggedIn();
       checkIsCompany();
       app.route = 'dashboard';
+      app.header = "Dashboard"
     });
 
     page('/coders', function() {
       checkLoggedIn();
       checkIsCompany();
       app.route = 'coders';
+      app.header = "Coders"
     });
 
     page('/coders/:id', function(data) {
@@ -51,10 +55,12 @@
       checkLoggedIn();
       checkIsCompany();
       app.route = 'candidate';
+      app.header = "Candidate"
     });
 
     page('/login', function() {
       app.route = 'login';
+      app.header = "Login"
     });
 
     page({
