@@ -15,21 +15,21 @@
     <iron-ajax
       id="ajaxRequest"
       handle-as="json"
-      on-response="onLoginResponse"
-      on-error="onError"
+      on-response="onCompanyResponse"
+      on-error="onCompanyError"
       debounce-duration="1000"
       with-credentials="true"
       >
     </iron-ajax>
 
     <iron-ajax
-            id="userRequest"
-            handle-as="json"
-            on-response="onUserResponse"
-            on-error="onError"
-            debounce-duration="1000"
-            with-credentials="true"
-            >
+      id="userRequest"
+      handle-as="json"
+      on-response="onUserResponse"
+      on-error="onUserError"
+      debounce-duration="1000"
+      with-credentials="true"
+      >
     </iron-ajax>
 
 
@@ -48,32 +48,30 @@
         }
       },
       login: function(){
-        get(this.$.ajaxRequest, '/user/company', 'Basic ' + btoa(this.email+":"+this.password));
+        get(this.$.userRequest, '/user', 'Basic ' + btoa(this.email+":"+this.password));
       },
-      onLoginResponse: function(res){
-        var response = res.detail.response;
-        if (response != null) {
-          var company = response;
-          localStorage.setItem('authorization', 'Basic ' + btoa(this.email + ':' + this.password));
-          localStorage.setItem("companyKey", company.Key);
-          localStorage.setItem("companyName", company.Name);
-          localStorage.setItem("role", "COMPANY");
-          get(this.$.userRequest, '/user');
-        }
+      onCompanyResponse: function(res){
+        var company = res.detail.response;
+        localStorage.setItem("companyKey", company.Key);
+        localStorage.setItem("companyName", company.Name);
+        localStorage.setItem("role", "COMPANY");
+        page.redirect("/dashboard");
       },
       onUserResponse: function(res){
-        var response = res.detail.response;
-        if (response != null){
-          var user = response;
-          localStorage.setItem("Name", user.Name);
-          localStorage.setItem("Nick", user.Nick);
-          localStorage.setItem("Address", user.Address);
-          page.redirect('/dashboard')
-        }
+        var user = res.detail.response;
+        localStorage.setItem('authorization', 'Basic ' + btoa(this.email + ':' + this.password));
+        localStorage.setItem("Name", user.Name);
+        localStorage.setItem("Nick", user.Nick);
+        localStorage.setItem("Address", user.Address);
+        get(this.$.ajaxRequest, '/user/company', 'Basic ' + btoa(this.email+":"+this.password));
        },
-      onError: function(error) {
+      onCompanyError: function(error) {
         this.invalidLogin = true;
-        console.log(error);
+        localStorage.setItem("role", "USER");
+        page.redirect("/challenge");
+      },
+      onUserError: function(req){
+        this.invalidLogin = true;
       },
       ready: function() {
         this.invalidLogin = false;
