@@ -3,13 +3,14 @@
 
 <dom-module id="login-page">
   <template>
-    <h2 class="paper-font-display2">Login here</h2>
-    <template is="dom-if" if="{{invalidLogin}}">
-      <p>Invalid login</p>
-    </template>
+    <paper-material elevation="1" style="width: 35%;">
+      <template is="dom-if" if="{{invalidLogin}}">
+        <p>Invalid login</p>
+      </template>
       <paper-input type="text" label="E-mail" value="{{email}}"></paper-input>
       <paper-input type="password" label="Password" value="{{password}}"></paper-input>
-      <paper-button raised on-click="login"><core-icon icon="favorite"></core-icon>Login</paper-button>
+      <paper-button raised on-click="login" style="width: 150px;"><core-icon icon="favorite"></core-icon>Login</paper-button>
+    </paper-material>
 
     <iron-ajax
       id="ajaxRequest"

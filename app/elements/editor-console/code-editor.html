@@ -29,10 +29,9 @@
       runCode: function(lang, taskKey){
         var data = {
           'Language': lang,
-          'Code': this.getText(),
-          'Task': taskKey
+          'Code': this.getText()
         }
-        post(this.$.runCodeRequest, "/results/"+ localStorage.getItem("result") + "/submissions?kind=code", data);
+        post(this.$.runCodeRequest, "/results/"+ localStorage.getItem("result") + "/tasks/" + taskKey +"/submissions", data);
       },
       getText: function(){
         return this.$.editor.getValue();
