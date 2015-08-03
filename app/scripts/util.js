@@ -5,10 +5,15 @@ if (location.origin.indexOf("localhost") == -1) {
 }
 
 // TODO(victorbalan): Create methods that take in account the authorization type
-function get(ajaxRequest, route){
+function get(ajaxRequest, route, authorization, responseCallback){
   ajaxRequest.url = BASE_URL + route;
   ajaxRequest.method = "GET";
-  ajaxRequest.headers = {"Authorization": localStorage.getItem("authorization")};
+  if (authorization){
+    ajaxRequest.headers = {"Authorization": authorization};
+  }
+  else{
+    ajaxRequest.headers = {"Authorization": localStorage.getItem("authorization")};
+  }
   ajaxRequest.generateRequest();
 }
 
