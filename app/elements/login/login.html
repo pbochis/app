@@ -7,9 +7,9 @@
     <template is="dom-if" if="{{invalidLogin}}">
       <p>Invalid login</p>
     </template>
-      <paper-input type="text" label="E-mail" value="{{companyEmail}}"></paper-input>
+      <paper-input type="text" label="E-mail" value="{{email}}"></paper-input>
       <paper-input type="password" label="Password" value="{{password}}"></paper-input>
-      <paper-button raised on-click="login">Login</paper-button>
+      <paper-button raised on-click="login"><core-icon icon="favorite"></core-icon>Login</paper-button>
       <iron-ajax
         id="ajaxRequest"
         handle-as="json"
@@ -26,7 +26,7 @@
     Polymer({
       is: 'login-page',
       properties:{
-        companyEmail: String,
+        email: String,
         password: String,
         invalidLogin:{
           type: Boolean,
@@ -34,26 +34,26 @@
         }
       },
       login: function(){
-        get(this.$.ajaxRequest, "/user/company", "Basic", btoa(this.companyEmail+":"+this.password))
+        get(this.$.ajaxRequest, "/user/company", "Basic", btoa(this.email+":"+this.password))
       },
       onLoginResponse: function(res){
         var response = res.detail.response
-        if(response != undefined){
+        if (response != undefined) {
           var company = response;
           localStorage.setItem("company", company.Key);
           localStorage.setItem("companyName", company.Name);
           localStorage.setItem("role", "COMPANY");
-          localStorage.setItem("token", btoa(this.companyEmail+":"+this.password));
+          localStorage.setItem('authorization', 'Basic ' + btoa(this.email + ':' + this.password));
           window.parent.location = "/codeground/#!/dashboard";
-        }else{
+        } else {
           this.invalidLogin = true;
         }
       },
-      onLoginError: function(error){
+      onLoginError: function(error) {
         this.invalidLogin = true;
         console.log(error.detail)
       },
-      ready: function(){
+      ready: function() {
         this.invalidLogin = false;
       }
     });

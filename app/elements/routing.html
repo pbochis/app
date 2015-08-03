@@ -1,26 +1,23 @@
 <script src="../bower_components/page/page.js"></script>
-<script src="../bower_components/js-base64/base64.js"></script>
 <script>
   window.addEventListener('WebComponentsReady', function() {
-    page('/token/:token', function(context){
+    page('/', '/login');
+
+    page('/token/:token', function(context) {
       var token = context.params.token;
-      if (Base64.extendString) {
-        Base64.extendString();
-        var decodedToken = token.fromBase64().split(":");
-        localStorage.setItem("token", decodedToken[1]);
-        localStorage.setItem("role", "CODER");
-        app.requestData(decodedToken[0]);
-      }
-      window.location = "/codeground/#!/codingGround";
+      var decodedToken = atob(token).split(':');
+      localStorage.setItem("authorization", 'Token ' + decodedToken[1]);
+      localStorage.setItem("role", "CODER");
+      app.requestData(decodedToken[0]);
+      page('/codeground')
     });
 
-    page('/codingGround', function () {
+    page('/codeground', function() {
       checkLoggedIn();
-      app.route = 'codingGround';
-      app.header = "Coding ground"
+      app.route = 'code';
     });
 
-    page('/unauthorized', function(){
+    page('/unauthorized', function() {
       app.route = 'unauthorized';
     });
 
@@ -31,51 +28,53 @@
       app.route = 'dashboard';
     });
 
-    page('/coders', function () {
+    page('/coders', function() {
       checkLoggedIn();
       checkIsCompany();
       app.route = 'coders';
     });
 
-    page('/coders/:id', function (data) {
+    page('/coders/:id', function(data) {
       checkLoggedIn();
       checkIsCompany();
       app.route = 'coder-info';
       app.params = data.params;
     });
 
-    page('/fingerprints', function () {
+    page('/fingerprints', function() {
       checkLoggedIn();
       checkIsCompany();
       app.route = 'fingerprints';
     });
 
-    page('/candidate', function () {
+    page('/candidate', function() {
       checkLoggedIn();
       checkIsCompany();
       app.route = 'candidate';
     });
 
-    page('/login', function(){
+    page('/login', function() {
       app.route = 'login';
     });
 
-    // add #! before urls
     page({
+      // Add '#!' before page paths
       hashbang: true
     });
 
-    function checkLoggedIn(){
+    // TODO(flowlo): checkLoggedIn is a bad name for this.
+    // Only because we have a token, this does not mean that
+    // we are logged in.
+    function checkLoggedIn() {
       var loggedIn = localStorage.getItem("token");
-      if(loggedIn=="" || loggedIn==undefined){
+      if (loggedIn === "" || loggedIn === undefined) {
         page.redirect("/login");
       }
     }
 
-    function checkIsCompany(){
+    function checkIsCompany() {
       var role = localStorage.getItem("role");
-      if(role==undefined || role=="" || role!="COMPANY"){
-        console.log(role + " is not COMPANY");
+      if (role === undefined || role === "" || role !== "COMPANY") {
         page.redirect("/login");
       }
     }
