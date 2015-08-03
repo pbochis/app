@@ -1,0 +1,77 @@
+<dom-module id="challenge-detail">
+
+  <style>
+
+  </style>
+
+  <template>
+    <iron-ajax
+            id="challengeDetailAjax"
+            handle-as="json"
+            on-response="onResponse"
+            on-error="onError">
+    </iron-ajax>
+
+    <iron-ajax
+            id="taskDetailAjax"
+            handle-as="json"
+            on-response="onTaskResponse"
+            on-error="onError">
+    </iron-ajax>
+
+    <paper-material elevation="1">
+      <h1>{{challenge.Name}}</h1>
+      <h4>{{challenge.Description}}</h4>
+      <h4>{{challenge.Instructions}}</h4>
+      <h4>Total coders: <span>{{challenge.TotalCoders}}</span></h4>
+      <h4 class="link" on-click="viewResult">View results</h4>
+    </paper-material>
+
+    <template is="dom-repeat" items="{{tasks}}" as="task">
+      <paper-material>
+        <h4>{{task.Name}}</h4>
+        <p>Description:  <span>{{task.Description}}</span></p>
+        <p>Instructions: <span>{{task.Instructions}}</span></p>
+        <p>Time limit:   <span>{{task.Duration}}</span></p>
+      </paper-material>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      is: 'challenge-detail',
+      properties: {
+        challenge: Object,
+        tasks: Array,
+        challengeKey: {
+          type: String,
+          notify: true
+        }
+
+      },
+      observers: [
+        'afterPropertiesSet(challengeKey)'
+      ],
+      afterPropertiesSet: function(){
+        console.log(this.challengeKey);
+        get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey)
+      },
+      onResponse: function(res){
+        this.challenge = res.detail.response;
+        this.tasks = [];
+        console.log(this.challenge)
+        for (var i = 0; i < this.challenge.Tasks.length; i++){
+          get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i])
+        }
+      },
+      onTaskResponse: function(res){
+        this.push('tasks', res.detail.response)
+      },
+      viewResult: function(){
+        page.redirect('/coders/challenge/' + this.challenge.Key);
+      },
+      onError: function(error){
+        handleError(error)
+      }
+    })
+  </script>
+</dom-module>

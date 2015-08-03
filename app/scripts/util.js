@@ -52,3 +52,42 @@ function getLanguageForTag(tag){
   }
   return lang;
 }
+
+
+function put(ajaxRequest, route, body){
+  ajaxRequest.url = BASE_URL + route;
+  ajaxRequest.method = "PUT";
+  ajaxRequest.headers = {"Authorization": localStorage.getItem("authorization")};
+  ajaxRequest.body = JSON.stringify(body);
+  ajaxRequest.generateRequest();
+}
+
+(function(){
+  var initialError;
+
+  function handleError(error){
+    initialError = error;
+    switch(error.detail.request.xhr.status){
+      case 500: {
+        page.redirect('/500');
+        break;
+      }
+      case 401:{
+        page.redirect('/login');
+        break;
+      }
+      case 404:{
+        //todo: create page for 404
+        page.redirect('/404');
+        break;
+      }
+    }
+  }
+
+  function getLastError(){
+    return initialError;
+  }
+
+  window.getLastError = getLastError;
+  window.handleError = handleError;
+})();
