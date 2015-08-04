@@ -38,6 +38,7 @@
         </div>
       </form>
     </paper-dialog>
+    <candidate-list id="candidateList"></candidate-list>
   </template>
 
   <script>
@@ -49,6 +50,9 @@
       },
       getChallenges: function(){
         get(this.$.getChallengesAjax, '/companies/' + localStorage.getItem("companyKey") + '/challenges');
+      },
+      getCandidates: function(){
+        this.$.candidateList.getCandidates();
       },
       inviteCandidate: function(){
         post(this.$.inviteCandidate, '/invitations', {'Address': this.Address, 'Challenge': this.getSelectedChallenge()})
@@ -64,7 +68,8 @@
         }
       },
       onPostResponse: function(res){
-        page.redirect('/challenges/' + this.getSelectedChallenge());
+        // TODO(victorbalan, pbochis, flowlo): Refresh challenges
+        // page.redirect('/challenges/' + this.getSelectedChallenge());
       },
       onError: function(error){
           handleError(error);

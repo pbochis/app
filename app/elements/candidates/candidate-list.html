@@ -1,0 +1,41 @@
+<dom-module id="candidate-list">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    <iron-ajax
+    id="candidateRequest"
+    on-response="onResponse"
+    on-error="onError">
+    </iron-ajax>
+    <div class="horizontal layout wrap">
+      <template is="dom-repeat" items="{{items}}">
+        <candidate-card user="{{item}}"></candidate-card>
+      </template>
+    </div>
+  </template>
+</dom-module>
+<script>
+  (function() {
+    Polymer({
+      is: 'candidate-list',
+      properties: {
+        greeting: {
+          type: Array,
+          notify: true
+        }
+      },
+      getCandidates: function(){
+         get(this.$.candidateRequest, "/users")
+      },
+      onResponse: function(r){
+        this.items = r.detail.response
+      },
+      onError: function(r){
+        handleError(r.detail.response)
+      }
+    });
+  })();
+</script>

@@ -55,7 +55,8 @@
       checkAuthorization();
       checkIsCompany();
       app.route = 'candidate';
-      app.$.inviteCandidate.getChallenges();
+      app.$.candidatePage.getChallenges();
+      app.$.candidatePage.getCandidates();
       app.header = 'Candidates';
     });
 
@@ -68,8 +69,16 @@
     });
 
     page('/login', function() {
-      app.route = 'login';
-      app.header = "Login"
+      if(hasAuthorization()){
+        if(localStorage.getItem("role")==="COMPANY"){
+          page('/candidates');
+        }else{
+          page('/challenge')
+        }
+      }else{
+        app.route = 'login';
+        app.header = "Login";
+      }
     });
 
     //################################## ERROR PAGES
