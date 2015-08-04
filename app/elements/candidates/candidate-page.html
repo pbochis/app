@@ -31,10 +31,14 @@
       <p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
       <form is="iron-form" id="form">
         <paper-input id="address" class="margined" label="Address" value="{{Address}}"></paper-input>
-        <select id="challenges" class="margined" value="{{Challenge}}"></select><br>
+        <select id="challenges" class="margined">
+          <template is="dom-repeat" items="{{challenges}}">
+            <option value="{{item.Key}}">{{item.Name}}</option>
+          </template>
+        </select>
         <div style="float: right;">
           <paper-button dialog-dismiss class="margined">Cancel</paper-button>
-          <paper-button class="colorful margined" raised on-click="inviteCandidate" dialog-confirm>Invite</paper-button>
+          <paper-button class="colorful margined" raised on-click="inviteCandidate">Invite</paper-button>
         </div>
       </form>
     </paper-dialog>
@@ -46,7 +50,10 @@
       is: 'candidate-page',
       properties: {
         Address: String,
-        Challenge: String
+        challenges: {
+          type: Array,
+          notify: true
+        }
       },
       getChallenges: function(){
         get(this.$.getChallengesAjax, '/companies/' + localStorage.getItem("companyKey") + '/challenges');
@@ -58,14 +65,7 @@
         post(this.$.inviteCandidate, '/invitations', {'Address': this.Address, 'Challenge': this.getSelectedChallenge()})
       },
       onGetChallengesResponse: function(res) {
-        var select = this.$.challenges;
-        var challenges = res.detail.response;
-        for (var i = 0; i< challenges.length; i++){
-          var opt = document.createElement('option');
-          opt.value = challenges[i].key;
-          opt.text = challenges[i].Name;
-          select.appendChild(opt);
-        }
+        this.challenges = res.detail.response
       },
       onPostResponse: function(res){
         // TODO(victorbalan, pbochis, flowlo): Refresh challenges
