@@ -1,0 +1,13 @@
+language: node_js
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_afa9cea1b82d_key -iv $encrypted_afa9cea1b82d_iv
+  -in service-account.json.enc -out service-account.json -d
+
+after_success:
+- curl https://sdk.cloud.google.com | CLOUDSDK_CORE_DISABLE_PROMPTS=1 $SHELL
+- gcloud -q components install preview
+- gcloud -q components install preview app
+- gcloud -q config set project coduno
+- gcloud -q auth activate-service-account --key-file service-account.json
+- gcloud -q preview app deploy app.yaml --version=$TRAVIS_BRANCH --set-default
