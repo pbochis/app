@@ -1,0 +1,103 @@
+<dom-module id="candidate-card">
+  <style>
+    :host {
+      width: 300px;
+      height: 300px;
+      margin: 5px;
+    }
+    paper-material>.cardTop{
+      position: relative;
+      height: 250px;
+      border-bottom: 1px solid gray;
+      text-overflow: ellipsis;
+    }
+    paper-material>.cardTop>.cardTopImage{
+      position: absolute;
+      bottom: 0;
+      width:100%;
+    }
+    paper-material>.cardTop>.cardTopImage>iron-image{
+      height: 200px;
+      width: 200px;
+    }
+    paper-material>.cardTop>.cardTopTitle{
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 39px;
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+    paper-material>.cardTop>.cardTopTitle>p{
+      position: absolute;
+      bottom: 5px;
+      left: 15px;
+      margin: 0;
+      font-size: 25px;
+    }
+    paper-material>.cardTop>.cardTopTitle>iron-icon{
+      position: absolute;
+      bottom: 5px;
+      right: 15px;
+    }
+  </style>
+  <template>
+    <paper-material elevation="1" on-mouseover="onMouseover" on-mouseout="onMouseout">
+      <template is="dom-if" if="{{!isHovered}}">
+        <div class="cardTop" align="center">
+          <div class="cardTopImage">
+            <iron-image sizing="contain" src="/images/default_user.png"></iron-image>
+          </div>
+          <div class="cardTopTitle">
+            <p>{{getTitle()}}</p>
+            <iron-icon icon="{{getIcon(user.State)}}"></iron-icon>
+          </div>
+        </div>
+      </template>
+      <template is="dom-if" if="{{isHovered}}">
+        <div class="cardTop" align="center">
+          <h1>{{user.Name}}</h1>
+        </div>
+    </template>
+    </paper-material>
+  </template>
+  <script>
+    Polymer({
+      is: 'candidate-card',
+      properties: {
+        user: {
+          type: Object,
+          notify: true,
+          reflectToAttribute: true
+        },
+        isHovered: {
+          type: Boolean,
+          notify: true
+        }
+      },
+      ready: function(){
+        this.isHovered = false;
+      },
+      getIcon: function(state){
+        switch(state){
+          case "invited":
+            return "mail";
+          case "coding":
+            return "star";
+          case "finished":
+            return "done";
+        }
+      },
+      getTitle: function(){
+        return this.user.Name != "" && this.user.Name != undefined ? this.user.Name : this.user.Address;
+      },
+      onMouseover: function(){
+        // TODO(victorbalan): Enable hover when we have content
+        // this.isHovered = true;
+      },
+      onMouseout: function(){
+        // TODO(victorbalan): Enable hover when we have content
+        // this.isHovered = false;
+      }
+    })
+  </script>
+</dom-module>

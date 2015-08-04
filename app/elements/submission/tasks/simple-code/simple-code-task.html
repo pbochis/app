@@ -1,4 +1,13 @@
 <dom-module id="simple-code-task">
+  <style>
+    paper-material{
+      width: calc(98.66% - 16px);
+      margin: auto;
+      background: white;
+      padding: 8px 8px 8px 8px;
+      margin-bottom: 10px;
+    }
+  </style>
   <template>
     <iron-ajax
       id="ajaxRequest"
@@ -10,15 +19,15 @@
     </iron-ajax>
     <div class="horizontal layout">
       <div class="flex">
-        <paper-material elevation="1" class="card">
+        <paper-material elevation="1">
           <code-editor id="codeEditor" on-response="onResponse" on-error="onError"></code-editor>
         </paper-material>
       </div>
       <div class="flex">
-        <paper-material elevation="1" class="card">
+        <paper-material elevation="1">
           <task-display task="{{task}}"></task-display>
         </paper-material>
-        <paper-material elevation="1" class="card">
+        <paper-material elevation="1">
           <div class="horizontal layout">
             <paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
             <language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
