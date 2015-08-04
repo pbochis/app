@@ -1,0 +1,50 @@
+<dom-module id="error-page">
+    <template>
+        <iron-ajax
+                id="sendErrorAjax"
+                handle-as="json"
+                on-response="onResponse"
+                on-error="onError">
+        </iron-ajax>
+        <paper-material elevation="1">
+
+            <h1> Something went wrong. Please offer us more details about your experience</h1>
+
+            <form is="iron-form" id="form">
+                <iron-autogrow-textarea rows="5" maxRows="5" value="feedback"></iron-autogrow-textarea>
+                <paper-button raise d on-click="sendFeedback">Create</paper-button>
+            </form>
+        </paper-material>
+    </template>
+    <script>
+        Polymer({
+            is: 'error-page',
+            properties: {
+                initialError: {
+                    type: Object,
+                    notify: true
+                },
+                feedback: String,
+                ticketKey: String
+            },
+            observers: [
+                    'afterPropertiesSet(initialError)'
+            ],
+            afterPropertiesSet: function(){
+                console.log(this.initialError);
+                console.log('posting error here');
+                post(this.$.sendErrorAjax,'/error', {'Error': this.initialError})
+            },
+            onResponse: function(res){
+                this.ticketId = res.detail.response
+            },
+            sendFeedback: function(){
+                put(this.$.sendErrorAjax,'/error', {
+                    'Key': this.ticketKey,
+                    'Error': this.initialError,
+                    'Feedback': this.feedback})
+            }
+
+        })
+    </script>
+</dom-module>

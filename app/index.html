@@ -86,9 +86,9 @@
               <span>Coders</span>
             </a>
 
-            <a data-route="fingerprints" href="/fingerprints">
-              <iron-icon icon="mail"></iron-icon>
-              <span>Fingerprints</span>
+            <a data-route="challenges" href="/challenges">
+              <iron-icon icon="star"></iron-icon>
+              <span>Challenges</span>
             </a>
 
             <a data-route="candidate" href="/candidate">
@@ -150,8 +150,18 @@
 
             <section data-route="candidate">
               <paper-material elevation="1">
-                <invite-candidate></invite-candidate>
+                <invite-candidate id="inviteCandidate"></invite-candidate>
               </paper-material>
+            </section>
+
+            <section data-route="challenges">
+              <paper-material elevation="1">
+                <challenge-list id="challengeList"></challenge-list>
+              </paper-material>
+            </section>
+
+            <section data-route="challenge-detail">
+              <challenge-detail id="challengeDetail"></challenge-detail>
             </section>
 
             <section data-route="challenge">
@@ -162,6 +172,10 @@
               <paper-material elevation="1">
                 <h2 class="paper-font-display2">You are not authorized to see this page.</h2>
               </paper-material>
+            </section>
+
+            <section data-route="500">
+              <error-page id="error500"></error-page>
             </section>
           </iron-pages>
         </div>

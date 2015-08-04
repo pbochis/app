@@ -119,6 +119,16 @@ paper-menu a {
   height: 100%;
 }
 
+.link{
+  padding: 5px 10px 5px 0;
+  cursor: pointer;
+  margin: 5px 5px 5px 0 ;
+}
+
+.link:hover{
+  background-color: rgba(1, 218, 255, 0.1);
+}
+
 /* Breakpoints */
 
 /* Small */

@@ -18,6 +18,18 @@
       app.header = "Challenge"
     });
 
+    page('/challenges', function () {
+      checkLoggedIn();
+      app.$.challengeList.getChallenges();
+      app.route = 'challenges';
+    });
+
+    page('/challenges/:challengeKey', function(data){
+      checkLoggedIn();
+      app.$.challengeDetail.challengeKey = data.params.challengeKey;
+      app.route = 'challenge-detail';
+    });
+
     page('/unauthorized', function() {
       app.route = 'unauthorized';
       app.header = "Unauthorized"
@@ -55,12 +67,23 @@
       checkAuthorization();
       checkIsCompany();
       app.route = 'candidate';
-      app.header = "Candidate"
+      app.$.inviteCandidate.getChallenges();
+      app.header = 'Candidate';
     });
 
     page('/login', function() {
       app.route = 'login';
       app.header = "Login"
+    });
+
+    //################################## ERROR PAGES
+
+    page('/500', function(){
+      var lastError = getLastError();
+      console.log(lastError);
+      app.$.error500.initialError = lastError;
+      app.header = 'Oops...';
+      app.route = '500';
     });
 
     page({

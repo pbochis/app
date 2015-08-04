@@ -54,8 +54,8 @@
           v: Date.now()
         });
       },
-      onError: function(r){
-
+      onError: function(error){
+        handleError(error);
       },
       onResponse: function(r){
 

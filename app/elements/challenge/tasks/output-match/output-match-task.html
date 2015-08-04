@@ -55,8 +55,8 @@
       onResponse: function(r){
         this.$.console.setOutput(r.detail.response);
       },
-      onError: function(r){
-        this.$.console.error()
+      onError: function(error){
+        handleError(error);
       }
     });
   </script>
