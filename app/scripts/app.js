@@ -25,9 +25,24 @@
     }
   };
 
+  app.login = function(role){
+    localStorage.setItem("role", role);
+    app.refreshMenu();
+    switch(role){
+      case "CODER":
+        page.redirect("/challenge");
+        break;
+      case "COMPANY":
+        page.redirect("/candidates");
+        break;
+      default:
+        page.redirect("/unauthorized");
+    }
+  }
+
   app.refreshMenu = function(){
     app.isCompany = localStorage.getItem("role") == "COMPANY";
-    app.isCoder = localStorage.getItem("role") == "USER";
+    app.isCoder = localStorage.getItem("role") == "CODER";
     app.isLoggedIn = localStorage.getItem("authorization") != "" && localStorage.getItem("authorization") != undefined;
   }
 

@@ -4,9 +4,9 @@
     page('/', function(){
       checkAuthorization();
       if(localStorage.getItem("role")==="COMPANY"){
-        page('/dashboard');
+        page('/candidates');
       }else{
-        page('/challenges')
+        page('/challenge')
       }
     });
 
@@ -14,9 +14,8 @@
       var token = context.params.token;
       var decodedToken = atob(token).split(':');
       localStorage.setItem("authorization", 'Token ' + decodedToken[1]);
-      localStorage.setItem("role", "CODER");
       app.requestData(decodedToken[0]);
-      page('/challenge')
+      app.login("CODER")
     });
 
     page('/challenge', function() {
@@ -29,6 +28,7 @@
       checkAuthorization();
       app.$.challengeList.getChallenges();
       app.route = 'challenges';
+      app.header = 'Challenges';
     });
 
     page('/challenges/:challengeKey', function(data){
@@ -43,20 +43,6 @@
     });
 
     // DASHBOARD
-    page('/dashboard', function () {
-      checkAuthorization();
-      checkIsCompany();
-      app.route = 'dashboard';
-      app.header = "Dashboard"
-    });
-
-    page('/coders', function() {
-      checkAuthorization();
-      checkIsCompany();
-      app.route = 'coders';
-      app.header = "Coders"
-    });
-
     page('/coders/:id', function(data) {
       checkAuthorization();
       checkIsCompany();
@@ -64,18 +50,12 @@
       app.params = data.params;
     });
 
-    page('/fingerprints', function() {
-      checkAuthorization();
-      checkIsCompany();
-      app.route = 'fingerprints';
-    });
-
-    page('/candidate', function() {
+    page('/candidates', function() {
       checkAuthorization();
       checkIsCompany();
       app.route = 'candidate';
       app.$.inviteCandidate.getChallenges();
-      app.header = 'Candidate';
+      app.header = 'Candidates';
     });
 
     page('/login', function() {

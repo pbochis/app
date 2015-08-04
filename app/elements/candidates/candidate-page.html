@@ -1,11 +1,14 @@
-<link rel="import" href="../../bower_components/iron-form/iron-form.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-
-<dom-module id="invite-candidate">
+<dom-module id="candidate-page">
   <style>
-    paper-button{
-      color: #111111;
+    #createActionButton{
+      position: absolute;
+      right: 2%;
+      bottom: 5%;
+      --paper-fab-background: red;
+    }
+
+    .margined{
+      margin: 10px;
     }
   </style>
   <template>
@@ -22,21 +25,24 @@
       on-response="onPostResponse"
       on-error="onError">
     </iron-ajax>
-
-    <h4>An email will be sent to the candidate with the link where he can access the challenge</h4>
-
-    <form is="iron-form" id="form">
-      <paper-input id="address" label="Address" value="{{Address}}"></paper-input>
-      <select id="challenges" value="{{Challenge}}"></select><br>
-      <paper-button raised="" on-click="inviteCandidate">Create</paper-button>
-    </form>
-
-
+    <paper-fab id="createActionButton" on-click="toggleDialog" icon="create"></paper-fab>
+    <paper-dialog id="dialog" modal style="background: white;">
+      <h2>Invite candidate</h2>
+      <p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
+      <form is="iron-form" id="form">
+        <paper-input id="address" class="margined" label="Address" value="{{Address}}"></paper-input>
+        <select id="challenges" class="margined" value="{{Challenge}}"></select><br>
+        <div style="float: right;">
+          <paper-button dialog-dismiss class="margined">Cancel</paper-button>
+          <paper-button class="colorful margined" raised on-click="inviteCandidate" dialog-confirm>Invite</paper-button>
+        </div>
+      </form>
+    </paper-dialog>
   </template>
 
   <script>
     Polymer({
-      is: 'invite-candidate',
+      is: 'candidate-page',
       properties: {
         Address: String,
         Challenge: String
@@ -68,6 +74,9 @@
       },
       getSelectedChallenge: function(){
         return this.$.challenges.options[this.$.challenges.selectedIndex].value;
+      },
+      toggleDialog: function(){
+        this.$.dialog.toggle();
       }
     })
   </script>

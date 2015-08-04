@@ -76,24 +76,14 @@
 
         <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
           <template is="dom-if" if="{{isCompany}}">
-            <a data-route="dashboard" href="/dashboard">
-              <iron-icon icon="home"></iron-icon>
-              <span>Home</span>
-            </a>
-
-            <a data-route="coders" href="/coders">
-              <iron-icon icon="info"></iron-icon>
-              <span>Coders</span>
-            </a>
-
             <a data-route="challenges" href="/challenges">
-              <iron-icon icon="star"></iron-icon>
+              <iron-icon icon="assignment"></iron-icon>
               <span>Challenges</span>
             </a>
 
-            <a data-route="candidate" href="/candidate">
+            <a data-route="candidates" href="/candidates">
               <iron-icon icon="perm-identity"></iron-icon>
-              <span>Invite candidate</span>
+              <span>Candidates</span>
             </a>
           </template>
           <template is="dom-if" if="{{isCoder}}">
@@ -105,12 +95,12 @@
         </paper-menu>
       </div>
       <paper-header-panel main>
-        <paper-toolbar>
-            <template is="dom-if" if="{{isLoggedIn}}">
-              <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-            </template>
-            <span class="paper-font-title">{{header}}</span>
-        </paper-toolbar>
+        <template is="dom-if" if="{{isLoggedIn}}">
+          <paper-toolbar>
+                <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+              <span class="paper-font-title">{{header}}</span>
+          </paper-toolbar>
+        </template>
 
         <!-- Main Content -->
         <div class="content">
@@ -136,22 +126,12 @@
               </paper-material>
             </section>
 
-            <section data-route="fingerprints">
-                <paper-material elevation="1">
-                  <template is="dom-if" if="{{fingerprints}}">
-                    <fingerprints-page></fingerprints-page>
-                  </template>
-                </paper-material>
-            </section>
-
             <section data-route="login">
               <login-page></login-page>
             </section>
 
             <section data-route="candidate">
-              <paper-material elevation="1">
-                <invite-candidate id="inviteCandidate"></invite-candidate>
-              </paper-material>
+              <candidate-page id="inviteCandidate"></candidate-page>
             </section>
 
             <section data-route="challenges">
