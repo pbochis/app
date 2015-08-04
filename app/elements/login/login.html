@@ -1,12 +1,22 @@
 <dom-module id="login-page">
   <template>
-    <paper-material elevation="1" style="width: 35%;" class="card">
-      <template is="dom-if" if="{{invalidLogin}}">
-        <p>Invalid login</p>
-      </template>
-      <paper-input type="text" label="E-mail" value="{{email}}"></paper-input>
-      <paper-input type="password" label="Password" value="{{password}}"></paper-input>
-      <paper-button raised on-click="login" style="width: 150px;"><core-icon icon="favorite"></core-icon>Login</paper-button>
+    <paper-material elevation="1" style="width: 30%; margin: auto;">
+      <div class="colorful" style="position:relative; height: 250px;">
+        <h1 style="position: absolute; bottom: 0; left: 20px;">Sign in to Coduno</h1>
+      </div>
+      <div style="padding: 20px 20px 150px 20px;">
+        <form is="iron-form" id="form">
+          <paper-input type="text" label="E-mail" value="{{email}}"></paper-input>
+          <paper-input type="password" label="Password" value="{{password}}"></paper-input>
+          <template is="dom-if" if="{{invalidLogin}}">
+            <p style="color: red;">The provided e-mail and password do not match.</p>
+          </template>
+          <div class="horizontal layout" style="padding-top: 10px;">
+            <paper-button class="invertcolorful">Forgot password?</paper-button>
+            <paper-button class="colorful" raised on-click="login" style="position: absolute; right: 20px;">Login</paper-button>
+          </div>
+        </form>
+      </div>
     </paper-material>
 
     <iron-ajax
