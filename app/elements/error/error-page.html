@@ -31,9 +31,8 @@
                     'afterPropertiesSet(initialError)'
             ],
             afterPropertiesSet: function(){
-                console.log(this.initialError);
-                console.log('posting error here');
-                post(this.$.sendErrorAjax,'/error', {'Error': this.initialError})
+              // TODO(pbochis): Enable error posting after creating the route in the api.
+              // post(this.$.sendErrorAjax,'/error', {'Error': this.initialError})
             },
             onResponse: function(res){
                 this.ticketId = res.detail.response
