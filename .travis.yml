@@ -8,6 +8,7 @@ script: true
 
 after_success:
 - curl https://sdk.cloud.google.com | CLOUDSDK_CORE_DISABLE_PROMPTS=1 $SHELL
+- source ~/.bashrc
 - gcloud -q components install preview
 - gcloud -q components install preview app
 - gcloud -q config set project coduno
