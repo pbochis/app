@@ -68,7 +68,7 @@
       >
     </iron-ajax>
 
-    <paper-drawer-panel id="paperDrawerPanel" disable-swipe="true" force-narrow >
+    <paper-drawer-panel id="paperDrawerPanel" disable-swipe="true" force-narrow>
       <div drawer>
         <paper-toolbar id="drawerToolbar" class="header">
           <span class="paper-font-title">Coduno</span>
@@ -79,6 +79,11 @@
             <a data-route="challenges" href="/challenges">
               <iron-icon icon="assignment"></iron-icon>
               <span>Challenges</span>
+            </a>
+
+            <a data-route="tasks" href="/tasks">
+              <iron-icon icon="list"></iron-icon>
+              <span>Tasks</span>
             </a>
 
             <a data-route="candidates" href="/candidates">
@@ -96,10 +101,9 @@
       </div>
       <paper-header-panel main>
         <template is="dom-if" if="{{isLoggedIn}}">
-          <paper-toolbar>
-                <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-              <span class="paper-font-title">{{header}}</span>
-          </paper-toolbar>
+         <app-header header="{{header}}">
+           <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+         </app-header>
         </template>
 
         <!-- Main Content -->
@@ -146,6 +150,10 @@
 
             <section data-route="challenge">
               <challenge-page challenge="{{challenge}}"></challenge-page>
+            </section>
+
+            <section data-route="tasks">
+              <task-list id="taskList"></task-list>
             </section>
 
             <section data-route="unauthorized">

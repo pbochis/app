@@ -1,0 +1,106 @@
+<dom-module id="task-list">
+    <style>
+        .margined{
+            margin: 10px;
+        }
+
+        paper-dialog{
+            background-color: white;
+        }
+    </style>
+
+    <template>
+        <iron-ajax
+            id="getTasksAjax"
+            handle-as="json"
+            on-response="onResponse"
+            on-error="onError">
+        </iron-ajax>
+
+        <iron-ajax
+                id="postChallengeAjax"
+                handle-as="json"
+                on-response="onChallengeResponse"
+                on-error="onError">
+        </iron-ajax>
+        <div class="horizontal layout wrap">
+            <template is="dom-repeat" items="{{tasks}}" as="task">
+                <task-card selected-tasks="{{selectedTasks}}" task="{{task}}"></task-card>
+            </template>
+        </div>
+
+        <!--TODO(pbochis): When the console is closed, the modal looks shit.-->
+        <paper-dialog id="dialog" modal>
+            <h2>These are the challenges tou selected: </h2>
+
+            <template is="dom-repeat" items="{{selectedTasks}}" as="selectedTask">
+                <div><span>{{index}}</span> <span>{{selectedTask.Name}}</span></div>
+            </template>
+
+            <form is="iron-form" id="form">
+                <paper-input id="name" class="margined" label="Name" value="{{Name}}"></paper-input>
+                <paper-input id="description" class="margined" label="Description" value="{{Description}}"></paper-input>
+                <paper-input id="instructions" class="margined" label="Instructions" value="{{Instructions}}"></paper-input>
+                <paper-input id="duration" class="margined" label="Duration(minutes)" value="{{Duration}}"></paper-input>
+                <div style="float: right;">
+                    <paper-button dialog-dismiss class="margined">Cancel</paper-button>
+                    <paper-button dialog-confirm class="colorful margined" raised on-click="saveChallenge" >Create</paper-button>
+                </div>
+            </form>
+
+        </paper-dialog>
+    </template>
+    <script>
+        Polymer({
+            is: 'task-list',
+            properties: {
+                tasks: {
+                    type: Array,
+                    notify: true
+                },
+                selectedTasks: {
+                    type: Array,
+                    notify: true
+                },
+                Description: String,
+                Name: String,
+                Instructions: String,
+                Duration: String
+
+            },
+            createChallenge: function(){
+                console.log(this.selectedTasks);
+                this.$.dialog.toggle();
+            },
+            saveChallenge: function(){
+                var taskKeys = [];
+                for (var i = 0; i < this.selectedTasks.length; i++){
+                    taskKeys.push(this.selectedTasks[i].Key);
+                }
+                post(this.$.postChallengeAjax, '/challenges',{
+                    'Tasks': taskKeys,
+                    'Description': this.Description,
+                    'Name': this.Name,
+                    'Instructions': this.Instructions,
+                    'Duration': 6 * 1e10 * parseInt(this.Duration),
+                    'WebInterface': 'sequential-challenge'
+                } )
+            },
+            onChallengeResponse: function(res){
+               page.redirect('/challenges/' + res.detail.response.Key)
+            },
+            getTasks: function(){
+                console.log('Doing get Request: ');
+                get(this.$.getTasksAjax, '/tasks')
+            },
+            onResponse: function(res){
+                this.tasks = res.detail.response;
+                this.selectedTasks = [];
+                console.log(this.tasks)
+            },
+            onError: function(error, res){
+                handleError(error)
+            }
+        })
+    </script>
+</dom-module>

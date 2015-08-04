@@ -96,4 +96,9 @@
     app.result = result
     get(app.$.challengeRequest, "/challenges/" + localStorage.getItem("challenge"))
   }
+
+  app.createChallenge = function(){
+    app.$.taskList.createChallenge();
+  }
+
 })(document);

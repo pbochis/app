@@ -1,0 +1,60 @@
+<dom-module id="app-header">
+    <style>
+        paper-fab{
+            --paper-fab-background: #000088;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            width: 45px;
+            height: 45px;
+        }
+    </style>
+    <template>
+        <template is="dom-if" if="{{normalHeader}}">
+            <paper-toolbar>
+                <content></content>
+                <span class="paper-font-title">{{header}}</span>
+            </paper-toolbar>
+        </template>
+        <template is="dom-if" if="{{!normalHeader}}">
+            <paper-toolbar style="background-color: #0091ea">
+                <span class="paper-font-title">{{header}}</span>
+                <paper-fab icon="forward"
+                              on-click="createChallenge">ClickMe!</paper-fab>
+            </paper-toolbar>
+        </template>
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'app-header',
+            properties: {
+                header: {
+                    type: String,
+                    notify: true
+                },
+                normalHeader: {
+                    type: Boolean,
+                    notify: true,
+                    value:  true
+                }
+            },
+            observers:[
+                    'onValueChanged(header)'
+            ],
+            onValueChanged: function(header){
+                if (header.indexOf('SELECTED') != -1){
+                    this.normalHeader = false;
+                }
+                else{
+                    this.normalHeader = true;
+                }
+            },
+            createChallenge: function() {
+                app.createChallenge();
+            }
+        })
+    </script>
+</dom-module>

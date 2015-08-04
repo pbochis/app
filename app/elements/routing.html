@@ -35,6 +35,7 @@
       checkAuthorization();
       app.$.challengeDetail.challengeKey = data.params.challengeKey;
       app.route = 'challenge-detail';
+      app.header = 'Challenges';
     });
 
     page('/unauthorized', function() {
@@ -56,6 +57,14 @@
       app.route = 'candidate';
       app.$.inviteCandidate.getChallenges();
       app.header = 'Candidates';
+    });
+
+    page('/tasks', function(){
+      checkAuthorization();
+      checkIsCompany();
+      app.$.taskList.getTasks();
+      app.header = 'Tasks';
+      app.route = 'tasks';
     });
 
     page('/login', function() {
