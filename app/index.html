@@ -68,14 +68,14 @@
       >
     </iron-ajax>
 
-    <paper-drawer-panel id="paperDrawerPanel" force-narrow >
+    <paper-drawer-panel id="paperDrawerPanel" disable-swipe="true" force-narrow >
       <div drawer>
         <paper-toolbar id="drawerToolbar" class="header">
           <span class="paper-font-title">Coduno</span>
         </paper-toolbar>
 
         <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-          <template is="dom-if" if="{{isCompany()}}">
+          <template is="dom-if" if="{{isCompany}}">
             <a data-route="dashboard" href="/dashboard">
               <iron-icon icon="home"></iron-icon>
               <span>Home</span>
@@ -96,7 +96,7 @@
               <span>Invite candidate</span>
             </a>
           </template>
-          <template is="dom-if" if="{{isCoder()}}">
+          <template is="dom-if" if="{{isCoder}}">
             <a data-route="challenge" href="/challenge">
               <iron-icon icon="code"></iron-icon>
               <span>Challenge</span>
@@ -106,7 +106,7 @@
       </div>
       <paper-header-panel main>
         <paper-toolbar>
-            <template is="dom-if" if="{{isLoggedIn()}}">
+            <template is="dom-if" if="{{isLoggedIn}}">
               <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
             </template>
             <span class="paper-font-title">{{header}}</span>

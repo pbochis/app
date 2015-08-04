@@ -55,6 +55,7 @@
         localStorage.setItem("companyKey", company.Key);
         localStorage.setItem("companyName", company.Name);
         localStorage.setItem("role", "COMPANY");
+        app.refreshMenu();
         page.redirect("/dashboard");
       },
       onUserResponse: function(res){
@@ -66,8 +67,8 @@
         get(this.$.ajaxRequest, '/user/company', 'Basic ' + btoa(this.email+":"+this.password));
        },
       onCompanyError: function(error) {
-        this.invalidLogin = true;
         localStorage.setItem("role", "USER");
+        app.refreshMenu();
         page.redirect("/challenge");
       },
       onUserError: function(req){
