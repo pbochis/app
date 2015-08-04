@@ -51,9 +51,7 @@
         var company = res.detail.response;
         localStorage.setItem("companyKey", company.Key);
         localStorage.setItem("companyName", company.Name);
-        localStorage.setItem("role", "COMPANY");
-        app.refreshMenu();
-        page.redirect("/candidates");
+        app.login("COMPANY");
       },
       onUserResponse: function(res){
         var user = res.detail.response;
@@ -64,9 +62,7 @@
         get(this.$.ajaxRequest, '/user/company', 'Basic ' + btoa(this.email+":"+this.password));
        },
       onCompanyError: function(error) {
-        localStorage.setItem("role", "USER");
-        app.refreshMenu();
-        page.redirect("/challenge");
+        app.login("CODER");
       },
       onUserError: function(req){
         this.invalidLogin = true;

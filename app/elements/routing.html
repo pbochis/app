@@ -14,9 +14,8 @@
       var token = context.params.token;
       var decodedToken = atob(token).split(':');
       localStorage.setItem("authorization", 'Token ' + decodedToken[1]);
-      localStorage.setItem("role", "USER");
       app.requestData(decodedToken[0]);
-      page('/challenge')
+      app.login("CODER")
     });
 
     page('/challenge', function() {
