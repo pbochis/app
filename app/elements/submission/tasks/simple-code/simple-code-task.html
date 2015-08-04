@@ -1,4 +1,4 @@
-<dom-module id="output-match-task">
+<dom-module id="simple-code-task">
   <template>
     <iron-ajax
       id="ajaxRequest"
@@ -10,27 +10,27 @@
     </iron-ajax>
     <div class="horizontal layout">
       <div class="flex">
-        <paper-material elevation="1" >
+        <paper-material elevation="1" class="card">
           <code-editor id="codeEditor" on-response="onResponse" on-error="onError"></code-editor>
         </paper-material>
       </div>
       <div class="flex">
-        <paper-material elevation="1">
+        <paper-material elevation="1" class="card">
           <task-display task="{{task}}"></task-display>
         </paper-material>
-        <paper-material elevation="1">
+        <paper-material elevation="1" class="card">
           <div class="horizontal layout">
-            <paper-icon-button src="/codeground/images/start.png" on-click="runCode">Run code</paper-icon-button>
+            <paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
             <language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
           </div>
-          <output-test-console id="console"</output-test-console>
+          <simple-console id="console"</simple-console>
         </paper-material>
       </div>
     </div>
   </template>
   <script>
     Polymer({
-      is: 'output-match-task',
+      is: 'simple-code-task',
       properties: {
         task: {
           type: Object,
@@ -48,9 +48,9 @@
         this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag)
       },
       runCode: function(){
-        var lang = this.$.languageSelector.getSelectedLanguage()
+        var lang = this.$.languageSelector.getSelectedLanguage().tag
         this.$.codeEditor.runCode(lang, this.task.Key);
-        this.$.console.loading()
+        this.$.console.loading();
       },
       onResponse: function(r){
         this.$.console.setOutput(r.detail.response);

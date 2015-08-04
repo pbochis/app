@@ -1,5 +1,3 @@
-<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
-
 <dom-module id="sequential-challenge">
   <template>
     <template is="dom-if" if="{{showForwardArrow}}">
@@ -10,7 +8,7 @@
     </template>
     <countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}" style="position: absolute; top: 0; right: 5%;"></countdown-timer>
     <div id="content">
-      <paper-material elevation="1" style="width:35%;">
+      <paper-material elevation="1" style="width:35%;" class="card">
         <div class="flex">
           <challenge-display challenge="{{challenge}}"></challenge-display>
           <paper-button raised on-click="startChallenge">Go</paper-button>
