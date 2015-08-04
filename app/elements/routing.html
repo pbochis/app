@@ -1,7 +1,14 @@
 <script src="../bower_components/page/page.js"></script>
 <script>
   window.addEventListener('WebComponentsReady', function() {
-    page('/', '/login');
+    page('/', function(){
+      checkAuthorization();
+      if(localStorage.getItem("role")==="COMPANY"){
+        page('/dashboard');
+      }else{
+        page('/challenges')
+      }
+    });
 
     page('/token/:token', function(context) {
       var token = context.params.token;
@@ -19,13 +26,13 @@
     });
 
     page('/challenges', function () {
-      checkLoggedIn();
+      checkAuthorization();
       app.$.challengeList.getChallenges();
       app.route = 'challenges';
     });
 
     page('/challenges/:challengeKey', function(data){
-      checkLoggedIn();
+      checkAuthorization();
       app.$.challengeDetail.challengeKey = data.params.challengeKey;
       app.route = 'challenge-detail';
     });
