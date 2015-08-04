@@ -8,9 +8,8 @@ script: true
 
 after_success:
 - curl https://sdk.cloud.google.com | CLOUDSDK_CORE_DISABLE_PROMPTS=1 $SHELL
-- source ~/.bashrc
-- gcloud -q components install preview
-- gcloud -q components install preview app
-- gcloud -q config set project coduno
-- gcloud -q auth activate-service-account --key-file service-account.json
-- gcloud -q preview app deploy app.yaml --version=$TRAVIS_BRANCH --set-default
+- ~/google-cloud-sdk/bin/gcloud -q components update preview
+- ~/google-cloud-sdk/bin/gcloud -q components update preview app
+- ~/google-cloud-sdk/bin/gcloud -q config set project coduno
+- ~/google-cloud-sdk/bin/gcloud -q auth activate-service-account --key-file service-account.json
+- ~/google-cloud-sdk/bin/gcloud -q preview app deploy app.yaml --set-default
