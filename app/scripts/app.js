@@ -10,8 +10,26 @@
     challenge: {
       type: Object,
       notify: true
+    },
+    isCompany: {
+      type: Boolean,
+      notify: true
+    },
+    isCoder: {
+      type: Boolean,
+      notify: true
+    },
+    isLoggedIn: {
+      type: Boolean,
+      notify: true
     }
   };
+
+  app.refreshMenu = function(){
+    app.isCompany = localStorage.getItem("role") == "COMPANY";
+    app.isCoder = localStorage.getItem("role") == "USER";
+    app.isLoggedIn = localStorage.getItem("authorization") != "" && localStorage.getItem("authorization") != undefined;
+  }
 
   app.displayInstalledToast = function() {
     console.log('Caching complete.');
@@ -20,6 +38,7 @@
   // Listen for template bound event to know when bindings
   // have resolved and content has been stamped to the page
   app.addEventListener('dom-change', function() {
+    app.refreshMenu();
     var challengeKey = localStorage.getItem("challenge");
     if (challengeKey != "" && challengeKey != undefined) {
       app.requestData(challengeKey)
@@ -49,7 +68,7 @@
   app.onChallengeResponse = function(r){
     var challenge = r.detail.response;
     app.challenge = challenge;
-    
+
     if(challenge.Tasks.indexOf(localStorage.getItem("currentTask"))==-1){
       localStorage.removeItem("currentTask");
       localStorage.removeItem("timer");
@@ -61,17 +80,5 @@
     localStorage.setItem("result", result.Key);
     app.result = result
     get(app.$.challengeRequest, "/challenges/" + localStorage.getItem("challenge"))
-  }
-
-  app.isCompany = function(){
-    return localStorage.getItem("role") == "COMPANY";
-  }
-
-  app.isCoder = function(){
-    return localStorage.getItem("role") == "CODER";
-  }
-
-  app.isLoggedIn = function(){
-    return localStorage.getItem("authorization") != "" && localStorage.getItem("authorization") != undefined;
   }
 })(document);
