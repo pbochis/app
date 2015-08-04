@@ -1,9 +1,6 @@
-<link rel="import" href="../../bower_components/paper-input/all-imports.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-
 <dom-module id="login-page">
   <template>
-    <paper-material elevation="1" style="width: 35%;">
+    <paper-material elevation="1" style="width: 35%;" class="card">
       <template is="dom-if" if="{{invalidLogin}}">
         <p>Invalid login</p>
       </template>
@@ -56,7 +53,7 @@
         localStorage.setItem("companyName", company.Name);
         localStorage.setItem("role", "COMPANY");
         app.refreshMenu();
-        page.redirect("/dashboard");
+        page.redirect("/candidates");
       },
       onUserResponse: function(res){
         var user = res.detail.response;
