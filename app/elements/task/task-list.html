@@ -69,7 +69,6 @@
 
             },
             createChallenge: function(){
-                console.log(this.selectedTasks);
                 this.$.dialog.toggle();
             },
             saveChallenge: function(){
@@ -83,7 +82,7 @@
                     'Name': this.Name,
                     'Instructions': this.Instructions,
                     'Duration': 6 * 1e10 * parseInt(this.Duration),
-                    'WebInterface': 'sequential-challenge'
+                    'Endpoints': {'WebInterface': 'sequential-challenge'}
                 } )
             },
             onChallengeResponse: function(res){
