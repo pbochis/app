@@ -1,19 +1,49 @@
 <dom-module id="login-page">
+  <style>
+  paper-material{
+    width: 30%;
+    margin: auto;
+  }
+  #topPart{
+    position:relative;
+    height: 250px;
+    background: #424b4b;
+    color: #ffffff;
+  }
+
+  #topPart>h1{
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+  }
+  #bottomPart{
+    padding: 20px 20px 150px 20px;
+  }
+
+  #buttons{
+    padding-top: 10px;
+  }
+
+  #loginButton{
+    position: absolute;
+    right: 20px;
+  }
+  </style>
   <template>
-    <paper-material elevation="1" style="width: 30%; margin: auto;">
-      <div class="colorful" style="position:relative; height: 250px;">
-        <h1 style="position: absolute; bottom: 0; left: 20px;">Sign in to Coduno</h1>
+    <paper-material elevation="1">
+      <div id="topPart">
+        <h1>Sign in to Coduno</h1>
       </div>
-      <div style="padding: 20px 20px 150px 20px;">
+      <div id="bottomPart">
         <form is="iron-form" id="form">
           <paper-input type="text" label="E-mail" value="{{email}}"></paper-input>
           <paper-input type="password" label="Password" value="{{password}}"></paper-input>
           <template is="dom-if" if="{{invalidLogin}}">
             <p style="color: red;">The provided e-mail and password do not match.</p>
           </template>
-          <div class="horizontal layout" style="padding-top: 10px;">
-            <paper-button class="invertcolorful">Forgot password?</paper-button>
-            <paper-button class="colorful" raised on-click="login" style="position: absolute; right: 20px;">Login</paper-button>
+          <div id="buttons" class="horizontal layout">
+            <paper-button class="secondary">Forgot password?</paper-button>
+            <paper-button id="loginButton" class="primary" raised on-click="login">Login</paper-button>
           </div>
         </form>
       </div>
