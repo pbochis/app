@@ -4,7 +4,7 @@
       position: absolute;
       right: 2%;
       bottom: 5%;
-      --paper-fab-background: red;
+      /*--paper-fab-background: red;*/
     }
 
     .margined{
@@ -37,8 +37,8 @@
           </template>
         </select>
         <div style="float: right;">
-          <paper-button dialog-dismiss class="margined">Cancel</paper-button>
-          <paper-button class="colorful margined" raised on-click="inviteCandidate" dialog-confirm>Invite</paper-button>
+          <paper-button class="primary margined" dialog-dismiss>Cancel</paper-button>
+          <paper-button class="primary margined" raised on-click="inviteCandidate" dialog-confirm>Invite</paper-button>
         </div>
       </form>
     </paper-dialog>
