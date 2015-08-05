@@ -1,0 +1,56 @@
+<dom-module id="skill-list">
+    <template>
+        <div class="horizontal layout">
+            <template is="dom-repeat" items="{{skills}}">
+                <task-skill skill="{{item}}">
+                </task-skill>
+            </template>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'skill-list',
+            properties: {
+                skillWeights: {
+                    type: Object,
+                    notify: true
+                },
+                skillIconMap: {
+                    type: Object,
+                    value: {
+                        // TODO(pbochis, vbalan, flowlo): When discussing things on friday define the skills we will have
+                        // together with appropriate icons for displaying in the client-side.
+                        'Algorithmics': 'settings-applications',
+                        'Security': 'https',
+                        'Readability': 'thumb-up'
+                    }
+                },
+                skills: {
+                    type: Array,
+                    notify: true
+                }
+            },
+            observers: [
+                    'afterPropertiesSet(skillWeights)'
+            ],
+            afterPropertiesSet: function(skillWeights){
+                this.skills = []
+                for (var skill in this.skillIconMap){
+                    if (this.skillIconMap.hasOwnProperty(skill) && this.skillWeights[skill] > 0){
+                        this.push('skills',{
+                            'skillIcon': this.skillIconMap[skill],
+                            'skillColor': this.computeColor(this.skillWeights[skill]),
+                            'skillValue': this.computeValue(this.skillWeights[skill])})
+                    }
+                }
+            },
+            computeColor: function(value){
+                var val = Math.floor(255 - value * 255);
+                return 'rgb(' + val + ','+ val + ',' + val + ')';
+            },
+            computeValue: function(value){
+                return (value * 100).toString() + '%'
+            }
+        })
+    </script>
+</dom-module>

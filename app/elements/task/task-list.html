@@ -89,13 +89,11 @@
                page.redirect('/challenges/' + res.detail.response.Key)
             },
             getTasks: function(){
-                console.log('Doing get Request: ');
                 get(this.$.getTasksAjax, '/tasks')
             },
             onResponse: function(res){
                 this.tasks = res.detail.response;
                 this.selectedTasks = [];
-                console.log(this.tasks)
             },
             onError: function(error, res){
                 handleError(error)

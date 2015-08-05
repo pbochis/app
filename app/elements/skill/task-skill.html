@@ -1,0 +1,30 @@
+<dom-module id="task-skill">
+    <style>
+        :host{
+            margin: 5px;
+        }
+    </style>
+    <template>
+        <iron-icon id="skillIcon" icon="{{skill.skillIcon}}"></iron-icon>
+        <div id="skillValue"><span>{{skill.skillValue}}</span></div>
+    </template>
+    <script>
+        Polymer({
+            is: 'task-skill',
+            properties: {
+                skill: {
+                    type: Object,
+                    notify: true,
+                    reflectToAttribute: true
+                }
+            },
+            observers: [
+                    'afterPropertiesSet(skill)'
+            ],
+            afterPropertiesSet: function(){
+                this.$.skillIcon.style.color = this.skill.skillColor;
+                this.$.skillValue.style.color = this.skill.skillColor;
+            }
+        })
+    </script>
+</dom-module>
