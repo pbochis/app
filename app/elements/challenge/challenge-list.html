@@ -15,7 +15,6 @@
         </iron-ajax>
         <h1 id="error" class="error"></h1>
         <h1> Existing challenges: </h1>
-
         <ul>
             <template is="dom-repeat" items="{{challenges}}" as="challenge">
                 <li class="link" on-click="challengeInfo">
@@ -36,7 +35,7 @@
                 }
             },
             getChallenges: function(){
-                get(this.$.getChallengesAjax, '/companies/' + localStorage.getItem("companyKey") + '/challenges');
+                get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
             },
             onResponse: function(req){
                 this.challenges = req.detail.response;
