@@ -2,51 +2,44 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <dom-module id="challenge-list">
-    <style>
-
-    </style>
-
-    <template>
-        <iron-ajax
-                id="getChallengesAjax"
-                handle-as="json"
-                on-response="onResponse"
-                on-error="onError">
-        </iron-ajax>
-        <h1 id="error" class="error"></h1>
-        <h1> Existing challenges: </h1>
-        <ul>
-            <template is="dom-repeat" items="{{challenges}}" as="challenge">
-                <li class="link" on-click="challengeInfo">
-                    <span>{{challenge.Name}}</span>
-                </li>
-            </template>
-        </ul>
-
-    </template>
-
-    <script>
-        Polymer({
-            is: 'challenge-list',
-            properties: {
-                challenges: {
-                    type: Array,
-                    notify: true
-                }
-            },
-            getChallenges: function(){
-                get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
-            },
-            onResponse: function(req){
-                this.challenges = req.detail.response;
-            },
-            onError: function(error){
-                handleError(error)
-            },
-            challengeInfo: function(e){
-                console.log(e.model.challenge);
-                page.redirect('/challenges/' + e.model.challenge.Key);
-            }
-        })
-    </script>
+	<template>
+		<iron-ajax
+			id="getChallengesAjax"
+			handle-as="json"
+			on-response="onResponse"
+			on-error="onError">
+		</iron-ajax>
+		<template is="dom-if" if="{{isEmpty}}">
+			<h1> You curently don't have any challenges. You can create a challenge from the tasks page</h1>
+		</template>
+		<div class="horizontal layout wrap">
+			<template is="dom-repeat" items="{{challenges}}" as="challenge">
+				<challenge-card challenge="{{challenge}}"></challenge-card>
+			</template>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-list',
+			properties: {
+				challenges: {
+					type: Array,
+					notify: true
+				}
+			},
+			getChallenges: function () {
+				get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
+			},
+			onResponse: function (req) {
+				this.challenges = req.detail.response;
+			},
+			onError: function (error) {
+				handleError(error)
+			},
+			challengeInfo: function (e) {
+				console.log(e.model.challenge);
+				page.redirect('/challenges/' + e.model.challenge.Key);
+			}
+		})
+	</script>
 </dom-module>

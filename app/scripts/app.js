@@ -1,4 +1,4 @@
-(function(document) {
+(function (document) {
 	'use strict';
 
 	// Grab a reference to our auto-binding template
@@ -25,7 +25,7 @@
 		}
 	};
 
-	app.login = function() {
+	app.login = function () {
 		app.refreshMenu();
 		if (!localStorage.accessToken) {
 			return page.redirect("/unauthorized");
@@ -34,28 +34,28 @@
 			return page.redirect("/candidates");
 		}
 		page.redirect("/challenge");
-	}
+	};
 
-	app.logout = function(){
+	app.logout = function () {
 		delete localStorage.clear();
 		app.refreshMenu();
 		app.$.paperDrawerPanel.closeDrawer();
 		page.redirect('/login');
 	}
 
-	app.refreshMenu = function(){
+	app.refreshMenu = function () {
 		app.isCompany = !!localStorage.company;
 		app.isCoder = !app.isCompany;
 		app.isLoggedIn = localStorage.accessToken;
 	}
 
-	app.displayInstalledToast = function() {
+	app.displayInstalledToast = function () {
 		console.log('Caching complete.');
 	};
 
 	// Listen for template bound event to know when bindings
 	// have resolved and content has been stamped to the page
-	app.addEventListener('dom-change', function() {
+	app.addEventListener('dom-change', function () {
 		app.refreshMenu();
 		var challengeKey = localStorage.getItem("challenge");
 		if (challengeKey != "" && challengeKey != undefined) {
@@ -64,43 +64,43 @@
 	});
 
 	// See https://github.com/Polymer/polymer/issues/1381
-	window.addEventListener('WebComponentsReady', function() {
+	window.addEventListener('WebComponentsReady', function () {
 		// imports are loaded and elements have been registered
 	});
 
 	// Close drawer after menu item is selected if drawerPanel is narrow
-	app.onMenuSelect = function() {
+	app.onMenuSelect = function () {
 		var drawerPanel = document.querySelector('#paperDrawerPanel');
 		if (drawerPanel.narrow) {
 			drawerPanel.closeDrawer();
 		}
 	};
 
-	app.requestData = function(challengeKey){
-		if (challengeKey!="" && challengeKey!= undefined) {
+	app.requestData = function (challengeKey) {
+		if (challengeKey != "" && challengeKey != undefined) {
 			localStorage.setItem("challenge", challengeKey);
 			post(app.$.resultRequest, "/results", {'ChallengeKey': challengeKey})
 		}
 	}
 
-	app.onChallengeResponse = function(r){
+	app.onChallengeResponse = function (r) {
 		var challenge = r.detail.response;
 		app.challenge = challenge;
 
-		if(challenge.Tasks.indexOf(localStorage.getItem("currentTask"))==-1){
+		if (challenge.Tasks.indexOf(localStorage.getItem("currentTask")) == -1) {
 			localStorage.removeItem("currentTask");
 			localStorage.removeItem("timer");
 		}
 	}
 
-	app.onResultResponse = function(r){
+	app.onResultResponse = function (r) {
 		var result = r.detail.response
 		localStorage.setItem("result", result.Key);
 		app.result = result
 		get(app.$.challengeRequest, "/challenges/" + localStorage.getItem("challenge"))
 	}
 
-	app.createChallenge = function(){
+	app.createChallenge = function () {
 		app.$.taskList.createChallenge();
 	}
 

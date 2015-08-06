@@ -1,0 +1,69 @@
+<dom-module id="challenge-modal">
+	<template>
+		<iron-ajax
+			id="postChallengeAjax"
+			handle-as="json"
+			on-response="onChallengeResponse"
+			on-error="onError">
+		</iron-ajax>
+
+		<paper-dialog id="dialog" modal>
+			<h2>These are the challenges tou selected: </h2>
+
+			<template is="dom-repeat" items="{{selectedTasks}}" as="selectedTask">
+				<div><span>{{index}}</span> <span>{{selectedTask.Name}}</span></div>
+			</template>
+
+			<form is="iron-form" id="form">
+				<paper-input id="name" class="margined" label="Name" value="{{Name}}"></paper-input>
+				<paper-input id="description" class="margined" label="Description"
+										 value="{{Description}}"></paper-input>
+				<paper-input id="instructions" class="margined" label="Instructions"
+										 value="{{Instructions}}"></paper-input>
+				<paper-input id="duration" class="margined" label="Duration(minutes)"
+										 value="{{Duration}}"></paper-input>
+				<div style="float: right;">
+					<paper-button dialog-dismiss class="margined">Cancel</paper-button>
+					<paper-button dialog-confirm class="colorful margined" raised on-click="saveChallenge">Create
+					</paper-button>
+				</div>
+			</form>
+		</paper-dialog>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-modal',
+			properties: {
+				selectedTasks: {
+					type: Array,
+					notify: true
+				},
+				Description: String,
+				Name: String,
+				Instructions: String,
+				Duration: String
+			},
+			toggle: function () {
+				this.$.dialog.toggle();
+			},
+			saveChallenge: function () {
+				var taskKeys = [];
+				for (var i = 0; i < this.selectedTasks.length; i++) {
+					taskKeys.push(this.selectedTasks[i].Key);
+				}
+				post(this.$.postChallengeAjax, '/challenges', {
+					'Tasks': taskKeys,
+					'Description': this.Description,
+					'Name': this.Name,
+					'Instructions': this.Instructions,
+					'Duration': 6 * 1e10 * parseInt(this.Duration),
+					'Endpoints': {'WebInterface': 'sequential-challenge'}
+				})
+			},
+			onChallengeResponse: function (res) {
+				this.fire('challengeCreated');
+				page.redirect('/challenges/' + res.detail.response.Key)
+			}
+		})
+	</script>
+</dom-module>

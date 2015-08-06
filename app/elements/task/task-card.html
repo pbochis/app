@@ -1,102 +1,117 @@
 <dom-module id="task-card">
-    <style>
-        :host {
-            width: 400px;
-            height: 300px;
-            margin: 5px;
+	<style>
+		:host {
+			width: 400px;
+			height: 300px;
+			margin: 5px;
 
-        }
+		}
 
-        paper-material{
-            width: calc(98.66% - 32px);
-            height: calc(98.66% - 32px);
-            overflow: hidden;
-        }
+		paper-material {
+			width: calc(98.66% - 32px);
+			height: calc(98.66% - 32px);
+			overflow: hidden;
+		}
 
-        paper-material h2, div {
-            margin: 7px;
-        }
+		paper-material h2, div {
+			margin: 7px;
+		}
 
-        .taskDuration iron-icon{
-            height: 16px;
-            width: 16px;
-        }
+		.taskDuration iron-icon {
+			height: 16px;
+			width: 16px;
+		}
 
-        paper-fab {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            height: 30px;
-            width: 30px;
-            --paper-fab-background: #DFDFDF
-        }
-    </style>
-    <template>
-        <paper-material id="task" elevation="2" class="card">
-            <h2>{{task.Name}}</h2>
-            <paper-fab mini icon="add" on-click="toggleSelectTask"></paper-fab>
-            <div class="taskDuration">
-                <iron-icon icon="alarm"></iron-icon>
-                <span>{{duration}}</span>
-            </div>
-            <skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
-            <div>{{task.Description}}</div>
-        </paper-material>
-    </template>
-    <script>
-        Polymer({
-            is: 'task-card',
-            properties: {
-                task: {
-                    type: Object,
-                    notify: true
-                },
-                duration: {
-                    type: String,
-                    computed: 'computeDuration(task)'
-                },
-                selectedTasks: {
-                    type: Array,
-                    notify: true,
-                    reflectToAttribute: true
-                }
-            },
-            computeDuration: function(task){
-                var seconds = task.Duration / 1e9;
-                var minutes = Math.floor(seconds / 60);
-                var hours = Math.floor(minutes / 60);
-                var days = Math.floor(hours / 24);
-                var months = Math.floor(days / 30);
-                if (months >= 1){
-                    return months + ' months';
-                }
-                if (days >= 2){
-                    return days + ' days';
-                }
-                if (hours >= 5){
-                    return hours + ' hours';
-                }
-                return minutes + ' minutes';
-            },
-            getColor: function(value){
-                var x = 255 - value * 255;
-            },
-            toggleSelectTask: function(){
-                var index = this.selectedTasks.indexOf(this.task);
-                if (index != -1){
-                    this.$.task.style.backgroundColor = 'rgb(255,255,255)';
-                    this.splice('selectedTasks', index, 1)
-                }else{
-                    this.$.task.style.backgroundColor = 'rgb(200,200,200)';
-                    this.push('selectedTasks', this.task)
-                }
-                if (this.selectedTasks.length > 0){
-                    app.header = this.selectedTasks.length + ' SELECTED';
-                }
-                else{
-                    app.header = 'Tasks'
-                }
-            }
-        })
-    </script>
+		paper-fab {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			height: 30px;
+			width: 30px;
+			--paper-fab-background: #DFDFDF
+		}
+	</style>
+	<template>
+		<paper-material
+			id="task"
+			elevation="2"
+			class="card"
+			on-mouseover="onHovered"
+			on-mouseout="onUnhovered">
+			<h2>{{task.Name}}</h2>
+			<template is="dom-if" if="{{showButton}}">
+				<paper-fab mini icon="add" on-click="toggleSelectTask"></paper-fab>
+			</template>
+			<div class="taskDuration">
+				<iron-icon icon="alarm"></iron-icon>
+				<span>{{duration}}</span>
+			</div>
+			<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
+			<div>{{task.Description}}</div>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			is: 'task-card',
+			properties: {
+				task: {
+					type: Object,
+					notify: true
+				},
+				duration: {
+					type: String,
+					computed: 'computeDuration(task)'
+				},
+				selectedTasks: {
+					type: Array,
+					notify: true,
+					observer: '_selectedTasksCleared'
+				},
+				showButton: {
+					type: Boolean,
+					notify: true
+				},
+				showAllButtons: {
+					type: Boolean,
+					notify: true,
+					observer: '_globalValueChanged'
+				}
+			},
+			onHovered: function (e) {
+				this.showButton = true;
+			},
+			onUnhovered: function (e) {
+				this.showButton = this.showAllButtons || false;
+			},
+			computeDuration: function (task) {
+				return computeDuration(task.Duration);
+			},
+			toggleSelectTask: function () {
+				var index = this.selectedTasks.indexOf(this.task);
+				if (index != -1) {
+					this.$.task.style.border = '';
+					this.splice('selectedTasks', index, 1);
+				} else {
+					this.$.task.style.border = 'solid #000000';
+					this.push('selectedTasks', this.task)
+				}
+				if (this.selectedTasks.length > 0) {
+					this.showAllButtons = true;
+					app.header = this.selectedTasks.length + ' SELECTED';
+				}
+				else {
+					this.showAllButtons = false;
+					app.header = 'Tasks'
+				}
+			},
+			_selectedTasksCleared: function (newValue, oldValue) {
+				if (newValue.indexOf(this.task) == -1) {
+					this.$.task.style.border = '';
+				}
+			},
+			_globalValueChanged: function (newValue, oldValue) {
+				this.showButton = newValue
+			}
+		})
+	</script>
 </dom-module>

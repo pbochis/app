@@ -1,88 +1,94 @@
 <dom-module id="candidate-page">
-  <style>
-    #createActionButton{
-      position: absolute;
-      right: 2%;
-      bottom: 5%;
-      /*--paper-fab-background: red;*/
-    }
+	<style>
+		#createActionButton {
+			position: fixed;
+			right: 2%;
+			bottom: 5%;
+			/*--paper-fab-background: red;*/
+		}
 
-    .margined{
-      margin: 10px;
-    }
-  </style>
-  <template>
-    <iron-ajax
-      id="getChallengesAjax"
-      handle-as="json"
-      on-response="onGetChallengesResponse"
-      on-error="onError">
-    </iron-ajax>
+		.margined {
+			margin: 10px;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getChallengesAjax"
+			handle-as="json"
+			on-response="onGetChallengesResponse"
+			on-error="onError">
+		</iron-ajax>
 
-    <iron-ajax
-      id="inviteCandidate"
-      handle-as="json"
-      on-response="onPostResponse"
-      on-error="onError">
-    </iron-ajax>
-    <paper-fab id="createActionButton" on-click="toggleDialog" icon="create"></paper-fab>
-    <paper-dialog id="dialog" modal style="background: white;">
-      <h2>Invite candidate</h2>
-      <p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
-      <form is="iron-form" id="form">
-        <paper-input id="address" class="margined" label="Address" value="{{Address}}"></paper-input>
-        <select id="challenges" class="margined">
-          <template is="dom-repeat" items="{{challenges}}">
-            <option value="{{item.Key}}">{{item.Name}}</option>
-          </template>
-        </select>
-        <div style="float: right;">
-          <paper-button class="primary margined" dialog-dismiss>Cancel</paper-button>
-          <paper-button class="primary margined" raised on-click="inviteCandidate" dialog-confirm>Invite</paper-button>
-        </div>
-      </form>
-    </paper-dialog>
-    <candidate-list id="candidateList"></candidate-list>
-  </template>
+		<iron-ajax
+			id="inviteCandidate"
+			handle-as="json"
+			on-response="onPostResponse"
+			on-error="onError">
+		</iron-ajax>
+		<paper-fab id="createActionButton" on-click="toggleDialog" icon="create"></paper-fab>
+		<paper-dialog id="dialog" modal style="background: white;">
+			<h2>Invite candidate</h2>
 
-  <script>
-    Polymer({
-      is: 'candidate-page',
-      properties: {
-        Address: String,
-        challenges: {
-          type: Array,
-          notify: true
-        }
-      },
-      getChallenges: function(){
-        get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
-      },
-      getCandidates: function(){
-        this.$.candidateList.getCandidates();
-      },
-      inviteCandidate: function(){
-        post(this.$.inviteCandidate, '/invitations', {'Address': this.Address, 'Challenge': this.getSelectedChallenge()})
-      },
-      onGetChallengesResponse: function(res) {
-        this.challenges = res.detail.response
-      },
-      onPostResponse: function(res){
-        // TODO(victorbalan, pbochis, flowlo): Refresh challenges
-        // page.redirect('/challenges/' + this.getSelectedChallenge());
-      },
-      onError: function(error){
-          handleError(error);
-      },
-      submitForm: function(){
-        this.$.form.submit();
-      },
-      getSelectedChallenge: function(){
-        return this.$.challenges.options[this.$.challenges.selectedIndex].value;
-      },
-      toggleDialog: function(){
-        this.$.dialog.toggle();
-      }
-    })
-  </script>
+			<p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
+
+			<form is="iron-form" id="form">
+				<paper-input id="address" class="margined" label="Address" value="{{Address}}"></paper-input>
+				<select id="challenges" class="margined">
+					<template is="dom-repeat" items="{{challenges}}">
+						<option value="{{item.Key}}">{{item.Name}}</option>
+					</template>
+				</select>
+
+				<div style="float: right;">
+					<paper-button class="primary margined" dialog-dismiss>Cancel</paper-button>
+					<paper-button class="primary margined" raised on-click="inviteCandidate" dialog-confirm>Invite
+					</paper-button>
+				</div>
+			</form>
+		</paper-dialog>
+		<candidate-list id="candidateList"></candidate-list>
+	</template>
+	<script>
+		Polymer({
+			is: 'candidate-page',
+			properties: {
+				Address: String,
+				challenges: {
+					type: Array,
+					notify: true
+				}
+			},
+			getChallenges: function () {
+				get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
+			},
+			getCandidates: function () {
+				this.$.candidateList.getCandidates();
+			},
+			inviteCandidate: function () {
+				post(this.$.inviteCandidate, '/invitations', {
+					'Address': this.Address,
+					'Challenge': this.getSelectedChallenge()
+				})
+			},
+			onGetChallengesResponse: function (res) {
+				this.challenges = res.detail.response
+			},
+			onPostResponse: function (res) {
+				// TODO(victorbalan, pbochis, flowlo): Refresh challenges
+				// page.redirect('/challenges/' + this.getSelectedChallenge());
+			},
+			onError: function (error) {
+				handleError(error);
+			},
+			submitForm: function () {
+				this.$.form.submit();
+			},
+			getSelectedChallenge: function () {
+				return this.$.challenges.options[this.$.challenges.selectedIndex].value;
+			},
+			toggleDialog: function () {
+				this.$.dialog.toggle();
+			}
+		})
+	</script>
 </dom-module>

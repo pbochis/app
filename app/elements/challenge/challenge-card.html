@@ -1,0 +1,68 @@
+<dom-module id="challenge-card">
+	<style>
+		:host {
+			width: 400px;
+			height: 300px;
+			margin: 5px;
+
+		}
+
+		paper-material {
+			width: calc(98.66% - 32px);
+			height: calc(98.66% - 32px);
+			overflow: hidden;
+		}
+
+		paper-material h2, div {
+			margin: 7px;
+		}
+
+		.taskDuration iron-icon {
+			height: 16px;
+			width: 16px;
+		}
+
+		paper-fab {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			height: 30px;
+			width: 30px;
+		}
+
+		.duration iron-icon {
+			height: 16px;
+			width: 16px;
+		}
+	</style>
+	<template>
+		<paper-material id="challenge" elevation="2" class="card">
+			<h2>{{challenge.Name}}</h2>
+			<paper-fab mini icon="chevron-right" on-click="toggleSelectTask"></paper-fab>
+			<div class="duration">
+				<iron-icon icon="alarm"></iron-icon>
+				<span>{{duration}}</span>
+			</div>
+			<div>{{challenge.Description}}</div>
+			<div>{{challenge.Instructions}}</div>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-card',
+			properties: {
+				challenge: {
+					type: Object,
+					notify: true
+				},
+				duration: {
+					type: String,
+					computed: 'computeDuration(challenge)'
+				}
+			},
+			computeDuration: function (challenge) {
+				return computeDuration(challenge.Duration);
+			}
+		})
+	</script>
+</dom-module>
