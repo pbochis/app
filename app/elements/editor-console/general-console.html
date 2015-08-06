@@ -1,65 +1,65 @@
 <dom-module id="general-console">
-  <style>
-    #consoleContainer{
-      height: 20%;
-    }
+	<style>
+		#consoleContainer{
+			height: 20%;
+		}
 
-    #consoleOutput{
-      border: none;
-      position: relative;
-      width: 100%;
-      height: 80%;
-      max-height: 80%;
-      left: 0;
-      right: 0;
-    }
+		#consoleOutput{
+			border: none;
+			position: relative;
+			width: 100%;
+			height: 80%;
+			max-height: 80%;
+			left: 0;
+			right: 0;
+		}
 
-    p{
-      font-family: "Lucida Console", Monaco, monospace;
-    }
-  </style>
+		p{
+			font-family: "Lucida Console", Monaco, monospace;
+		}
+	</style>
 
-  <template>
-    <div id="consoleContainer">
-      <iron-pages id="consoleOutput" selected="{{selected}}">
-        <div>
-          <p id="firstTab">{{text}}</p>
-        </div>
-        <div>
-          <content></content>
-        </div>
-      </iron-pages>
-    </div>
+	<template>
+		<div id="consoleContainer">
+			<iron-pages id="consoleOutput" selected="{{selected}}">
+				<div>
+					<p id="firstTab">{{text}}</p>
+				</div>
+				<div>
+					<content></content>
+				</div>
+			</iron-pages>
+		</div>
 
-  </template>
-  <script>
-    Polymer({
-      is: 'general-console',
-      properties:{
-        selected:{
-          type: Number,
-          notify: true
-        },
-        text:{
-          type: String,
-          notify: true
-        }
-      },
-      ready: function(){
-        this.selected = 0;
-        this.text = "Console output.";
-      },
-      loading: function(){
-        this.selected = 0;
-        this.text = "Loading...";
-      },
-      error: function(err){
-        this.selected = 0;
-        this.text = err!=undefined && err!="" ? err : "Something bad happened. Please try again later."
-      },
-      showConsole: function(){
-        this.selected = 1;
-      }
-    });
-  </script>
+	</template>
+	<script>
+		Polymer({
+			is: 'general-console',
+			properties:{
+				selected:{
+					type: Number,
+					notify: true
+				},
+				text:{
+					type: String,
+					notify: true
+				}
+			},
+			ready: function(){
+				this.selected = 0;
+				this.text = "Console output.";
+			},
+			loading: function(){
+				this.selected = 0;
+				this.text = "Loading...";
+			},
+			error: function(err){
+				this.selected = 0;
+				this.text = err!=undefined && err!="" ? err : "Something bad happened. Please try again later."
+			},
+			showConsole: function(){
+				this.selected = 1;
+			}
+		});
+	</script>
 </dom-module>

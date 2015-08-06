@@ -36,6 +36,13 @@
 		page.redirect("/challenge");
 	}
 
+	app.logout = function(){
+		delete localStorage.clear();
+		app.refreshMenu();
+		app.$.paperDrawerPanel.closeDrawer();
+		page.redirect('/login');
+	}
+
 	app.refreshMenu = function(){
 		app.isCompany = !!localStorage.company;
 		app.isCoder = !app.isCompany;
