@@ -40,6 +40,15 @@
     }
   }
 
+  app.logout = function(){
+    localStorage.removeItem("authorization");
+    localStorage.removeItem("role");
+    localStorage.removeItem("currentTask");
+    app.refreshMenu();
+    app.$.paperDrawerPanel.closeDrawer();
+    page.redirect("/login");
+  }
+
   app.refreshMenu = function(){
     app.isCompany = localStorage.getItem("role") == "COMPANY";
     app.isCoder = localStorage.getItem("role") == "CODER";

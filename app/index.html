@@ -1,189 +1,195 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="generator" content="Coduno" />
-  <title>Coduno</title>
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<meta charset="utf-8">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="generator" content="Coduno" />
+	<title>Coduno</title>
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-  <!-- Chrome for Android theme color -->
-  <!-- TODO(flowlo): Replace this with a color that suits Coduno. -->
-  <meta name="theme-color" content="#303F9F">
+	<!-- Chrome for Android theme color -->
+	<!-- TODO(flowlo): Replace this with a color that suits Coduno. -->
+	<meta name="theme-color" content="#303F9F">
 
-  <!-- Web Application Manifest -->
-  <link rel="manifest" href="manifest.json">
+	<!-- Web Application Manifest -->
+	<link rel="manifest" href="manifest.json">
 
-  <!-- Tile color for Win8 -->
-  <meta name="msapplication-TileColor" content="#3372DF">
+	<!-- Tile color for Win8 -->
+	<meta name="msapplication-TileColor" content="#3372DF">
 
-  <!-- Add to homescreen for Chrome on Android -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Coduno">
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="application-name" content="Coduno">
 
-  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+	<link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
 
-  <!-- Add to homescreen for Safari on iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Coduno Coding Ground">
-  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Coduno Coding Ground">
+	<link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
 
-  <!-- Tile icon for Win8 (144x144) -->
-  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+	<!-- Tile icon for Win8 (144x144) -->
+	<meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <!-- endbuild -->
+	<!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
+	<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+	<!-- endbuild -->
 
-  <link rel="import" href="elements/elements.html">
-  <link rel="stylesheet" href="styles/classical.css">
-  <link rel="import" href="styles/classical.html">
-  <link rel="stylesheet" href="styles/main.css">
+	<link rel="import" href="elements/elements.html">
+	<link rel="stylesheet" href="styles/classical.css">
+	<link rel="import" href="styles/classical.html">
+	<link rel="stylesheet" href="styles/main.css">
 </head>
 
 <body unresolved class="fullbleed layout vertical">
-  <span id="browser-sync-binding"></span>
-  <template is="dom-bind" id="app">
-    <iron-ajax
-      id="resultRequest"
-      method = "POST"
-      handle-as="json"
-      on-response="onResultResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
+	<span id="browser-sync-binding"></span>
+	<template is="dom-bind" id="app">
+		<iron-ajax
+			id="resultRequest"
+			method = "POST"
+			handle-as="json"
+			on-response="onResultResponse"
+			debounce-duration="1000"
+			content-type="application/json"
+			>
+		</iron-ajax>
 
-    <iron-ajax
-      id="challengeRequest"
-      handle-as="json"
-      on-response="onChallengeResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
+		<iron-ajax
+			id="challengeRequest"
+			handle-as="json"
+			on-response="onChallengeResponse"
+			debounce-duration="1000"
+			content-type="application/json"
+			>
+		</iron-ajax>
 
-    <paper-drawer-panel id="paperDrawerPanel" disable-swipe="true" force-narrow>
-      <div id="drawer" drawer>
-        <paper-toolbar id="drawerToolbar" class="header">
-          <span class="paper-font-title">Coduno</span>
-        </paper-toolbar>
+		<paper-drawer-panel id="paperDrawerPanel" disable-swipe="true" force-narrow>
+			<div id="drawer" drawer style="z-index: 10;">
+				<paper-toolbar id="drawerToolbar" class="header">
+					<span class="paper-font-title">Coduno</span>
+				</paper-toolbar>
 
-        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-          <template is="dom-if" if="{{isCompany}}">
-            <a data-route="challenges" href="/challenges">
-              <iron-icon icon="assignment"></iron-icon>
-              <span>Challenges</span>
-            </a>
+				<paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
+					<template is="dom-if" if="{{isCompany}}">
+						<a data-route="challenges" href="/challenges">
+							<iron-icon icon="assignment"></iron-icon>
+							<span>Challenges</span>
+						</a>
 
-            <a data-route="tasks" href="/tasks">
-              <iron-icon icon="list"></iron-icon>
-              <span>Tasks</span>
-            </a>
+						<a data-route="tasks" href="/tasks">
+							<iron-icon icon="list"></iron-icon>
+							<span>Tasks</span>
+						</a>
 
-            <a data-route="candidates" href="/candidates">
-              <iron-icon icon="perm-identity"></iron-icon>
-              <span>Candidates</span>
-            </a>
-          </template>
-          <template is="dom-if" if="{{isCoder}}">
-            <a data-route="challenge" href="/challenge">
-              <iron-icon icon="code"></iron-icon>
-              <span>Challenge</span>
-            </a>
-          </template>
-        </paper-menu>
-      </div>
-      <paper-header-panel main>
-        <template is="dom-if" if="{{isLoggedIn}}">
-         <app-header header="{{header}}">
-           <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-         </app-header>
-        </template>
+						<a data-route="candidates" href="/candidates">
+							<iron-icon icon="perm-identity"></iron-icon>
+							<span>Candidates</span>
+						</a>
+					</template>
+					<template is="dom-if" if="{{isCoder}}">
+						<a data-route="challenge" href="/challenge">
+							<iron-icon icon="code"></iron-icon>
+							<span>Challenge</span>
+						</a>
+					</template>
+					<template is="dom-if" if="{{isLoggedIn}}">
+						<a href="/logout">
+							<iron-icon icon="settings-power"></iron-icon>
+							<span>Logout</span>
+						</a>
+					</template>
+				</paper-menu>
+			</div>
+			<paper-header-panel main>
+				<template is="dom-if" if="{{isLoggedIn}}">
+				 <app-header header="{{header}}">
+					 <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+				 </app-header>
+				</template>
 
-        <!-- Main Content -->
-        <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
-            <section data-route="dashboard">
-              <paper-material elevation="1">
-                <chart-statistics></chart-statistics>
-                <h1 class="paper-font-body5">Here the statistics will be.</h1>
-              </paper-material>
-              <paper-material elevation="1">
-                <my-greeting></my-greeting>
+				<!-- Main Content -->
+				<div class="content">
+					<iron-pages attr-for-selected="data-route" selected="{{route}}">
+						<section data-route="dashboard">
+							<paper-material elevation="1">
+								<chart-statistics></chart-statistics>
+								<h1 class="paper-font-body5">Here the statistics will be.</h1>
+							</paper-material>
+							<paper-material elevation="1">
+								<my-greeting></my-greeting>
 
-                <p class="paper-font-subhead">You now have:</p>
-                <my-list></my-list>
-              </paper-material>
-            </section>
+								<p class="paper-font-subhead">You now have:</p>
+								<my-list></my-list>
+							</paper-material>
+						</section>
 
-            <section data-route="coders">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">Coders</h2>
-                <p>The users coding right now:</p>
-                <current-coders></current-coders>
-              </paper-material>
-            </section>
+						<section data-route="coders">
+							<paper-material elevation="1">
+								<h2 class="paper-font-display2">Coders</h2>
+								<p>The users coding right now:</p>
+								<current-coders></current-coders>
+							</paper-material>
+						</section>
 
-            <section data-route="login">
-              <login-page></login-page>
-            </section>
+						<section data-route="login">
+							<login-page></login-page>
+						</section>
 
-            <section data-route="candidate">
-              <candidate-page id="candidatePage"></candidate-page>
-            </section>
+						<section data-route="candidate">
+							<candidate-page id="candidatePage"></candidate-page>
+						</section>
 
-            <section data-route="challenges">
-              <paper-material elevation="1">
-                <challenge-list id="challengeList"></challenge-list>
-              </paper-material>
-            </section>
+						<section data-route="challenges">
+							<paper-material elevation="1">
+								<challenge-list id="challengeList"></challenge-list>
+							</paper-material>
+						</section>
 
-            <section data-route="challenge-detail">
-              <challenge-detail id="challengeDetail"></challenge-detail>
-            </section>
+						<section data-route="challenge-detail">
+							<challenge-detail id="challengeDetail"></challenge-detail>
+						</section>
 
-            <section data-route="challenge">
-              <challenge-page challenge="{{challenge}}"></challenge-page>
-            </section>
+						<section data-route="challenge">
+							<challenge-page challenge="{{challenge}}"></challenge-page>
+						</section>
 
-            <section data-route="tasks">
-              <task-list id="taskList"></task-list>
-            </section>
+						<section data-route="tasks">
+							<task-list id="taskList"></task-list>
+						</section>
 
-            <section data-route="unauthorized">
-              <paper-material elevation="1">
-                <h2 class="paper-font-display2">You are not authorized to see this page.</h2>
-              </paper-material>
-            </section>
+						<section data-route="unauthorized">
+							<paper-material elevation="1">
+								<h2 class="paper-font-display2">You are not authorized to see this page.</h2>
+							</paper-material>
+						</section>
 
-            <section data-route="500">
-              <error-page id="error500"></error-page>
-            </section>
-          </iron-pages>
-        </div>
-      </paper-header-panel>
-    </paper-drawer-panel>
+						<section data-route="500">
+							<error-page id="error500"></error-page>
+						</section>
+					</iron-pages>
+				</div>
+			</paper-header-panel>
+		</paper-drawer-panel>
 
-    <!-- TODO(victorbalan): enable cache in production -->
-    <!-- <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting
-                          on-service-worker-installed="displayInstalledToast">
-      <platinum-sw-cache default-cache-strategy="networkFirst"
-                         precache-file="precache.json">
-      </platinum-sw-cache>
-    </platinum-sw-register> -->
+		<!-- TODO(victorbalan): enable cache in production -->
+		<!-- <platinum-sw-register auto-register
+													clients-claim
+													skip-waiting
+													on-service-worker-installed="displayInstalledToast">
+			<platinum-sw-cache default-cache-strategy="networkFirst"
+												 precache-file="precache.json">
+			</platinum-sw-cache>
+		</platinum-sw-register> -->
 
-  </template>
+	</template>
 
-  <!-- build:js scripts/app.js -->
-  <script src="scripts/app.js"></script>
-  <!-- endbuild-->
-  <!-- build:js scripts/util.js -->
-  <script src="scripts/util.js"></script>
-  <!-- endbuild-->
+	<!-- build:js scripts/app.js -->
+	<script src="scripts/app.js"></script>
+	<!-- endbuild-->
+	<!-- build:js scripts/util.js -->
+	<script src="scripts/util.js"></script>
+	<!-- endbuild-->
 </body>
 </html>
