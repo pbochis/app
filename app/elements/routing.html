@@ -83,6 +83,10 @@ window.addEventListener('WebComponentsReady', function() {
 		}
 	});
 
+	page('/logout', function() {
+		app.logout();
+	})
+
 	page('/error', function() {
 		var lastError = getLastError();
 		console.log(lastError);
