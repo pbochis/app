@@ -12,13 +12,20 @@
     p{
       font-family: "Lucida Console", Monaco, monospace;
     }
+
+    #diffWrap{
+      max-height: 400px;
+      overflow: scroll;
+    }
   </style>
 
   <template>
     <general-console id="generalConsole">
-      <template is="dom-repeat" items="{{items}}">
-        <p class$="{{getClass(index)}}">{{item}}</p>
-      </template>
+      <div id="diffWrap">
+        <template is="dom-repeat" items="{{items}}">
+          <p><span>{{index}}</span>. <span class$="{{getClass(index)}}">{{item}}</span></p>
+        </template>
+      </div>
     </general-general>
   </template>
   <script>
@@ -29,9 +36,6 @@
          type: Array,
          notify: true
        }
-     },
-
-     ready: function(){
      },
      setOutput: function(data){
        this.$.generalConsole.showConsole()
@@ -52,6 +56,9 @@
      },
      error: function(err){
        this.$.generalConsole.error(err)
+     },
+     getClass: function(index){
+       return this.diffLines.indexOf(index) !== -1 ? "red" : "green";
      }
    });
  </script>

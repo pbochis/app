@@ -20,7 +20,7 @@
         </paper-material>
         <paper-material elevation="1" class="card">
           <div class="horizontal layout">
-            <paper-icon-button src="/codeground/images/start.png" on-click="runCode">Run code</paper-icon-button>
+            <paper-icon-button src="/images/start.png" on-click="runCode">Run code</paper-icon-button>
             <language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
           </div>
           <output-test-console id="console"</output-test-console>
@@ -49,7 +49,7 @@
       },
       runCode: function(){
         var lang = this.$.languageSelector.getSelectedLanguage()
-        this.$.codeEditor.runCode(lang, this.task.Key);
+        this.$.codeEditor.runCode(lang.tag, this.task.Key);
         this.$.console.loading()
       },
       onResponse: function(r){
