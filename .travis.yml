@@ -1,7 +1,7 @@
 language: node_js
 
 before_install:
-- openssl aes-256-cbc -K $encrypted_afa9cea1b82d_key -iv $encrypted_afa9cea1b82d_iv
+- $($TRAVIS_SECURE_ENV_VARS) && openssl aes-256-cbc -K $encrypted_afa9cea1b82d_key -iv $encrypted_afa9cea1b82d_iv
   -in service-account.json.enc -out service-account.json -d
 
 script: true
@@ -9,9 +9,10 @@ script: true
 after_success:
 - npm install --global bower
 - bower install
+- if $($TRAVIS_SECURE_ENV_VARS)
+- then
 - curl https://sdk.cloud.google.com | CLOUDSDK_CORE_DISABLE_PROMPTS=1 $SHELL
-- ~/google-cloud-sdk/bin/gcloud -q components update preview
 - ~/google-cloud-sdk/bin/gcloud -q components update preview app
-- ~/google-cloud-sdk/bin/gcloud -q config set project coduno
 - ~/google-cloud-sdk/bin/gcloud -q auth activate-service-account --key-file service-account.json
-- ~/google-cloud-sdk/bin/gcloud -q preview app deploy app.yaml --set-default
+- ~/google-cloud-sdk/bin/gcloud -q preview app --project coduno deploy app.yaml --set-default
+- fi
