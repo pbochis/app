@@ -17,7 +17,7 @@
             margin: 7px;
         }
 
-        iron-icon{
+        .taskDuration iron-icon{
             height: 16px;
             width: 16px;
         }
@@ -35,16 +35,11 @@
         <paper-material id="task" elevation="2" class="card">
             <h2>{{task.Name}}</h2>
             <paper-fab mini icon="add" on-click="toggleSelectTask"></paper-fab>
-            <div>
+            <div class="taskDuration">
                 <iron-icon icon="alarm"></iron-icon>
                 <span>{{duration}}</span>
             </div>
-            <!-- TODO(pbochis): Display actual skills from the task-->
-            <div class="horizontal layout">
-                <task-skill skill-name="Security" skill-value="1"></task-skill>
-                <task-skill skill-name="Readability" skill-value="0.2"></task-skill>
-                <task-skill skill-name="Algorithmics" skill-value="0.01"></task-skill>
-            </div>
+            <skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
             <div>{{task.Description}}</div>
         </paper-material>
     </template>
