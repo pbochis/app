@@ -11,7 +11,9 @@
     "iron-icon": "PolymerElements/iron-icon#~1.0.2",
     "google-chart": "GoogleWebComponents/google-chart#1.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#~1.0.1",
-    "paper-fab": "PolymerElements/paper-fab#~1.0.3"
+    "paper-fab": "PolymerElements/paper-fab#~1.0.3",
+    "paper-tabs": "PolymerElements/paper-tabs#~1.0.1",
+    "paper-menu-button": "PolymerElements/paper-menu-button#~1.0.2"
   },
   "devDependencies": {
     "web-component-tester": "*",
