@@ -1,4 +1,15 @@
 <dom-module id="code-editor">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+
+		#editor{
+			height: 100%;
+			z-index:0;
+		}
+	</style>
 	<template>
 		<iron-ajax
 			id="runCodeRequest"
@@ -9,7 +20,7 @@
 			content-type="application/json"
 			>
 		</iron-ajax>
-		<div id="editor" style="height: 850px; z-index:0;"></div>
+		<div id="editor"></div>
 	</template>
 	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
 	<script src="/bower_components/ace-min-noconflict/ext-language_tools.js" type="application/javascript"></script>

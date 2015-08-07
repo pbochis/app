@@ -11,11 +11,16 @@
 	</style>
 	<template>
 		<template is="dom-if" if="{{normalHeader}}">
-			<paper-tabs id="bottomTabs" selected="0" noink no-slide>
+			<paper-tabs id="bottomTabs" selected="0" noink no-slide align-bottom>
 				<span class="flex-5"></span>
-				<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
-				<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
-				<paper-tab link><a href="/tasks" class="center-center horizontal layout">Tasks</a></paper-tab>
+				<template is="dom-if" if="{{isCompany}}">
+					<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
+					<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
+					<paper-tab link><a href="/tasks" class="center-center horizontal layout">Tasks</a></paper-tab>
+				</template>
+				<template is="dom-if" if="{{isCoder}}">
+					<paper-tab link><a href="/challenge" class="center-center horizontal layout">Challenge</a></paper-tab>
+				</template>
 				<span class="flex-5"></span>
 			</paper-tabs>
 		</template>
@@ -39,6 +44,16 @@
 					type: Boolean,
 					notify: true,
 					value: true
+				},
+				isCompany: {
+					type: Boolean,
+					notify: true,
+					reflectToAttribute: true
+				},
+				isCoder: {
+					type: Boolean,
+					notify: true,
+					reflectToAttribute: true
 				}
 			},
 			observers: [

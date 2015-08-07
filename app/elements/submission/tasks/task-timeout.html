@@ -1,17 +1,23 @@
 <dom-module id="task-timeout">
-  <template>
-    <paper-material elevation="1" style="width:35%;">
-      <div class="flex">
-        <h2>Time over!</h2>
-        <p>The last run you submited will be your final one for this task.<p>
-        <content></content>
-      </div>
-    </paper-material>
-  </template>
-  <script>
-    Polymer({
-      is: 'task-timeout'
-    });
+	<style>
+		:host{
+			display: block;
+			width: 35%;
+		}
+	</style>
+	<template>
+		<paper-material elevation="1">
+			<div class="flex">
+				<h2>Time over!</h2>
+				<p>The last run you submited will be your final one for this task.<p>
+				<content></content>
+			</div>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			is: 'task-timeout'
+		});
 
-  </script>
+	</script>
 </dom-module>

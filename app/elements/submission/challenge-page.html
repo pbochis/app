@@ -1,31 +1,40 @@
 <dom-module id="challenge-page">
-  <template>
-    <div id="challenge">
-    </div>
-  </template>
-  <script>
-    Polymer({
-      is: 'challenge-page',
-      properties: {
-        challenge: {
-          type: Object,
-          notify: true,
-          reflectToAttribute: true
-        }
-      },
-      observers: [
-        'afterPropertiesSet(challenge)'
-      ],
-      afterPropertiesSet: function(){
-        if(this.challenge.Endpoints.WebInterface!="sequential-challenge"){
-          alert("This type of challenge is not yet available. We are sorry!");
-          return;
-        }
-        var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
-        webInterface.challenge = this.challenge;
-        this.$.challenge.innerHTML = "";
-        this.$.challenge.appendChild(webInterface);
-      }
-    });
-  </script>
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		#challenge{
+			height: 100%;
+		}
+	</style>
+	<template>
+		<div id="challenge">
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-page',
+			properties: {
+				challenge: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(challenge)'
+			],
+			afterPropertiesSet: function(){
+				if(this.challenge.Endpoints.WebInterface!="sequential-challenge"){
+					alert("This type of challenge is not yet available. We are sorry!");
+					return;
+				}
+				var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
+				webInterface.challenge = this.challenge;
+				this.$.challenge.innerHTML = "";
+				this.$.challenge.appendChild(webInterface);
+			}
+		});
+	</script>
 </dom-module>
