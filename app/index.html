@@ -37,8 +37,8 @@
 	<!-- endbuild -->
 
 	<link rel="import" href="elements/elements.html">
-	<link rel="stylesheet" href="styles/classical.css">
-	<link rel="import" href="styles/classical.html">
+	<link rel="stylesheet" href="styles/technology.css">
+	<link rel="import" href="styles/technology.html">
 	<link rel="stylesheet" href="styles/main.css">
 </head>
 
@@ -64,113 +64,92 @@
 			>
 		</iron-ajax>
 
-		<paper-drawer-panel id="paperDrawerPanel" disable-swipe="true" force-narrow>
-			<div id="drawer" drawer style="z-index: 10;">
-				<paper-toolbar id="drawerToolbar" class="header">
-					<span class="paper-font-title">Coduno</span>
+		<paper-header-panel>
+			<template is="dom-if" if="{{isLoggedIn}}">
+				<paper-toolbar class="medium-tall" style="height: 105px;">
+					<paper-icon-button icon="code"></paper-icon-button>
+					<div class="title">CODUNO</div>
+					<span class="flex"></span>
+					<paper-menu-button horizontal-align="right">
+						<paper-icon-button icon="supervisor-account" class="dropdown-trigger"></paper-icon-button>
+						<paper-menu class="dropdown-content">
+							<paper-item>Settings</paper-item>
+							<paper-item>Logout</paper-item>
+						</paper-menu>
+					</paper-menu-button>
+					<div class="secnav bottom fit">
+						<paper-tabs id="bottomTabs" selected="0" noink no-slide>
+							<span class="flex-5"></span>
+							<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
+							<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
+							<paper-tab link><a href="/tasks" class="center-center horizontal layout">Tasks</a></paper-tab>
+							<span class="flex-5"></span>
+						</paper-tabs>
+					</div>
 				</paper-toolbar>
+			</template>
+			<div class="content">
+				<iron-pages attr-for-selected="data-route" selected="{{route}}">
+					<section data-route="dashboard">
+						<paper-material elevation="1">
+							<chart-statistics></chart-statistics>
+							<h1 class="paper-font-body5">Here the statistics will be.</h1>
+						</paper-material>
+						<paper-material elevation="1">
+							<my-greeting></my-greeting>
 
-				<paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-					<template is="dom-if" if="{{isCompany}}">
-						<a data-route="challenges" href="/challenges">
-							<iron-icon icon="assignment"></iron-icon>
-							<span>Challenges</span>
-						</a>
+							<p class="paper-font-subhead">You now have:</p>
+							<my-list></my-list>
+						</paper-material>
+					</section>
 
-						<a data-route="tasks" href="/tasks">
-							<iron-icon icon="list"></iron-icon>
-							<span>Tasks</span>
-						</a>
+					<section data-route="coders">
+						<paper-material elevation="1">
+							<h2 class="paper-font-display2">Coders</h2>
+							<p>The users coding right now:</p>
+							<current-coders></current-coders>
+						</paper-material>
+					</section>
 
-						<a data-route="candidates" href="/candidates">
-							<iron-icon icon="perm-identity"></iron-icon>
-							<span>Candidates</span>
-						</a>
-					</template>
-					<template is="dom-if" if="{{isCoder}}">
-						<a data-route="challenge" href="/challenge">
-							<iron-icon icon="code"></iron-icon>
-							<span>Challenge</span>
-						</a>
-					</template>
-					<template is="dom-if" if="{{isLoggedIn}}">
-						<a href="/logout">
-							<iron-icon icon="settings-power"></iron-icon>
-							<span>Logout</span>
-						</a>
-					</template>
-				</paper-menu>
+					<section data-route="login">
+						<login-wizard></login-wizard>
+					</section>
+
+					<section data-route="candidate">
+						<candidate-page id="candidatePage"></candidate-page>
+					</section>
+
+					<section data-route="challenges">
+						<paper-material elevation="1">
+							<challenge-list id="challengeList"></challenge-list>
+						</paper-material>
+					</section>
+
+					<section data-route="challenge-detail">
+						<challenge-detail id="challengeDetail"></challenge-detail>
+					</section>
+
+					<section data-route="challenge">
+						<challenge-page challenge="{{challenge}}"></challenge-page>
+					</section>
+
+					<section data-route="tasks">
+						<task-list id="taskList"></task-list>
+					</section>
+
+					<section data-route="unauthorized">
+						<paper-material elevation="1">
+							<h2 class="paper-font-display2">You are not authorized to see this page.</h2>
+						</paper-material>
+					</section>
+
+					<section data-route="error">
+						<error-page id="error"></error-page>
+					</section>
+				</iron-pages>
 			</div>
-			<paper-header-panel main>
-				<template is="dom-if" if="{{isLoggedIn}}">
-				 <app-header header="{{header}}">
-					 <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
-				 </app-header>
-				</template>
+		</paper-header-panel>
 
-				<!-- Main Content -->
-				<div class="content">
-					<iron-pages attr-for-selected="data-route" selected="{{route}}">
-						<section data-route="dashboard">
-							<paper-material elevation="1">
-								<chart-statistics></chart-statistics>
-								<h1 class="paper-font-body5">Here the statistics will be.</h1>
-							</paper-material>
-							<paper-material elevation="1">
-								<my-greeting></my-greeting>
-
-								<p class="paper-font-subhead">You now have:</p>
-								<my-list></my-list>
-							</paper-material>
-						</section>
-
-						<section data-route="coders">
-							<paper-material elevation="1">
-								<h2 class="paper-font-display2">Coders</h2>
-								<p>The users coding right now:</p>
-								<current-coders></current-coders>
-							</paper-material>
-						</section>
-
-						<section data-route="login">
-							<login-wizard></login-wizard>
-						</section>
-
-						<section data-route="candidate">
-							<candidate-page id="candidatePage"></candidate-page>
-						</section>
-
-						<section data-route="challenges">
-							<paper-material elevation="1">
-								<challenge-list id="challengeList"></challenge-list>
-							</paper-material>
-						</section>
-
-						<section data-route="challenge-detail">
-							<challenge-detail id="challengeDetail"></challenge-detail>
-						</section>
-
-						<section data-route="challenge">
-							<challenge-page challenge="{{challenge}}"></challenge-page>
-						</section>
-
-						<section data-route="tasks">
-							<task-list id="taskList"></task-list>
-						</section>
-
-						<section data-route="unauthorized">
-							<paper-material elevation="1">
-								<h2 class="paper-font-display2">You are not authorized to see this page.</h2>
-							</paper-material>
-						</section>
-
-						<section data-route="error">
-							<error-page id="error"></error-page>
-						</section>
-					</iron-pages>
-				</div>
-			</paper-header-panel>
-		</paper-drawer-panel>
 
 		<!-- TODO(victorbalan): enable cache in production -->
 		<!--
