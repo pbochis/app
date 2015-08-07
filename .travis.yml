@@ -3,12 +3,13 @@ language: node_js
 before_install:
 - $($TRAVIS_SECURE_ENV_VARS) && openssl aes-256-cbc -K $encrypted_afa9cea1b82d_key -iv $encrypted_afa9cea1b82d_iv
   -in service-account.json.enc -out service-account.json -d
+- npm install --global bower jshint
+- bower install
 
-script: true
+script:
+- find . -path ./bower_components -prune -o -print | egrep "(html|js|json)$" | xargs jshint --extract=auto
 
 after_success:
-- npm install --global bower
-- bower install
 - if $($TRAVIS_SECURE_ENV_VARS)
 - then
 - curl https://sdk.cloud.google.com | CLOUDSDK_CORE_DISABLE_PROMPTS=1 $SHELL
