@@ -1,0 +1,60 @@
+<dom-module id="nav-bar">
+	<style>
+		paper-fab {
+			height: 30px !important;
+			width: 30px;
+		}
+
+		paper-tabs {
+			padding: 0 10px;
+		}
+	</style>
+	<template>
+		<template is="dom-if" if="{{normalHeader}}">
+			<paper-tabs id="bottomTabs" selected="0" noink no-slide>
+				<span class="flex-5"></span>
+				<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
+				<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
+				<paper-tab link><a href="/tasks" class="center-center horizontal layout">Tasks</a></paper-tab>
+				<span class="flex-5"></span>
+			</paper-tabs>
+		</template>
+		<template is="dom-if" if="{{!normalHeader}}">
+			<paper-tabs class="horizontal layout center" noink no-slide style="background-color: #95abc2">
+				<span class="center-center horizontal layout">{{header}}</span>
+				<div class="flex"></div>
+				<paper-fab class="self-center" icon="done" on-click="createChallenge"></paper-fab>
+			</paper-tabs>
+		</template>
+	</template>
+	<script>
+		Polymer({
+			is: 'nav-bar',
+			properties: {
+				header: {
+					type: String,
+					notify: true
+				},
+				normalHeader: {
+					type: Boolean,
+					notify: true,
+					value: true
+				}
+			},
+			observers: [
+				'onValueChanged(header)'
+			],
+			onValueChanged: function (header) {
+				if (header.indexOf('SELECTED') != -1) {
+					this.normalHeader = false;
+				}
+				else {
+					this.normalHeader = true;
+				}
+			},
+			createChallenge: function () {
+				app.createChallenge();
+			}
+		})
+	</script>
+</dom-module>

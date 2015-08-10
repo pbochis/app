@@ -23,9 +23,9 @@ function get(ajaxRequest, route, authorization, responseCallback) {
 	ajaxRequest.url = BASE_URL + route;
 	ajaxRequest.method = 'GET';
 	if (authorization) {
-		ajaxRequest.headers = { 'Authorization': authorization };
+		ajaxRequest.headers = {'Authorization': authorization};
 	} else {
-		ajaxRequest.headers = { 'Authorization': 'Token ' + accessToken.Value };
+		ajaxRequest.headers = {'Authorization': 'Token ' + accessToken.Value};
 	}
 	ajaxRequest.generateRequest();
 }
@@ -33,21 +33,21 @@ function get(ajaxRequest, route, authorization, responseCallback) {
 function post(ajaxRequest, route, body) {
 	ajaxRequest.url = BASE_URL + route;
 	ajaxRequest.method = 'POST';
-	ajaxRequest.headers = { 'Authorization': 'Token ' + accessToken.Value };
+	ajaxRequest.headers = {'Authorization': 'Token ' + accessToken.Value};
 	ajaxRequest.body = JSON.stringify(body);
 	ajaxRequest.generateRequest();
 }
 
 function getLanguagesForTags(tags) {
 	var langs = [];
-	for(var i = 0; i < tags.length; i++) {
+	for (var i = 0; i < tags.length; i++) {
 		langs.push(getLanguageForTag(tags[i]));
 	}
 	return langs;
 }
 
 function getLanguageForTag(tag) {
-	var lang = { tag: tag }
+	var lang = {tag: tag}
 	switch (tag) {
 		case 'c':
 			lang.name = 'C';
@@ -71,12 +71,30 @@ function getLanguageForTag(tag) {
 function put(ajaxRequest, route, body) {
 	ajaxRequest.url = BASE_URL + route;
 	ajaxRequest.method = 'PUT';
-	ajaxRequest.headers = { 'Authorization': 'Token ' + accessToken};
+	ajaxRequest.headers = {'Authorization': 'Token ' + accessToken};
 	ajaxRequest.body = JSON.stringify(body);
 	ajaxRequest.generateRequest();
 }
 
-(function(){
+function computeDuration(duration) {
+	var seconds = duration / 1e9;
+	var minutes = Math.floor(seconds / 60);
+	var hours = Math.floor(minutes / 60);
+	var days = Math.floor(hours / 24);
+	var months = Math.floor(days / 30);
+	if (months >= 1) {
+		return months + ' months';
+	}
+	if (days >= 2) {
+		return days + ' days';
+	}
+	if (hours >= 5) {
+		return hours + ' hours';
+	}
+	return minutes + ' minutes';
+}
+
+(function () {
 	var initialError;
 
 	function handleError(error) {
@@ -86,11 +104,10 @@ function put(ajaxRequest, route, body) {
 		}
 		page.redirect('/error');
 	}
-
 	function getLastError() {
 		return initialError;
 	}
-
 	window.getLastError = getLastError;
 	window.handleError = handleError;
 })();
+
