@@ -9,7 +9,7 @@
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
 	<!-- Chrome for Android theme color -->
-	<meta name="theme-color" content="#424b4b">
+	<meta name="theme-color" content="#373b50">
 
 	<!-- Web Application Manifest -->
 	<link rel="manifest" href="manifest.json">
@@ -42,9 +42,9 @@
 	<link rel="stylesheet" href="styles/main.css">
 </head>
 
-<body unresolved class="fullbleed layout vertical">
+<body unresolved class="fullbleed layout vertical" class="fullHeight">
 <span id="browser-sync-binding"></span>
-<template is="dom-bind" id="app">
+	<template is="dom-bind" id="app" class="fullHeight">
 	<iron-ajax
 		id="resultRequest"
 		method="POST"
@@ -64,7 +64,7 @@
 		>
 	</iron-ajax>
 
-	<paper-header-panel>
+		<paper-header-panel class="fullHeight">
 		<template is="dom-if" if="{{isLoggedIn}}">
 			<paper-toolbar class="medium-tall" style="height: 105px;">
 				<paper-icon-button icon="code"></paper-icon-button>
@@ -73,17 +73,17 @@
 				<paper-menu-button horizontal-align="right">
 					<paper-icon-button icon="supervisor-account" class="dropdown-trigger"></paper-icon-button>
 					<paper-menu class="dropdown-content">
-						<paper-item>Settings</paper-item>
-						<paper-item>Logout</paper-item>
+							<paper-item><a href="/" style="color: #444444; text-decoration: none;">Settings</a></paper-item>
+							<paper-item><a href="/logout" style="color: #444444; text-decoration: none;">Logout</a></paper-item>
 					</paper-menu>
 				</paper-menu-button>
 				<div class="secnav bottom fit">
-					<nav-bar header="{{header}}"></nav-bar>
+					<nav-bar header="{{header}}" is-company="{{isCompany}}" is-coder="{{isCoder}}"></nav-bar>
 				</div>
 			</paper-toolbar>
 		</template>
 		<div class="content">
-			<iron-pages attr-for-selected="data-route" selected="{{route}}">
+			<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight">
 				<section data-route="dashboard">
 					<paper-material elevation="1">
 						<chart-statistics></chart-statistics>
@@ -120,7 +120,7 @@
 					<challenge-detail id="challengeDetail"></challenge-detail>
 				</section>
 
-				<section data-route="challenge">
+					<section data-route="challenge" class="fullHeight">
 					<challenge-page challenge="{{challenge}}"></challenge-page>
 				</section>
 

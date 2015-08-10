@@ -1,72 +1,45 @@
 <dom-module id="simple-code-task">
-  <style>
-    paper-material{
-      width: calc(98.66% - 16px);
-      margin: auto;
-      background: white;
-      padding: 8px 8px 8px 8px;
-      margin-bottom: 10px;
-    }
-  </style>
-  <template>
-    <iron-ajax
-      id="ajaxRequest"
-      handle-as="json"
-      on-response="onResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
-    <div class="horizontal layout">
-      <div class="flex">
-        <paper-material elevation="1">
-          <code-editor id="codeEditor" on-response="onResponse" on-error="onError"></code-editor>
-        </paper-material>
-      </div>
-      <div class="flex">
-        <paper-material elevation="1">
-          <task-display task="{{task}}"></task-display>
-        </paper-material>
-        <paper-material elevation="1">
-          <div class="horizontal layout">
-            <paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
-            <language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
-          </div>
-          <simple-console id="console"</simple-console>
-        </paper-material>
-      </div>
-    </div>
-  </template>
-  <script>
-    Polymer({
-      is: 'simple-code-task',
-      properties: {
-        task: {
-          type: Object,
-          notify: true,
-          reflectToAttribute: true
-        }
-      },
-      observers: [
-        'afterPropertiesSet(task)'
-      ],
-      afterPropertiesSet: function(){
-        this.languages = getLanguagesForTags(this.task.Languages);
-      },
-      languageChanged: function(){
-        this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag)
-      },
-      runCode: function(){
-        var lang = this.$.languageSelector.getSelectedLanguage().tag
-        this.$.codeEditor.runCode(lang, this.task.Key);
-        this.$.console.loading();
-      },
-      onResponse: function(r){
-        this.$.console.setOutput(r.detail.response);
-      },
-      onError: function(error){
-        handleError(error);
-      }
-    });
-  </script>
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+	</style>
+	<template>
+		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError">
+			<simple-console id="console"></simple-console>
+		</code-task>
+	</template>
+	<script>
+		Polymer({
+			is: 'simple-code-task',
+			properties: {
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				control: {
+					type: Object,
+					notify: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(task)'
+			],
+			afterPropertiesSet: function(){
+				this.control = {};
+				var component = this;
+				this.control.loading = function(){
+					component.$.console.loading();
+				};
+			},
+			onResponse: function(r){
+				this.$.console.setOutput(r.detail.response);
+			},
+			onError: function(error){
+				handleError(error);
+			}
+		});
+	</script>
 </dom-module>

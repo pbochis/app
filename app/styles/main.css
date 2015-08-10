@@ -61,3 +61,33 @@ paper-toolbar > paper-menu-button {
 .link:hover {
 	background-color: rgba(228, 228, 228, 0.64)
 }
+
+:root {
+	height: 100%;
+}
+
+paper-header-panel{
+	height: 100%;
+}
+
+.paper-header-panel{
+	height: 100%;
+}
+
+paper-header-panel>#mainContainer{
+	height: 100%;
+}
+
+paper-header-panel>#mainPanel{
+	height: 100%;
+}
+
+.content{
+	height: -moz-calc(100% - 105px);
+	height: -webkit-calc(100% - 105px);
+	height: calc(100% - 105px);
+}
+
+.fullHeight{
+	height: 100%;
+}

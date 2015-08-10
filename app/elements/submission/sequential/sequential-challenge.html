@@ -1,91 +1,118 @@
 <dom-module id="sequential-challenge">
-  <template>
-    <template is="dom-if" if="{{showForwardArrow}}">
-      <paper-icon-button icon="arrow-forward" style="position: absolute; right: 2%; bottom: 2%;"></paper-icon-button>
-    </template>
-    <template is="dom-if" if="{{showBackArrow}}">
-      <paper-icon-button icon="arrow-back" style="position: absolute; left: 2%; bottom: 2%;"></paper-icon-button>
-    </template>
-    <countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}" style="position: absolute; top: 0; right: 5%;"></countdown-timer>
-    <div id="content">
-      <paper-material elevation="1" style="width:35%;" class="card">
-        <div class="flex">
-          <challenge-display challenge="{{challenge}}"></challenge-display>
-          <paper-button raised on-click="startChallenge">Go</paper-button>
-        </div>
-      </paper-material>
-    </div>
-    <iron-ajax
-      id="loadTaskRequest"
-      handle-as="json"
-      on-response="onTaskResponse"
-      debounce-duration="1000"
-      content-type="application/json"
-      >
-    </iron-ajax>
-  </template>
-  <script>
-    Polymer({
-      is: 'sequential-challenge',
-      properties: {
-        challenge: {
-          type: Object,
-          notify: true,
-          reflectToAttribute: true
-        },
-        task: {
-          type: Object,
-          notify: true
-        },
-        taskIndex: {
-          type: Number,
-          notify: true
-        }
-      },
-      observers: [
-        'afterPropertiesSet(challenge)'
-      ],
-      afterPropertiesSet: function(){
-          var timer = localStorage.getItem("timer");
-          var currentTask = localStorage.getItem("currentTask");
-          if(timer != undefined && currentTask != undefined){
-            this.$.content.innerHTML = "";
-            this.loadTaskById(currentTask);
-            this.$.taskTimer.startWithOffset(timer);
-          }
-      },
-      ready: function(){
-        this.showForwardArrow = false;
-        this.showBackArrow = false;
-        var component = this;
-        this.timeout = function(){
-          var taskTimeout = document.createElement("task-timeout");
-          component.$.content.innerHTML = "";
-          component.$.content.appendChild(taskTimeout);
-        }
-      },
-      startChallenge: function(){
-        this.taskIndex = 0;
-        localStorage.setItem("timer", new Date().getTime());
-        this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
-        this.$.taskTimer.start();
-      },
-      loadTaskById: function(key){
-        localStorage.setItem("currentTask", key);
-        get(this.$.loadTaskRequest, "/task/" + key + "?result=" + localStorage.getItem("result"));
-      },
-      onTaskResponse: function(r){
-        var task = r.detail.response
-        var webInterface = document.createElement(task.Endpoints.WebInterface);
-        webInterface.task = task;
-        this.$.content.innerHTML = "";
-        this.$.content.appendChild(webInterface);
-      },
-      displayArrows: function(){
-        this.showBackArrow = this.taskIndex > 0;
-        this.showForwardArrow = this.taskIndex < this.challenge.Tasks.length;
-      }
-    });
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		#arrowForward{
+			position: absolute;
+			right: 2%;
+			bottom: 2%;
+		}
+		#arrowBack{
+			position: absolute;
+			left: 2%;
+			bottom: 2%;
+		}
+		#taskTimer{
+			position: absolute;
+			top: 0;
+			right: 5%;
+		}
+		#content{
+			height: 100%;
+		}
+		#startChallengeCard{
+			width:35%;
+		}
+	</style>
+	<template>
+		<template is="dom-if" if="{{showForwardArrow}}">
+			<paper-icon-button id="arrowForward" icon="arrow-forward"></paper-icon-button>
+		</template>
+		<template is="dom-if" if="{{showBackArrow}}">
+			<paper-icon-button id="arrowBack" icon="arrow-back"></paper-icon-button>
+		</template>
+		<countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}"></countdown-timer>
+		<div id="content">
+			<paper-material id="startChallengeCard" elevation="1" class="card">
+				<div class="flex">
+					<challenge-display challenge="{{challenge}}"></challenge-display>
+					<paper-button raised on-click="startChallenge">Go</paper-button>
+				</div>
+			</paper-material>
+		</div>
+		<iron-ajax
+			id="loadTaskRequest"
+			handle-as="json"
+			on-response="onTaskResponse"
+			debounce-duration="1000"
+			content-type="application/json"
+			>
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'sequential-challenge',
+			properties: {
+				challenge: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				task: {
+					type: Object,
+					notify: true
+				},
+				taskIndex: {
+					type: Number,
+					notify: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(challenge)'
+			],
+			afterPropertiesSet: function(){
+					var timer = localStorage.getItem("timer");
+					var currentTask = localStorage.getItem("currentTask");
+					if(timer != undefined && currentTask != undefined){
+						this.$.content.innerHTML = "";
+						this.loadTaskById(currentTask);
+						this.$.taskTimer.startWithOffset(timer);
+					}
+			},
+			ready: function(){
+				this.showForwardArrow = false;
+				this.showBackArrow = false;
+				var component = this;
+				this.timeout = function(){
+					var taskTimeout = document.createElement("task-timeout");
+					component.$.content.innerHTML = "";
+					component.$.content.appendChild(taskTimeout);
+				}
+			},
+			startChallenge: function(){
+				this.taskIndex = 0;
+				localStorage.setItem("timer", new Date().getTime());
+				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
+				this.$.taskTimer.start();
+			},
+			loadTaskById: function(key){
+				localStorage.setItem("currentTask", key);
+				get(this.$.loadTaskRequest, "/task/" + key + "?result=" + localStorage.getItem("result"));
+			},
+			onTaskResponse: function(r){
+				var task = r.detail.response
+				var webInterface = document.createElement(task.Endpoints.WebInterface);
+				webInterface.task = task;
+				this.$.content.innerHTML = "";
+				this.$.content.appendChild(webInterface);
+			},
+			displayArrows: function(){
+				this.showBackArrow = this.taskIndex > 0;
+				this.showForwardArrow = this.taskIndex < this.challenge.Tasks.length;
+			}
+		});
 
-  </script>
+	</script>
 </dom-module>

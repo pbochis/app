@@ -1,0 +1,126 @@
+<dom-module id="code-task">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		#componentWrapper{
+			height: 100%;
+		}
+		#componentWrapper>div{
+			height: 100%;
+		}
+		paper-material{
+			width: 100%;
+			margin: auto;
+			background: white;
+		}
+		#codeEditorWrapper{
+			height: calc(100% - 40px);
+			width: 100%;
+		}
+		#leftCard{
+			margin: 16px 8px 16px 16px;
+			width: calc(100% - 24px);
+			height: calc(100% - 32px);
+		}
+		#leftCard>h2{
+			height: 40px;
+			margin: 0;
+			padding-left: 20px;
+		}
+		#topRightCard{
+			overflow: auto;
+			margin: 16px 16px 16px 8px;
+			width: calc(100% - 24px);
+			height: calc(50% - 24px);
+		}
+		#botRightCard{
+			overflow: hidden;
+			margin: 8px 16px 16px 8px;
+			width: calc(100% - 24px);
+			height: calc(50% - 24px);
+		}
+		#buttons{
+			height: 35px;
+		}
+		#consoleWrapper{
+			height: calc(100% - 50px);
+		}
+		#buttons>paper-icon-button{
+			padding: 5px;
+			margin: 0;
+		}
+		#buttons>language-selector{
+			padding: 5px;
+			margin: 0;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="ajaxRequest"
+			handle-as="json"
+			debounce-duration="1000"
+			content-type="application/json"
+			>
+		</iron-ajax>
+		<div id="componentWrapper" class="horizontal layout">
+			<div class="flex">
+				<paper-material id="leftCard" elevation="1">
+					<h2>Code editor</h2>
+					<div id="codeEditorWrapper">
+						<code-editor id="codeEditor"></code-editor>
+					</div>
+				</paper-material>
+			</div>
+			<div class="flex">
+				<paper-material id="topRightCard" elevation="1">
+					<task-display task="{{task}}"></task-display>
+				</paper-material>
+				<paper-material id="botRightCard" elevation="1">
+					<div id="buttons" class="horizontal layout">
+						<paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
+						<language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
+					</div>
+					<div id="consoleWrapper">
+						<content></content>
+					</div>
+				</paper-material>
+			</div>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'code-task',
+			properties: {
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				control: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(task)'
+			],
+			ready: function(){
+				this.$.codeEditor.setMode("java");
+			},
+			afterPropertiesSet: function(){
+				this.languages = getLanguagesForTags(this.task.Languages);
+			},
+			languageChanged: function(){
+				this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag)
+			},
+			runCode: function(){
+				var lang = this.$.languageSelector.getSelectedLanguage().tag
+				this.$.codeEditor.runCode(lang, this.task.Key);
+				this.control.loading();
+			}
+		});
+	</script>
+</dom-module>

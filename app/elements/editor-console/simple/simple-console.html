@@ -1,41 +1,43 @@
 <dom-module id="simple-console">
-  <style>
-    iron-autogrow-textarea{
-      border: none;
-      position: relative;
-      width: 100%;
-      height: 150px;
-      max-height: 80%;
-      left: 0;
-      right: 0;
-    }
-  </style>
-
-  <template>
-    <general-console id="generalConsole">
-      <iron-autogrow-textarea id="output" readonly>
-      </iron-autogrow-textarea>
-    </general-general>
-  </template>
-  <script>
-    Polymer({
-      is: 'simple-console',
-      setOutput: function(data){
-        this.$.generalConsole.showConsole()
-        var output = ""
-        if(data!=undefined){
-          output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
-        }else{
-          output = "Bad request"
-        }
-        this.$.output.textarea.value = output;
-      },
-      loading: function(){
-        this.$.generalConsole.loading()
-      },
-      error: function(err){
-        this.$.generalConsole.error(err)
-      }
-    });
-  </script>
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		iron-autogrow-textarea{
+			border: none;
+			position: relative;
+			width: calc(100% - 10px);
+			height: 100%;
+			left: 0;
+			right: 0;
+		}
+	</style>
+	<template>
+		<general-console id="generalConsole">
+			<iron-autogrow-textarea id="output" readonly>
+			</iron-autogrow-textarea>
+		</general-general>
+	</template>
+	<script>
+		Polymer({
+			is: 'simple-console',
+			setOutput: function(data){
+				this.$.generalConsole.showConsole()
+				var output = ""
+				if(data!=undefined){
+					output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
+				}else{
+					output = "Bad request"
+				}
+				this.$.output.textarea.value = output;
+			},
+			loading: function(){
+				this.$.generalConsole.loading()
+			},
+			error: function(err){
+				this.$.generalConsole.error(err)
+			}
+		});
+	</script>
 </dom-module>

@@ -1,31 +1,40 @@
 <link rel="import" href="javaut-output.html">
 
 <dom-module id="javaut-console">
-  <template>
-    <general-console id="generalConsole">
-      <javaut-output id="unitTestConsole" run-output="{{runOutput}}">
-      </javaut-output>
-    </general-general>
-  </template>
-  <script>
-    Polymer({
-      is: 'javaut-console',
-      properties:{
-        runOutput:{
-          type: Object,
-          notify: true
-        }
-      },
-      setOutput: function(runOutput){
-        this.runOutput = runOutput;
-        this.$.generalConsole.showConsole()
-      },
-      loading: function(){
-        this.$.generalConsole.loading()
-      },
-      error: function(err){
-        this.$.generalConsole.error(err)
-      }
-    });
-  </script>
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		#generalConsole{
+			overflow: auto;
+		}
+	</style>
+	<template>
+		<general-console id="generalConsole">
+			<javaut-output run-output="{{runOutput}}">
+			</javaut-output>
+		</general-general>
+	</template>
+	<script>
+		Polymer({
+			is: 'javaut-console',
+			properties:{
+				runOutput:{
+					type: Object,
+					notify: true
+				}
+			},
+			setOutput: function(runOutput){
+				this.runOutput = runOutput;
+				this.$.generalConsole.showConsole()
+			},
+			loading: function(){
+				this.$.generalConsole.loading()
+			},
+			error: function(err){
+				this.$.generalConsole.error(err)
+			}
+		});
+	</script>
 </dom-module>

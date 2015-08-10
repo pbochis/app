@@ -1,65 +1,61 @@
 <dom-module id="output-test-console">
-
-  <style>
-    .red{
-      color: red;
-    }
-
-    .green{
-      color: green;
-    }
-
-    p{
-      font-family: "Lucida Console", Monaco, monospace;
-    }
-
-    #diffWrap{
-      max-height: 400px;
-      overflow: scroll;
-    }
-  </style>
-
-  <template>
-    <general-console id="generalConsole">
-      <div id="diffWrap">
-        <template is="dom-repeat" items="{{items}}">
-          <p><span>{{index}}</span>. <span class$="{{getClass(index)}}">{{item}}</span></p>
-        </template>
-      </div>
-    </general-general>
-  </template>
-  <script>
-   Polymer({
-     is: 'output-test-console',
-     properties:{
-       items:{
-         type: Array,
-         notify: true
-       }
-     },
-     setOutput: function(data){
-       this.$.generalConsole.showConsole()
-       var output = ""
-       if(data!=undefined){
-         if(data.Stderr != ""){
-           output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
-         }else{
-           this.diffLines = data.DiffLines
-           this.items = data.Stdout.split("\n");
-         }
-       }else{
-         output = "Bad request"
-       }
-     },
-     loading: function(){
-       this.$.generalConsole.loading()
-     },
-     error: function(err){
-       this.$.generalConsole.error(err)
-     },
-     getClass: function(index){
-       return this.diffLines.indexOf(index) !== -1 ? "red" : "green";
-     }
-   });
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		.red{
+			color: red;
+		}
+		.green{
+			color: green;
+		}
+		p{
+			font-family: "Lucida Console", Monaco, monospace;
+		}
+		#generalConsole{
+			overflow: auto;
+		}
+	</style>
+	<template>
+		<general-console id="generalConsole">
+			<template is="dom-repeat" items="{{items}}">
+				<p><span>{{index}}</span>. <span class$="{{getClass(index)}}">{{item}}</span></p>
+			</template>
+		</general-general>
+	</template>
+	<script>
+	 Polymer({
+		 is: 'output-test-console',
+		 properties:{
+			 items:{
+				 type: Array,
+				 notify: true
+			 }
+		 },
+		 setOutput: function(data){
+			 this.$.generalConsole.showConsole()
+			 var output = ""
+			 if(data!=undefined){
+				 if(data.Stderr != ""){
+					 output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
+				 }else{
+					 this.diffLines = data.DiffLines
+					 this.items = data.Stdout.split("\n");
+				 }
+			 }else{
+				 output = "Bad request"
+			 }
+		 },
+		 loading: function(){
+			 this.$.generalConsole.loading()
+		 },
+		 error: function(err){
+			 this.$.generalConsole.error(err)
+		 },
+		 getClass: function(index){
+			 return this.diffLines.indexOf(index) !== -1 ? "red" : "green";
+		 }
+	 });
  </script>
 </dom-module>
