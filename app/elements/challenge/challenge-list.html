@@ -34,12 +34,11 @@
 				this.challenges = req.detail.response;
 			},
 			onError: function (error) {
-				handleError(error)
+				handleError(error);
 			},
 			challengeInfo: function (e) {
-				console.log(e.model.challenge);
 				page.redirect('/challenges/' + e.model.challenge.Key);
 			}
-		})
+		});
 	</script>
 </dom-module>
