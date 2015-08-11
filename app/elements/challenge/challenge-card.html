@@ -27,6 +27,7 @@
 		}
 
 		paper-fab {
+		 	--paper-fab-background: #e5e5e5;
 			position: absolute;
 			top: 20px;
 			right: 20px;
@@ -42,7 +43,7 @@
 	<template>
 		<paper-material id="challenge" elevation="2" class="card">
 			<h2>{{challenge.Name}}</h2>
-			<paper-fab mini icon="chevron-right" on-click="toggleSelectTask"></paper-fab>
+			<paper-fab mini icon="chevron-right" on-click="viewChallengeDetail"></paper-fab>
 			<div class="duration">
 				<iron-icon icon="alarm"></iron-icon>
 				<span>{{duration}}</span>
@@ -66,6 +67,9 @@
 			},
 			computeDuration: function (challenge) {
 				return util.computeDuration(challenge.Duration);
+			},
+			viewChallengeDetail: function(){
+				page.redirect('/challenges/' + this.challenge.Key);
 			}
 		});
 	</script>
