@@ -33,10 +33,10 @@
 			observers: [
 				'afterPropertiesSet(skillWeights)'
 			],
-			afterPropertiesSet: function(skillWeights) {
-				this.skills = []
+			afterPropertiesSet: function() {
+				this.skills = [];
 				for (var skill in this.skillIconMap) {
-					if (this.skillIconMap.hasOwnProperty(skill) && this.skillWeights[skill] <= 0) {
+					if (!this.skillIconMap.hasOwnProperty(skill) || this.skillWeights[skill] <= 0) {
 						continue;
 					}
 					this.push('skills', {
@@ -47,12 +47,12 @@
 				}
 			},
 			computeColor: function(value) {
-				value = Math.floor(255 - value * 255);
+				value = Math.floor(255 * (1 - value));
 				return 'rgb(' + value + ', ' + value + ', ' + value + ');';
 			},
 			computeValue: function(value) {
 				return (value * 100) + '%';
 			}
-		})
+		});
 	</script>
 </dom-module>

@@ -138,7 +138,7 @@
 				}
 				localStorage.setItem('currentTask', key);
 				localStorage.setItem('currentTaskIndex', this.taskIndex);
-				get(this.$.loadTaskRequest, '/tasks/' + key + '?result=' + localStorage.getItem('result'));
+				util.get(this.$.loadTaskRequest, '/tasks/' + key + '?result=' + localStorage.getItem('result'));
 			},
 			onTaskResponse: function(r){
 				var task = r.detail.response;
@@ -169,10 +169,10 @@
 				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 			},
 			finishTask: function(){
-				post(this.$.finishTaskRequest,
-					'/results/'+ localStorage.getItem('result')
-					+ '/finlSubmission/' + this.taskIndex
-					+ '?submissionKey' + localStorage.getItem('lastSubmission'), {});
+				util.post(this.$.finishTaskRequest,
+					'/results/'+ localStorage.getItem('result') +
+					'/finlSubmission/' + this.taskIndex +
+					'?submissionKey' + localStorage.getItem('lastSubmission'), {});
 			},
 			onFinishTaskResponse: function(){
 				this.taskIndex++;
@@ -185,7 +185,7 @@
 					app.finishChallenge();
 				}
 			},
-			onFinishTaskError: function(r){
+			onFinishTaskError: function() {
 			}
 		});
 

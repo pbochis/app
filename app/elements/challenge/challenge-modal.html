@@ -51,7 +51,7 @@
 				for (var i = 0; i < this.selectedTasks.length; i++) {
 					taskKeys.push(this.selectedTasks[i].Key);
 				}
-				post(this.$.postChallengeAjax, '/challenges', {
+				util.post(this.$.postChallengeAjax, '/challenges', {
 					'Tasks': taskKeys,
 					'Description': this.Description,
 					'Name': this.Name,

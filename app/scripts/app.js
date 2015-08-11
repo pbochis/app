@@ -45,7 +45,7 @@
 	};
 
 	app.logout = function () {
-		delete localStorage.clear();
+		localStorage.clear();
 		app.refreshMenu();
 		app.$.paperDrawerPanel.closeDrawer();
 		page.redirect('/login');
@@ -87,7 +87,7 @@
 	app.requestData = function (challengeKey) {
 		if (challengeKey !== '' && challengeKey !== undefined) {
 			localStorage.setItem('challenge', challengeKey);
-			post(app.$.resultRequest, '/results', {'ChallengeKey': challengeKey});
+			util.post(app.$.resultRequest, '/results', {'ChallengeKey': challengeKey});
 		}
 	};
 
@@ -105,7 +105,7 @@
 		var result = r.detail.response;
 		localStorage.setItem('result', result.Key);
 		app.result = result;
-		get(app.$.challengeRequest, '/challenges/' + localStorage.getItem('challenge'));
+		util.get(app.$.challengeRequest, '/challenges/' + localStorage.getItem('challenge'));
 	};
 
 	app.createChallenge = function () {

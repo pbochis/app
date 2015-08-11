@@ -30,13 +30,13 @@
 			],
 			afterPropertiesSet: function(){
 				// TODO(pbochis): Enable error posting after creating the route in the api.
-				// post(this.$.sendErrorAjax,'/error', {'Error': this.initialError})
+				// util.post(this.$.sendErrorAjax,'/error', {'Error': this.initialError})
 			},
 			onResponse: function(res){
 				this.ticketId = res.detail.response;
 			},
 			sendFeedback: function(){
-				put(this.$.sendErrorAjax,'/error', {
+				util.put(this.$.sendErrorAjax,'/error', {
 					Key:      this.ticketKey,
 					Error:    this.initialError,
 					Feedback: this.feedback

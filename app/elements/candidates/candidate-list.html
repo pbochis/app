@@ -28,13 +28,13 @@
 				}
 			},
 			getCandidates: function () {
-				get(this.$.candidateRequest, '/users');
+				util.get(this.$.candidateRequest, '/users');
 			},
 			onResponse: function (r) {
 				this.items = r.detail.response;
 			},
 			onError: function (r) {
-				handleError(r.detail.response);
+				util.error(r.detail.response);
 			}
 		});
 	})();

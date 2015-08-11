@@ -59,13 +59,13 @@
 				}
 			},
 			getChallenges: function () {
-				get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
+				util.get(this.$.getChallengesAjax, '/companies/' + util.company().Key + '/challenges');
 			},
 			getCandidates: function () {
 				this.$.candidateList.getCandidates();
 			},
 			inviteCandidate: function () {
-				post(this.$.inviteCandidate, '/invitations', {
+				util.post(this.$.inviteCandidate, '/invitations', {
 					'Address': this.Address,
 					'Challenge': this.getSelectedChallenge()
 				});
@@ -78,7 +78,7 @@
 				// page.redirect('/challenges/' + this.getSelectedChallenge());
 			},
 			onError: function (error) {
-				handleError(error);
+				util.error(error);
 			},
 			submitForm: function () {
 				this.$.form.submit();

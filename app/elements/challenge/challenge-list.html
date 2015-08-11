@@ -28,13 +28,13 @@
 				}
 			},
 			getChallenges: function () {
-				get(this.$.getChallengesAjax, '/companies/' + company.Key + '/challenges');
+				util.get(this.$.getChallengesAjax, '/companies/' + util.company().Key + '/challenges');
 			},
 			onResponse: function (req) {
 				this.challenges = req.detail.response;
 			},
 			onError: function (error) {
-				handleError(error);
+				util.error(error);
 			},
 			challengeInfo: function (e) {
 				page.redirect('/challenges/' + e.model.challenge.Key);

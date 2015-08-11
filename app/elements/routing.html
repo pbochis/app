@@ -3,7 +3,7 @@
 window.addEventListener('WebComponentsReady', function() {
 	page('/', function() {
 		checkAuthorization();
-		if (company) {
+		if (util.company()) {
 			page('/candidates');
 		} else {
 			page('/challenge');
@@ -13,7 +13,7 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/token/:token', function(context) {
 		var token = context.params.token;
 		var decodedToken = atob(token).split(':');
-		accessToken = { Value: decodedToken[1] };
+		var accessToken = { Value: decodedToken[1] };
 		localStorage.accessToken = JSON.stringify(accessToken);
 		app.requestData(decodedToken[0]);
 		// TODO(flowlo): Request /user to set localStorage.user, but
@@ -88,9 +88,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/error', function() {
-		var lastError = getLastError();
-		console.log(lastError);
-		app.$.error.initialError = lastError;
+		app.$.error.initialError = util.initialError;
 		app.header = 'Error Report';
 		app.route = 'error';
 	});

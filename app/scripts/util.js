@@ -1,113 +1,71 @@
-var BASE_URL = 'https://api.cod.uno';
+/* exported util */
 
-if (location.origin.indexOf('localhost') !== -1) {
-	BASE_URL = 'http://localhost:8080';
-}
+var util = {
+	build: function(suffix) {
+		var prefix = 'https://api.cod.uno';
 
-var accessToken = undefined;
-if (localStorage.accessToken !== undefined) {
-	accessToken = JSON.parse(localStorage.accessToken);
-}
+		if (location.origin.indexOf('localhost') !== -1) {
+			prefix = 'http://localhost:8080';
+		}
 
-var company = undefined;
-if (localStorage.company !== undefined) {
-	company = JSON.parse(localStorage.company);
-}
+		return prefix + suffix;
+	},
+	accessToken: function() {
+		return JSON.parse(localStorage.accessToken);
+	},
+	company: function() {
+		return JSON.parse(localStorage.company);
+	},
+	user: function() {
+		return JSON.parse(localStorage.user);
+	},
+	get: function(ajaxRequest, route, authorization) {
+		ajaxRequest.url = this.build(route);
+		ajaxRequest.method = 'GET';
+		ajaxRequest.headers = {'Authorization': (authorization || 'Token ' + this.accessToken().Value)};
+		ajaxRequest.generateRequest();
+	},
+	post: function(ajaxRequest, route, body) {
+		ajaxRequest.url = this.build(route);
+		ajaxRequest.method = 'POST';
+		ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken().Value};
+		ajaxRequest.body = JSON.stringify(body);
+		ajaxRequest.generateRequest();
+	},
+	put: function (ajaxRequest, route, body) {
+		ajaxRequest.url = this.build(route);
+		ajaxRequest.method = 'PUT';
+		ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken()};
+		ajaxRequest.body = JSON.stringify(body);
+		ajaxRequest.generateRequest();
+	},
+	computeDuration: function (duration) {
+		var seconds = duration / 1e9;
+		var minutes = Math.floor(seconds / 60);
+		var hours = Math.floor(minutes / 60);
+		var days = Math.floor(hours / 24);
+		var months = Math.floor(days / 30);
+		if (months >= 1) {
+			return months + ' months';
+		}
+		if (days >= 2) {
+			return days + ' days';
+		}
+		if (hours >= 5) {
+			return hours + ' hours';
+		}
+		return minutes + ' minutes';
+	},
+	error: function (error) {
+		if (this.initialError !== undefined) {
+			console.log('Looks like handleError was called twice. This should not have happened.');
+		}
 
-var user = undefined;
-if (localStorage.user !== undefined) {
-	user = JSON.parse(localStorage.user);
-}
-
-function get(ajaxRequest, route, authorization, responseCallback) {
-	ajaxRequest.url = BASE_URL + route;
-	ajaxRequest.method = 'GET';
-	if (authorization) {
-		ajaxRequest.headers = {'Authorization': authorization};
-	} else {
-		ajaxRequest.headers = {'Authorization': 'Token ' + accessToken.Value};
-	}
-	ajaxRequest.generateRequest();
-}
-
-function post(ajaxRequest, route, body) {
-	ajaxRequest.url = BASE_URL + route;
-	ajaxRequest.method = 'POST';
-	ajaxRequest.headers = {'Authorization': 'Token ' + accessToken.Value};
-	ajaxRequest.body = JSON.stringify(body);
-	ajaxRequest.generateRequest();
-}
-
-function getLanguagesForTags(tags) {
-	var langs = [];
-	for (var i = 0; i < tags.length; i++) {
-		langs.push(getLanguageForTag(tags[i]));
-	}
-	return langs;
-}
-
-function getLanguageForTag(tag) {
-	var lang = {tag: tag}
-	switch (tag) {
-		case 'c':
-			lang.name = 'C';
-			break;
-		case 'cpp':
-			lang.name = 'C++';
-			break;
-		case 'java':
-			lang.name = 'Java';
-			break;
-		case 'py':
-			lang.name = 'Python';
-			break;
-		default:
-			lang.name = 'Undefined';
-			break;
-	}
-	return lang;
-}
-
-function put(ajaxRequest, route, body) {
-	ajaxRequest.url = BASE_URL + route;
-	ajaxRequest.method = 'PUT';
-	ajaxRequest.headers = {'Authorization': 'Token ' + accessToken};
-	ajaxRequest.body = JSON.stringify(body);
-	ajaxRequest.generateRequest();
-}
-
-function computeDuration(duration) {
-	var seconds = duration / 1e9;
-	var minutes = Math.floor(seconds / 60);
-	var hours = Math.floor(minutes / 60);
-	var days = Math.floor(hours / 24);
-	var months = Math.floor(days / 30);
-	if (months >= 1) {
-		return months + ' months';
-	}
-	if (days >= 2) {
-		return days + ' days';
-	}
-	if (hours >= 5) {
-		return hours + ' hours';
-	}
-	return minutes + ' minutes';
-}
-
-(function () {
-	var initialError;
-
-	function handleError(error) {
-		initialError = error;
-		if (error.detail.request.xhr.status == 401) {
+		this.initialError = error;
+		if (error.detail.request.xhr.status === 401) {
 			return page.redirect('/login');
 		}
 		page.redirect('/error');
-	}
-	function getLastError() {
-		return initialError;
-	}
-	window.getLastError = getLastError;
-	window.handleError = handleError;
-})();
-
+	},
+	initialError: undefined
+};

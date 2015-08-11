@@ -3,7 +3,7 @@
     "camelcase"     : false,
     "curly"         : true,
     "eqeqeq"        : true,
-    "forin"         : true,
+    "forin"         : false,
     "freeze"        : true,
     "immed"         : true,
     "latedef"       : true,
@@ -68,5 +68,12 @@
     "worker"        : false,
     "wsh"           : false,
     "yui"           : false,
-    "globals"       : { "Polymer": false }
+    "globals"       : {
+        "app"     : false,
+        "alert"   : false,
+        "console" : false,
+        "page"    : false,
+        "Polymer" : false,
+        "util"    : true
+    }
 }

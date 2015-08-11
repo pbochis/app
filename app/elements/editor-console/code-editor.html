@@ -25,6 +25,7 @@
 	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
 	<script src="/bower_components/ace-min-noconflict/ext-language_tools.js" type="application/javascript"></script>
 	<script>
+		/*global ace:false */
 		Polymer({
 			is: 'code-editor',
 			properties: {},
@@ -41,7 +42,7 @@
 					Language: lang,
 					Code: this.getText()
 				};
-				post(this.$.runCodeRequest, '/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions', data);
+				util.post(this.$.runCodeRequest, '/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions', data);
 			},
 			getText: function() {
 				return this.$.editor.getValue();
@@ -65,7 +66,7 @@
 				});
 			},
 			onError: function(error) {
-				handleError(error);
+				util.error(error);
 			},
 			onResponse: function() {
 			}

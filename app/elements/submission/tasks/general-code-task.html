@@ -121,7 +121,28 @@
 				this.$.codeEditor.setMode('java');
 			},
 			afterPropertiesSet: function(){
-				this.languages = getLanguagesForTags(this.task.Languages);
+				this.languages = [];
+				for (var i = 0; i < this.task.Languages.length; i++) {
+					var lang = { tag: this.task.Languages[i] };
+					switch (this.task.Languages[i]) {
+						case 'c':
+							lang.name = 'C';
+							break;
+						case 'cpp':
+							lang.name = 'C++';
+							break;
+						case 'java':
+							lang.name = 'Java';
+							break;
+						case 'py':
+							lang.name = 'Python';
+							break;
+						default:
+							lang.name = 'Undefined';
+							break;
+					}
+					this.languages.push(lang);
+				}
 			},
 			languageChanged: function(){
 				this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag);

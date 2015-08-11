@@ -85,7 +85,7 @@
 				this.showButton = this.showAllButtons || false;
 			},
 			computeDuration: function (task) {
-				return computeDuration(task.Duration);
+				return util.computeDuration(task.Duration);
 			},
 			toggleSelectTask: function () {
 				var index = this.selectedTasks.indexOf(this.task);
@@ -105,12 +105,12 @@
 					app.header = 'Tasks';
 				}
 			},
-			_selectedTasksCleared: function (newValue, oldValue) {
+			_selectedTasksCleared: function (newValue) {
 				if (newValue.indexOf(this.task) === -1) {
 					this.$.task.style.border = '';
 				}
 			},
-			_globalValueChanged: function (newValue, oldValue) {
+			_globalValueChanged: function (newValue) {
 				this.showButton = newValue;
 			}
 		});

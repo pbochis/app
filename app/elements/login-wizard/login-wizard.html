@@ -109,10 +109,10 @@ Polymer({
 		this.$.tokenRequest.generateRequest();
 	},
 	onToken: function() {
-		accessToken = this.$.tokenRequest.lastResponse;
+		var accessToken = this.$.tokenRequest.lastResponse;
 		localStorage.accessToken = JSON.stringify(accessToken);
 		this.$.loginPageFinal.icon = 'lock-open';
-		var h = { 'Authorization': 'Token ' + accessToken.Value};
+		var h = { 'Authorization': 'Token ' + util.accessToken().Value};
 		this.$.userRequest.headers = h;
 		this.$.companyRequest.headers = h;
 		this.$.userRequest.generateRequest();
@@ -122,7 +122,7 @@ Polymer({
 		console.log(this.$.tokenRequest.lastError);
 	},
 	onCompany: function() {
-		company = this.$.companyRequest.lastResponse;
+		var company = this.$.companyRequest.lastResponse;
 		localStorage.company = JSON.stringify(company);
 		app.login();
 	},
@@ -130,20 +130,20 @@ Polymer({
 		app.login();
 	},
 	onUser: function() {
-		user = this.$.userRequest.lastResponse;
+		var user = this.$.userRequest.lastResponse;
 		localStorage.user = JSON.stringify(user);
 	},
 	getTokenUrl: function() {
-		return BASE_URL + '/accessTokens';
+		return util.build('/accessTokens');
 	},
 	getUserUrl: function() {
-		return BASE_URL + '/user';
+		return util.build('/user');
 	},
 	getCompanyUrl: function() {
 		return this.getUserUrl() + '/company';
 	},
 	onUserError: function(err) {
-		handleError(err);
+		util.error(err);
 	}
 });
 </script>

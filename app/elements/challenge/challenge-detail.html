@@ -52,13 +52,13 @@
         'afterPropertiesSet(challengeKey)'
       ],
       afterPropertiesSet: function(){
-        get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey);
+        util.get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey);
       },
       onResponse: function(res){
         this.challenge = res.detail.response;
         this.tasks = [];
         for (var i = 0; i < this.challenge.Tasks.length; i++){
-          get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i]);
+          util.get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i]);
         }
       },
       onTaskResponse: function(res){
@@ -68,7 +68,7 @@
         page.redirect('/coders/challenge/' + this.challenge.Key);
       },
       onError: function(error){
-        handleError(error);
+        util.error(error);
       }
     });
   </script>
