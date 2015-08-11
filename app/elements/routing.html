@@ -1,4 +1,4 @@
-<script src="../bower_components/page/page.js"></script>
+<script src='../bower_components/page/page.js'></script>
 <script>
 window.addEventListener('WebComponentsReady', function() {
 	page('/', function() {
@@ -15,7 +15,8 @@ window.addEventListener('WebComponentsReady', function() {
 		var decodedToken = atob(token).split(':');
 		var accessToken = { Value: decodedToken[1] };
 		localStorage.accessToken = JSON.stringify(accessToken);
-		app.requestData(decodedToken[0]);
+		localStorage.setItem('challenge', decodedToken[0]);
+		app.startChallenge();
 		// TODO(flowlo): Request /user to set localStorage.user, but
 		// this is currently not needed.
 		app.login();
@@ -25,13 +26,18 @@ window.addEventListener('WebComponentsReady', function() {
 		checkAuthorization();
 		app.route = 'challenge';
 		app.header = 'Challenge';
+		Polymer.Base.importHref('/elements/submission/challenge-page.html', function(){
+			app.startChallenge();
+		});
 	});
 
 	page('/challenges', function () {
 		checkAuthorization();
-		app.$.challengeList.getChallenges();
 		app.route = 'challenges';
 		app.header = 'Challenges';
+		Polymer.Base.importHref('/elements/challenge/challenge-list.html', function(){
+			app.$.challengeList.getChallenges();
+		});
 	});
 
 	page('/challenges/:challengeKey', function(data){
@@ -57,17 +63,21 @@ window.addEventListener('WebComponentsReady', function() {
 		checkAuthorization();
 		checkIsCompany();
 		app.route = 'candidate';
-		app.$.candidatePage.getChallenges();
-		app.$.candidatePage.getCandidates();
 		app.header = 'Candidates';
+		Polymer.Base.importHref('/elements/candidates/candidate-page.html', function(){
+			app.$.candidatePage.getChallenges();
+			app.$.candidatePage.getCandidates();
+		});
 	});
 
 	page('/tasks', function() {
 		checkAuthorization();
 		checkIsCompany();
-		app.$.taskList.getTasks();
 		app.header = 'Tasks';
 		app.route = 'tasks';
+		Polymer.Base.importHref('/elements/task/task-list.html', function(){
+			app.$.taskList.getTasks();
+		});
 	});
 
 	page('/login', function() {
@@ -80,6 +90,7 @@ window.addEventListener('WebComponentsReady', function() {
 		} else {
 			app.route = 'login';
 			app.header = 'Login';
+			Polymer.Base.importHref('/elements/login-wizard/login-wizard.html');
 		}
 	});
 

@@ -41,7 +41,7 @@
 				}
 			},
 			startWithOffset: function(offset) {
-				this.duration -= (Date.now() - offset.getTime()) * 1e6;
+				this.duration -= (Date.now() - offset) * 1e6;
 				this.start();
 			},
 			tick: function() {

@@ -1,3 +1,12 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/elements/submission/challenge-display.html">
+<link rel="import" href="/elements/submission/countdown-timer.html">
+<!-- TODO(victorbalan): Import this exactly when the challenge has finished -->
+<link rel="import" href="/elements/submission/challenge-finished.html">
+
 <dom-module id="sequential-challenge">
 	<style>
 		:host{
@@ -112,14 +121,12 @@
 					var currentTask = localStorage.getItem('currentTask');
 					var currentTaskIndex = localStorage.getItem('currentTaskIndex');
 					this.taskIndex = 0;
-					if(timer !== undefined && currentTask !== undefined && currentTaskIndex!==undefined){
+					if(timer !== null && currentTask !== null && currentTaskIndex !== null){
 						this.taskIndex = Number(currentTaskIndex);
 						this.loadTaskById(currentTask);
-						this.$.taskTimer.startWithOffset(timer);
+						this.$.taskTimer.startWithOffset(Number(timer));
 					}
 					this.displayArrows();
-			},
-			ready: function() {
 			},
 			timeout: function() {
 				var taskTimeout = document.createElement('task-timeout');
@@ -127,7 +134,7 @@
 				this.$.content.appendChild(taskTimeout);
 			},
 			startChallenge: function() {
-				localStorage.setItem('timer', new Date().getTime());
+				localStorage.setItem('timer', Date.now());
 				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				this.$.taskTimer.start();
 				this.displayArrows();
@@ -142,14 +149,16 @@
 			},
 			onTaskResponse: function(r){
 				var task = r.detail.response;
-				var webInterface = document.createElement(task.Endpoints.WebInterface);
-				webInterface.task = task;
-				var component = this;
-				webInterface.addEventListener('task-finished', function(){
-					component.finishTask();
+				this.importHref('/elements/submission/tasks/' + task.Endpoints.WebInterface + '.html', function(){
+					var webInterface = document.createElement(task.Endpoints.WebInterface);
+					webInterface.task = task;
+					var component = this;
+					webInterface.addEventListener('task-finished', function(){
+						component.finishTask();
+					});
+					this.$.content.innerHTML = '';
+					this.$.content.appendChild(webInterface);
 				});
-				this.$.content.innerHTML = '';
-				this.$.content.appendChild(webInterface);
 			},
 			displayArrows: function(){
 				this.showBackArrow = this.taskIndex > 0;

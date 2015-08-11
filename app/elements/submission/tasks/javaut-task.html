@@ -1,4 +1,7 @@
-<dom-module id="output-match-task">
+<link rel="import" href="general-code-task.html">
+<link rel="import" href="/elements/code-editor/consoles/javaut-console.html">
+
+<dom-module id="javaut-task">
 	<style>
 		:host{
 			display: block;
@@ -7,17 +10,21 @@
 	</style>
 	<template>
 		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError" finished-button-class="{{finishButtonClass}}">
-			<output-test-console id="console"></output-test-console>
+			<javaut-console id="console"></javaut-console>
 		</code-task>
 	</template>
 	<script>
 		Polymer({
-			is: 'output-match-task',
+			is: 'javaut-task',
 			properties: {
 				task: {
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				control: {
+					type: Object,
+					notify: true
 				},
 				finishButtonClass:{
 					type: String,
@@ -36,7 +43,7 @@
 			},
 			onResponse: function(r){
 				localStorage.setItem('lastSubmission', r.detail.response.Key);
-				if(r.detail.response.DiffLines !== null){
+				if(r.detail.response.Results.Failures !== 0 || r.detail.response.Results.Errors !== 0){
 					this.finishButtonClass = 'error';
 				}else{
 					this.finishButtonClass = 'success';
