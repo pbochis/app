@@ -65,10 +65,6 @@
 	// have resolved and content has been stamped to the page
 	app.addEventListener('dom-change', function () {
 		app.refreshMenu();
-		var challengeKey = localStorage.getItem('challenge');
-		if (challengeKey !== '' && challengeKey !== undefined) {
-			app.requestData(challengeKey);
-		}
 	});
 
 	// See https://github.com/Polymer/polymer/issues/1381
@@ -84,9 +80,9 @@
 		}
 	};
 
-	app.requestData = function (challengeKey) {
-		if (challengeKey !== '' && challengeKey !== undefined) {
-			localStorage.setItem('challenge', challengeKey);
+	app.startChallenge = function(){
+		var challengeKey = localStorage.getItem('challenge');
+		if (challengeKey !== '' && challengeKey !== null) {
 			util.post(app.$.resultRequest, '/results', {'ChallengeKey': challengeKey});
 		}
 	};
