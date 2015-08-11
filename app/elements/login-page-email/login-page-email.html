@@ -35,7 +35,7 @@ paper-material > div:first-child {
 	height: 15%;
 	max-height: 248px;
 	padding: 10%;
-	background: #424b4b;
+	background: #373b50;
 	color: white;
 
 	@apply(--layout-horizontal);
@@ -64,7 +64,7 @@ paper-material > div > paper-button {
 				</div>
 			</div>
 			<div>
-				<paper-input type="text" label="Username or e-mail" value="{{email}}" autofocus="true"></paper-input>
+				<paper-input type="text" label="Username or e-mail" value="{{email}}" autofocus="true" on-keydown="onKeydown"></paper-input>
 				<paper-button class$="{{empty}}" flat colorful on-change="checkEmpty" on-click="next">Next</paper-button>
 			</div>
 		</paper-material>
@@ -95,6 +95,11 @@ Polymer({
 	},
 	checkEmpty: function() {
 		this.empty = this.email === '' ? 'empty' : '';
+	},
+	onKeydown: function(e) {
+		if (e.keyCode === 13) {
+			this.fire('next');
+		}
 	}
 });
 </script>

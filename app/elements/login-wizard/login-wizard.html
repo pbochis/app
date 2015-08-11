@@ -1,19 +1,18 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/elements/login-page-email/login-page-email.html">
 <link rel="import" href="/elements/login-page-password/login-page-password.html">
 <link rel="import" href="/elements/login-page-u2f/login-page-u2f.html">
-<link rel="import" href="/elements/login-page-final/login-page-final.html">
-
 <dom-module id="login-wizard">
 	<template>
 		<neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 			<login-page-email email="{{email}}" on-next="next"></login-page-email>
-			<login-page-password password="{{password}}" on-next="next" on-prev="prev"></login-page-password>
+			<login-page-password email="{{email}}" password="{{password}}" on-next="next" on-prev="prev"></login-page-password>
 			<login-page-u2f on-next="next"></login-page-u2f>
-			<login-page-final id="loginPageFinal"></login-page-final>
 		</neon-animated-pages>
+		<paper-toast id="toastCredentials" text="Invalid username/e-mail and password combination, please try again."></paper-toast>
 		<iron-ajax id="tokenRequest"
 			handle-as="json"
 			on-response="onToken"
@@ -48,7 +47,7 @@
 var u2fRequired = false;
 
 // Page indexes.
-var pageEmail = 0, pagePassword = 1, pageU2f = 2, pageFinal = 3;
+var pageEmail = 0, pagePassword = 1, pageU2f = 2;
 
 Polymer({
 	is: 'login-wizard',
@@ -87,8 +86,8 @@ Polymer({
 		if (this.selected === pageEmail) {
 			return;
 		}
-		// Do not allow to go back after U2F, as e-mail and
-		// password already match.
+		// Do not allow to go back from U2F, as e-mail and
+		// password must not change.
 		if (this.selected === pageU2f) {
 			return;
 		}
@@ -102,7 +101,7 @@ Polymer({
 			return;
 		}
 		// Can not get further than U2F.
-		if (this.selected === pageU2f) {
+		if (this.selected === pageU2f || this.selected) {
 			return;
 		}
 		this.entryAnimation = 'slide-from-right-animation';
@@ -110,36 +109,43 @@ Polymer({
 		this.selected++;
 	},
 	requestToken: function() {
-		this.entryAnimation = 'slide-from-right-animation';
-		this.exitAnimation = 'slide-left-animation';
-		this.selected = pageFinal;
 		this.$.tokenRequest.headers = { 'Authorization': 'Basic ' + btoa(this.email + ':' + this.password)};
 		this.$.tokenRequest.generateRequest();
 	},
 	onToken: function() {
 		var accessToken = this.$.tokenRequest.lastResponse;
 		localStorage.accessToken = JSON.stringify(accessToken);
-		this.$.loginPageFinal.icon = 'lock-open';
 		var h = { 'Authorization': 'Token ' + util.accessToken().Value};
 		this.$.userRequest.headers = h;
 		this.$.companyRequest.headers = h;
 		this.$.userRequest.generateRequest();
 		this.$.companyRequest.generateRequest();
 	},
-	onTokenError: function() {
-		console.log(this.$.tokenRequest.lastError);
+	onTokenError: function(err) {
+		if (err.detail.request.xhr.status !== 401) {
+			util.error(err);
+			return;
+		}
+
+		// NOTE: HTTP 401 would normally cause a redirect to
+		// /login but we are already in the process of logging
+		// in, so this has to be dealt with here to avoid
+		// (very probable) inifite looping.
+
+		this.$.toastCredentials.show();
+		this.entryAnimation = 'slide-from-left-animation';
+		this.exitAnimation = 'slide-right-animation';
+		this.selected = pageEmail;
 	},
 	onCompany: function() {
-		var company = this.$.companyRequest.lastResponse;
-		localStorage.company = JSON.stringify(company);
+		localStorage.company = JSON.stringify(this.$.companyRequest.lastResponse);
 		app.login();
 	},
 	onCompanyError: function() {
 		app.login();
 	},
 	onUser: function() {
-		var user = this.$.userRequest.lastResponse;
-		localStorage.user = JSON.stringify(user);
+		localStorage.user = JSON.stringify(this.$.userRequest.lastResponse);
 	},
 	getTokenUrl: function() {
 		return util.build('/accessTokens');
@@ -150,8 +156,6 @@ Polymer({
 	getCompanyUrl: function() {
 		return this.getUserUrl() + '/company';
 	},
-	onUserError: function(err) {
-		util.error(err);
-	}
+	onUserError: util.error
 });
 </script>

@@ -11,13 +11,19 @@ var util = {
 		return prefix + suffix;
 	},
 	accessToken: function() {
-		return JSON.parse(localStorage.accessToken);
+		if (localStorage.accessToken) {
+			return JSON.parse(localStorage.accessToken);
+		}
 	},
 	company: function() {
-		return JSON.parse(localStorage.company);
+		if (localStorage.company) {
+			return JSON.parse(localStorage.company);
+		}
 	},
 	user: function() {
-		return JSON.parse(localStorage.user);
+		if (localStorage.user) {
+			return JSON.parse(localStorage.user);
+		}
 	},
 	get: function(ajaxRequest, route, authorization) {
 		ajaxRequest.url = this.build(route);
@@ -58,7 +64,10 @@ var util = {
 	},
 	error: function (error) {
 		if (this.initialError !== undefined) {
+			// TODO(flowlo): Do not disregard further errors,
+			// save them somewhere and report them too.
 			console.log('Looks like handleError was called twice. This should not have happened.');
+			return;
 		}
 
 		this.initialError = error;

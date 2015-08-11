@@ -36,8 +36,8 @@
 			onResponse: function (r) {
 				this.items = r.detail.response;
 			},
-			onError: function (r) {
-				util.error(r.detail.response);
+			onError: function (error) {
+				util.error(error);
 			}
 		});
 	})();
