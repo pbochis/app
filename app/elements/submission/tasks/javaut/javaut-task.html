@@ -6,7 +6,7 @@
 		}
 	</style>
 	<template>
-		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError">
+		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError" finished-button-class="{{finishButtonClass}}">
 			<javaut-console id="console"> </javaut-console>
 		</code-task>
 	</template>
@@ -22,6 +22,10 @@
 				control: {
 					type: Object,
 					notify: true
+				},
+				finishButtonClass:{
+					type: String,
+					notify: true
 				}
 			},
 			observers: [
@@ -35,6 +39,12 @@
 				};
 			},
 			onResponse: function(r){
+				localStorage.setItem('lastSubmission', r.detail.response.Key);
+				if(r.detail.response.Results.Failures !== 0 || r.detail.response.Results.Errors !== 0){
+					this.finishButtonClass = 'error';
+				}else{
+					this.finishButtonClass = 'success';
+				}
 				this.$.console.setOutput(r.detail.response);
 			},
 			onError: function(error){

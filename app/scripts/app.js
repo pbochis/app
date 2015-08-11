@@ -25,6 +25,14 @@
 		}
 	};
 
+	app.finishChallenge = function(){
+		localStorage.removeItem('challenge');
+		localStorage.removeItem('currentTask');
+		localStorage.removeItem('currentTaskIndex');
+		localStorage.removeItem('timer');
+		localStorage.removeItem('result');
+	}
+
 	app.login = function () {
 		app.refreshMenu();
 		if (!localStorage.accessToken) {

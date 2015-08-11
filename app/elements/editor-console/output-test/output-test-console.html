@@ -31,6 +31,10 @@
 			 items:{
 				 type: Array,
 				 notify: true
+			 },
+			 diffLines:{
+				 type: Array,
+				 notify: true
 			 }
 		 },
 		 setOutput: function(data){
@@ -54,7 +58,10 @@
 			 this.$.generalConsole.error(err);
 		 },
 		 getClass: function(index){
-			 return this.diffLines.indexOf(index) !== -1 ? 'red' : 'green';
+			if(this.diffLines === null){
+				return 'green';
+			}
+			return this.diffLines.indexOf(index) !== -1 ? 'red' : 'green';
 		 }
 	 });
  </script>
