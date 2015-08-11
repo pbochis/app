@@ -4,36 +4,57 @@
 			display: block;
 			height: 100%;
 		}
-		#arrowForward{
-			position: absolute;
-			right: 2%;
-			bottom: 2%;
-		}
-		#arrowBack{
-			position: absolute;
-			left: 2%;
-			bottom: 2%;
-		}
-		#taskTimer{
-			position: absolute;
-			top: 0;
-			right: 5%;
-		}
 		#content{
-			height: 100%;
+			height: calc(100% - 40px);
 		}
 		#startChallengeCard{
 			width:35%;
 		}
+		#taskTimer{
+			margin: 0;
+			padding-top: 10px;
+			width: 50px;
+		}
+		#taskNavHeader{
+			height: 40px;
+			background: white;
+			margin: 0;
+			padding: 0;
+		}
+		#backArrowWrapper{
+			padding-left: 10px;
+			width: 30px;
+		}
+		#frontArrowWrapper{
+			width: 30px;
+			padding-right: 16px;
+		}
+		#taskNavTitle{
+			padding: 0;
+			margin: 0;
+			padding-top: 10px;
+		}
+		#leftFill{
+			width: 50px;
+		}
 	</style>
 	<template>
-		<template is="dom-if" if="{{showForwardArrow}}">
-			<paper-icon-button id="arrowForward" icon="arrow-forward"></paper-icon-button>
-		</template>
-		<template is="dom-if" if="{{showBackArrow}}">
-			<paper-icon-button id="arrowBack" icon="arrow-back"></paper-icon-button>
-		</template>
-		<countdown-timer id="taskTimer" duration="{{challenge.Duration}}" on-timeout="timeout"></countdown-timer>
+		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout">
+			<div id="backArrowWrapper">
+				<template is="dom-if" if="{{showBackArrow}}">
+					<paper-icon-button icon="arrow-back" on-click="previousTask"></paper-icon-button>
+				</template>
+			</div>
+			<span class="flex"></span>
+			<p id="taskNavTitle">{{taskNavTitle}}</p>
+			<span class="flex"></span>
+			<countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}"></countdown-timer>
+			<div id="frontArrowWrapper">
+				<template is="dom-if" if="{{showForwardArrow}}" >
+					<paper-icon-button icon="arrow-forward" on-click="nextTask"></paper-icon-button>
+				</template>
+			</div>
+		</paper-material>
 		<div id="content">
 			<paper-material id="startChallengeCard" elevation="1" class="card">
 				<div class="flex">
@@ -50,9 +71,19 @@
 			content-type="application/json"
 			>
 		</iron-ajax>
+		<iron-ajax
+			id="finishTaskRequest"
+			handle-as="json"
+			debounce-duration="1000"
+			content-type="application/json"
+			on-response="onFinishTaskResponse"
+			on-err="onFinishTaskError"
+			>
+		</iron-ajax>
 	</template>
 	<script>
 		Polymer({
+			// TODO(victorbalan): Refactor component and split logic.
 			is: 'sequential-challenge',
 			properties: {
 				challenge: {
@@ -67,6 +98,10 @@
 				taskIndex: {
 					type: Number,
 					notify: true
+				},
+				taskNavTitle: {
+					type: String,
+					notify: true
 				}
 			},
 			observers: [
@@ -75,15 +110,16 @@
 			afterPropertiesSet: function(){
 					var timer = localStorage.getItem('timer');
 					var currentTask = localStorage.getItem('currentTask');
-					if (timer !== undefined && currentTask !== undefined) {
-						this.$.content.innerHTML = '';
+					var currentTaskIndex = localStorage.getItem('currentTaskIndex');
+					this.taskIndex = 0;
+					if(timer != undefined && currentTask != undefined && currentTaskIndex!=undefined){
+						this.taskIndex = Number(currentTaskIndex);
 						this.loadTaskById(currentTask);
 						this.$.taskTimer.startWithOffset(timer);
 					}
+					this.displayArrows();
 			},
 			ready: function() {
-				this.showForwardArrow = false;
-				this.showBackArrow = false;
 			},
 			timeout: function() {
 				var taskTimeout = document.createElement('task-timeout');
@@ -91,25 +127,66 @@
 				this.$.content.appendChild(taskTimeout);
 			},
 			startChallenge: function() {
-				this.taskIndex = 0;
 				localStorage.setItem('timer', new Date().getTime());
 				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				this.$.taskTimer.start();
+				this.displayArrows();
 			},
 			loadTaskById: function(key){
+				if(this.challenge.Tasks.length>1){
+					this.taskNavTitle = 'Task ' + (this.taskIndex+1) +' of ' + (this.challenge.Tasks.length);
+				}
 				localStorage.setItem('currentTask', key);
-				get(this.$.loadTaskRequest, '/task/' + key + '?result=' + localStorage.getItem('result'));
+				localStorage.setItem('currentTaskIndex', this.taskIndex);
+				get(this.$.loadTaskRequest, '/tasks/' + key + '?result=' + localStorage.getItem('result'));
 			},
 			onTaskResponse: function(r){
 				var task = r.detail.response;
 				var webInterface = document.createElement(task.Endpoints.WebInterface);
 				webInterface.task = task;
+				var component = this;
+				webInterface.addEventListener('task-finished', function(){
+					component.finishTask();
+				})
 				this.$.content.innerHTML = '';
 				this.$.content.appendChild(webInterface);
 			},
 			displayArrows: function(){
 				this.showBackArrow = this.taskIndex > 0;
-				this.showForwardArrow = this.taskIndex < this.challenge.Tasks.length;
+				this.showForwardArrow = this.taskIndex < this.challenge.Tasks.length -1;
+				// TODO(victorbalan): enable arrows when needed
+				this.showForwardArrow = false;
+				this.showBackArrow = false;
+			},
+			nextTask: function(){
+				this.taskIndex++;
+				this.displayArrows();
+				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
+			},
+			previousTask: function(){
+				this.taskIndex--;
+				this.displayArrows();
+				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
+			},
+			finishTask: function(){
+				post(this.$.finishTaskRequest,
+					'/results/'+ localStorage.getItem('result')
+					+ '/finlSubmission/' + this.taskIndex
+					+ '?submissionKey' + localStorage.getItem('lastSubmission'), {});
+			},
+			onFinishTaskResponse: function(r){
+				this.taskIndex++;
+				if(this.taskIndex < this.challenge.Tasks.length){
+					this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
+				}else{
+					var finished = document.createElement('challenge-finished');
+					this.$.content.innerHTML = '';
+					this.$.content.appendChild(finished);
+					app.finishChallenge();
+				}
+			},
+			onFinishTaskError: function(r){
+				console.log(r)
 			}
 		});
 

@@ -1,10 +1,18 @@
 <dom-module id="task-display">
+	<style>
+		:host{
+			display: block;
+			margin: 16px;
+		}
+	</style>
 	<template>
-		<h1>{{task.Name}}</h1>
-		<h3>Description</h3>
-		<p>{{task.Description}}</p>
-		<h3>Instructions</h3>
-		<p>{{task.Instructions}}</p>
+		<div>
+			<h1>{{task.Name}}</h1>
+			<h3>Description</h3>
+			<p>{{task.Description}}</p>
+			<h3>Instructions</h3>
+			<p>{{task.Instructions}}</p>
+		</div>
 	</template>
 	<script>
 		Polymer({

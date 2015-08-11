@@ -35,6 +35,7 @@
 				};
 			},
 			onResponse: function(r){
+				localStorage.setItem('lastSubmission', r.detail.response.Key);
 				this.$.console.setOutput(r.detail.response);
 			},
 			onError: function(error){

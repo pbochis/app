@@ -6,7 +6,7 @@
 		}
 	</style>
 	<template>
-		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError">
+		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError" finished-button-class="{{finishButtonClass}}">
 			<output-test-console id="console"></output-test-console>
 		</code-task>
 	</template>
@@ -18,6 +18,10 @@
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				finishButtonClass:{
+					type: String,
+					notify: true
 				}
 			},
 			observers: [
@@ -31,6 +35,12 @@
 				};
 			},
 			onResponse: function(r){
+				localStorage.setItem('lastSubmission', r.detail.response.Key);
+				if(r.detail.response.DiffLines !== null){
+					this.finishButtonClass = 'error';
+				}else{
+					this.finishButtonClass = 'success';
+				}
 				this.$.console.setOutput(r.detail.response);
 			},
 			onError: function(error){
