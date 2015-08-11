@@ -33,7 +33,7 @@
 		<template is="dom-if" if="{{showBackArrow}}">
 			<paper-icon-button id="arrowBack" icon="arrow-back"></paper-icon-button>
 		</template>
-		<countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}"></countdown-timer>
+		<countdown-timer id="taskTimer" duration="{{challenge.Duration}}" on-timeout="timeout"></countdown-timer>
 		<div id="content">
 			<paper-material id="startChallengeCard" elevation="1" class="card">
 				<div class="flex">
@@ -75,7 +75,7 @@
 			afterPropertiesSet: function(){
 					var timer = localStorage.getItem("timer");
 					var currentTask = localStorage.getItem("currentTask");
-					if(timer != undefined && currentTask != undefined){
+					if (timer != undefined && currentTask != undefined) {
 						this.$.content.innerHTML = "";
 						this.loadTaskById(currentTask);
 						this.$.taskTimer.startWithOffset(timer);

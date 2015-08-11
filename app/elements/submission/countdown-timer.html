@@ -1,7 +1,7 @@
 <dom-module id="countdown-timer">
 	<template>
-			<div id="countdown">
-				<p>{{remainingTime}}</p>
+			<div>
+				<p>{{formatDuration()}}</p>
 			</div>
 	</template>
 	<script>
@@ -13,54 +13,42 @@
 					notify: true,
 					reflectToAttribute: true
 				},
-				remainingTime: {
-					type: String,
-					notify: true
-				},
-				timeout: {
-					notify: true,
-					reflectToAttribute: true
+				tickInterval: {
+					type: Number
 				}
 			},
-			start: function(){
-				this.duration = this.duration / 1000 / 1000 / 1000;
-				if(this.duration<=0){
+			formatDuration: function() {
+				var d = this.duration / 1e9;
+				var h = Math.round(d / 3600) % 24;
+				var m = Math.round(d / 60) % 60;
+				var s = Math.round(d) % 60;
+				return ('0' + h).slice(-2) + ':' +  ('0' + m).slice(-2) +  ('0' + s).slice(-2);
+			},
+			start: function() {
+				if (this.duration <= 0) {
 					this.timeout();
-					this.clearTimer();
-					return
+					return;
 				}
-				var component = this;
-				formatTime(this.duration);
-				var remainingTime = this.duration;
-				var timer = window.setInterval(function(){
-					if(remainingTime==1){
-						clearInterval(timer);
-						component.timeout();
-						component.clearTimer();
-						component.remainingTime = "";
-					}else{
-						remainingTime--;
-						formatTime(remainingTime);
-					}
-				}, 1000)
 
-				function formatTime(totalSec){
-					var hours = parseInt( totalSec / 3600 ) % 24;
-					var minutes = parseInt( totalSec / 60 ) % 60;
-					var seconds = Math.round(totalSec % 60);
-					seconds--;
-					component.remainingTime = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds	< 10 ? "0" + seconds : seconds);
+				if (!this.tickInterval) {
+					this.tickInterval = window.setInterval(this.tick, 1000);
 				}
 			},
-			startWithOffset: function(offsetDate){
-				var now = new Date().getTime();
-				var difference = (now - offsetDate) * 1000 * 1000;
-
-				this.duration = this.duration - difference;
+			startWithOffset: function(offset) {
+				this.duration -= (Date.now() - offset.getTime()) * 1e6;
 				this.start();
 			},
-			clearTimer: function(){
-				localStorage.removeItem("timer");
+			tick: function() {
+				if (this.duration <= 0) {
+					clearInterval(this.tickInterval);
+					this.timeout();
+				}
+				this.duration -= 1e9;
+			},
+			timeout: function() {
+				localStorage.removeItem('timer');
+				this.fire('timeout');
+				return;
 			}
 		});
 	</script>
