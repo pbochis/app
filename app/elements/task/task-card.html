@@ -78,10 +78,10 @@
 					observer: '_globalValueChanged'
 				}
 			},
-			onHovered: function (e) {
+			onHovered: function () {
 				this.showButton = true;
 			},
-			onUnhovered: function (e) {
+			onUnhovered: function () {
 				this.showButton = this.showAllButtons || false;
 			},
 			computeDuration: function (task) {
@@ -94,7 +94,7 @@
 					this.splice('selectedTasks', index, 1);
 				} else {
 					this.$.task.style.border = 'solid #000000';
-					this.push('selectedTasks', this.task)
+					this.push('selectedTasks', this.task);
 				}
 				if (this.selectedTasks.length > 0) {
 					this.showAllButtons = true;
@@ -102,7 +102,7 @@
 				}
 				else {
 					this.showAllButtons = false;
-					app.header = 'Tasks'
+					app.header = 'Tasks';
 				}
 			},
 			_selectedTasksCleared: function (newValue, oldValue) {
@@ -113,6 +113,6 @@
 			_globalValueChanged: function (newValue, oldValue) {
 				this.showButton = newValue;
 			}
-		})
+		});
 	</script>
 </dom-module>

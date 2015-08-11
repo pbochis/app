@@ -112,7 +112,7 @@
 					var currentTask = localStorage.getItem('currentTask');
 					var currentTaskIndex = localStorage.getItem('currentTaskIndex');
 					this.taskIndex = 0;
-					if(timer != undefined && currentTask != undefined && currentTaskIndex!=undefined){
+					if(timer !== undefined && currentTask !== undefined && currentTaskIndex!==undefined){
 						this.taskIndex = Number(currentTaskIndex);
 						this.loadTaskById(currentTask);
 						this.$.taskTimer.startWithOffset(timer);
@@ -147,7 +147,7 @@
 				var component = this;
 				webInterface.addEventListener('task-finished', function(){
 					component.finishTask();
-				})
+				});
 				this.$.content.innerHTML = '';
 				this.$.content.appendChild(webInterface);
 			},
@@ -174,7 +174,7 @@
 					+ '/finlSubmission/' + this.taskIndex
 					+ '?submissionKey' + localStorage.getItem('lastSubmission'), {});
 			},
-			onFinishTaskResponse: function(r){
+			onFinishTaskResponse: function(){
 				this.taskIndex++;
 				if(this.taskIndex < this.challenge.Tasks.length){
 					this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
@@ -186,7 +186,6 @@
 				}
 			},
 			onFinishTaskError: function(r){
-				console.log(r)
 			}
 		});
 

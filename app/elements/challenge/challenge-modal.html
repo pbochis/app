@@ -58,12 +58,12 @@
 					'Instructions': this.Instructions,
 					'Duration': 6 * 1e10 * parseInt(this.Duration),
 					'Endpoints': {'WebInterface': 'sequential-challenge'}
-				})
+				});
 			},
 			onChallengeResponse: function (res) {
 				this.fire('challengeCreated');
-				page.redirect('/challenges/' + res.detail.response.Key)
+				page.redirect('/challenges/' + res.detail.response.Key);
 			}
-		})
+		});
 	</script>
 </dom-module>

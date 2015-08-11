@@ -54,15 +54,15 @@
 				this.$.challengeModal.toggle();
 			},
 			getTasks: function () {
-				get(this.$.getTasksAjax, '/tasks')
+				get(this.$.getTasksAjax, '/tasks');
 			},
 			onResponse: function (res) {
 				this.tasks = res.detail.response;
 				this.selectedTasks = [];
 			},
 			onError: function (error, res) {
-				handleError(error)
+				handleError(error);
 			}
-		})
+		});
 	</script>
 </dom-module>

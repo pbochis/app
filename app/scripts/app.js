@@ -31,17 +31,17 @@
 		localStorage.removeItem('currentTaskIndex');
 		localStorage.removeItem('timer');
 		localStorage.removeItem('result');
-	}
+	};
 
 	app.login = function () {
 		app.refreshMenu();
 		if (!localStorage.accessToken) {
-			return page.redirect("/unauthorized");
+			return page.redirect('/unauthorized');
 		}
 		if (localStorage.company) {
-			return page.redirect("/candidates");
+			return page.redirect('/candidates');
 		}
-		page.redirect("/challenge");
+		page.redirect('/challenge');
 	};
 
 	app.logout = function () {
@@ -49,13 +49,13 @@
 		app.refreshMenu();
 		app.$.paperDrawerPanel.closeDrawer();
 		page.redirect('/login');
-	}
+	};
 
 	app.refreshMenu = function () {
 		app.isCompany = !!localStorage.company;
 		app.isCoder = !app.isCompany;
 		app.isLoggedIn = localStorage.accessToken;
-	}
+	};
 
 	app.displayInstalledToast = function () {
 		console.log('Caching complete.');
@@ -65,9 +65,9 @@
 	// have resolved and content has been stamped to the page
 	app.addEventListener('dom-change', function () {
 		app.refreshMenu();
-		var challengeKey = localStorage.getItem("challenge");
-		if (challengeKey != "" && challengeKey != undefined) {
-			app.requestData(challengeKey)
+		var challengeKey = localStorage.getItem('challenge');
+		if (challengeKey !== '' && challengeKey !== undefined) {
+			app.requestData(challengeKey);
 		}
 	});
 
@@ -85,31 +85,31 @@
 	};
 
 	app.requestData = function (challengeKey) {
-		if (challengeKey != "" && challengeKey != undefined) {
-			localStorage.setItem("challenge", challengeKey);
-			post(app.$.resultRequest, "/results", {'ChallengeKey': challengeKey})
+		if (challengeKey !== '' && challengeKey !== undefined) {
+			localStorage.setItem('challenge', challengeKey);
+			post(app.$.resultRequest, '/results', {'ChallengeKey': challengeKey});
 		}
-	}
+	};
 
 	app.onChallengeResponse = function (r) {
 		var challenge = r.detail.response;
 		app.challenge = challenge;
 
-		if (challenge.Tasks.indexOf(localStorage.getItem("currentTask")) == -1) {
-			localStorage.removeItem("currentTask");
-			localStorage.removeItem("timer");
+		if (challenge.Tasks.indexOf(localStorage.getItem('currentTask')) === -1) {
+			localStorage.removeItem('currentTask');
+			localStorage.removeItem('timer');
 		}
-	}
+	};
 
 	app.onResultResponse = function (r) {
-		var result = r.detail.response
-		localStorage.setItem("result", result.Key);
-		app.result = result
-		get(app.$.challengeRequest, "/challenges/" + localStorage.getItem("challenge"))
-	}
+		var result = r.detail.response;
+		localStorage.setItem('result', result.Key);
+		app.result = result;
+		get(app.$.challengeRequest, '/challenges/' + localStorage.getItem('challenge'));
+	};
 
 	app.createChallenge = function () {
 		app.$.taskList.createChallenge();
-	}
+	};
 
 })(document);

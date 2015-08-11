@@ -52,26 +52,24 @@
         'afterPropertiesSet(challengeKey)'
       ],
       afterPropertiesSet: function(){
-        console.log(this.challengeKey);
-        get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey)
+        get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey);
       },
       onResponse: function(res){
         this.challenge = res.detail.response;
         this.tasks = [];
-        console.log(this.challenge)
         for (var i = 0; i < this.challenge.Tasks.length; i++){
-          get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i])
+          get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i]);
         }
       },
       onTaskResponse: function(res){
-        this.push('tasks', res.detail.response)
+        this.push('tasks', res.detail.response);
       },
       viewResult: function(){
         page.redirect('/coders/challenge/' + this.challenge.Key);
       },
       onError: function(error){
-        handleError(error)
+        handleError(error);
       }
-    })
+    });
   </script>
 </dom-module>
