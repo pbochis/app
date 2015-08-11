@@ -23,20 +23,20 @@
 		Polymer({
 			is: 'simple-console',
 			setOutput: function(data){
-				this.$.generalConsole.showConsole()
-				var output = ""
-				if(data!=undefined){
-					output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
-				}else{
-					output = "Bad request"
+				this.$.generalConsole.showConsole();
+				var output = '';
+				if (data !== undefined) {
+					output = data.Stderr !== '' && data.Stderr !== undefined ? data.Stderr : data.Stdout;
+				} else {
+					output = 'Bad request';
 				}
 				this.$.output.textarea.value = output;
 			},
-			loading: function(){
-				this.$.generalConsole.loading()
+			loading: function() {
+				this.$.generalConsole.loading();
 			},
-			error: function(err){
-				this.$.generalConsole.error(err)
+			error: function(err) {
+				this.$.generalConsole.error(err);
 			}
 		});
 	</script>

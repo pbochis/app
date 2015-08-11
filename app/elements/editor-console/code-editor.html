@@ -1,11 +1,11 @@
 <dom-module id="code-editor">
 	<style>
-		:host{
+		:host {
 			display: block;
 			height: 100%;
 		}
 
-		#editor{
+		#editor {
 			height: 100%;
 			z-index:0;
 		}
@@ -18,7 +18,7 @@
 			on-error="onError"
 			debounce-duration="1000"
 			content-type="application/json"
-			>
+		>
 		</iron-ajax>
 		<div id="editor"></div>
 	</template>
@@ -27,37 +27,36 @@
 	<script>
 		Polymer({
 			is: 'code-editor',
-			properties: {
-			},
+			properties: {},
 			ready: function(){
-				ace.require("ace/ext/language_tools");
+				ace.require('ace/ext/language_tools');
 				this.$.editor = ace.edit(this.$.editor);
 				this.$.editor.setTheme('ace/theme/chrome');
 				this.$.editor.setOptions({
 					enableBasicAutocompletion: true
 				});
 			},
-			runCode: function(lang, taskKey){
+			runCode: function(lang, taskKey) {
 				var data = {
-					'Language': lang,
-					'Code': this.getText()
+					Language: lang,
+					Code: this.getText()
 				}
-				post(this.$.runCodeRequest, "/results/"+ localStorage.getItem("result") + "/tasks/" + taskKey +"/submissions", data);
+				post(this.$.runCodeRequest, '/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions', data);
 			},
-			getText: function(){
+			getText: function() {
 				return this.$.editor.getValue();
 			},
 			setMode: function(lang){
-				var mode = "ace/mode/java"
-				switch(lang){
-					case "py":
-						mode = "ace/mode/python"
+				var mode = 'ace/mode/java'
+				switch (lang) {
+					case 'py':
+						mode = 'ace/mode/python'
 						break;
-					case "c":
-						mode = "ace/mode/c_cpp"
+					case 'c':
+						mode = 'ace/mode/c_cpp'
 						break;
-					case "cpp":
-						mode = "ace/mode/c_cpp"
+					case 'cpp':
+						mode = 'ace/mode/c_cpp'
 						break;
 				}
 				this.$.editor.getSession().setMode({
@@ -65,13 +64,11 @@
 					v: Date.now()
 				});
 			},
-			onError: function(error){
+			onError: function(error) {
 				handleError(error);
 			},
-			onResponse: function(r){
-
+			onResponse: function(r) {
 			}
 		});
-
 	</script>
 </dom-module>

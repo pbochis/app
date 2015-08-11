@@ -35,16 +35,16 @@
 				}
 			},
 			getText: function(testCase){
-				if(testCase.Failure.Message != ""){
-					return testCase.Name + " failed on " + testCase.Failure.Message;
+				if (testCase.Failure.Message !== '') {
+					return testCase.Name + ' failed on ' + testCase.Failure.Message;
 				}
 				return testCase.Name;
 			},
-			getIcon: function(testCase){
-				if(testCase.Failure.Message != ""){
-					return "images/not-ok.png";
-				}else{
-					return "images/ok.png";
+			getIcon: function(testCase) {
+				if(testCase.Failure.Message !== '') {
+					return 'images/not-ok.png';
+				} else {
+					return 'images/ok.png';
 				}
 			}
 	});

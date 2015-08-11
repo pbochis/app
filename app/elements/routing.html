@@ -6,7 +6,7 @@ window.addEventListener('WebComponentsReady', function() {
 		if (company) {
 			page('/candidates');
 		} else {
-			page('/challenge')
+			page('/challenge');
 		}
 	});
 
@@ -18,13 +18,13 @@ window.addEventListener('WebComponentsReady', function() {
 		app.requestData(decodedToken[0]);
 		// TODO(flowlo): Request /user to set localStorage.user, but
 		// this is currently not needed.
-		app.login()
+		app.login();
 	});
 
 	page('/challenge', function() {
 		checkAuthorization();
 		app.route = 'challenge';
-		app.header = "Challenge"
+		app.header = 'Challenge';
 	});
 
 	page('/challenges', function () {
@@ -43,7 +43,7 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/unauthorized', function() {
 		app.route = 'unauthorized';
-		app.header = "Unauthorized"
+		app.header = 'Unauthorized';
 	});
 
 	page('/coders/:id', function(data) {
@@ -75,17 +75,17 @@ window.addEventListener('WebComponentsReady', function() {
 			if (localStorage.company) {
 				page('/candidates');
 			} else {
-				page('/challenge')
+				page('/challenge');
 			}
 		} else {
 			app.route = 'login';
-			app.header = "Login";
+			app.header = 'Login';
 		}
 	});
 
 	page('/logout', function() {
 		app.logout();
-	})
+	});
 
 	page('/error', function() {
 		var lastError = getLastError();
@@ -100,7 +100,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	function checkAuthorization() {
-		!!localStorage.accessToken || page.redirect("/login");
+		return !!localStorage.accessToken || page.redirect('/login');
 	}
 
 	function hasAuthorization() {
@@ -108,7 +108,7 @@ window.addEventListener('WebComponentsReady', function() {
 	}
 
 	function checkIsCompany() {
-		(!!localStorage.accessToken && !!localStorage.company) || page.redirect("/login");
+		return (!!localStorage.accessToken && !!localStorage.company) || page.redirect('/login');
 	}
 });
 </script>

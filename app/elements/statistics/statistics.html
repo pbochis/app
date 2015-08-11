@@ -1,45 +1,42 @@
 <link rel="import" href="../../bower_components/google-chart/google-chart.html">
 
 <dom-module id="chart-statistics">
-  <style>
-    :host {
-      display: block;
-    }
-  </style>
-  <template>
-    <google-chart type="{{chartType}}" options="{{options}}" cols="{{cols}}" rows="{{rows}}">
-    </google-chart>
-  </template>
-  <script>
-    (function() {
-      Polymer({
-        is: 'chart-statistics',
-
-        properties: {
-          chartType: {
-            type: String,
-            notify: true
-          },
-          options: {
-            type: Object,
-            notify: true
-          },
-          cols: {
-            type: Array,
-            notify: true
-          },
-          rows: {
-            type: Array,
-            notify: true
-          }
-        },
-        ready: function(){
-          this.chartType = "area";
-          this.options = {title: "Some chart title"}
-          this.cols = [{label: "Data1", type: "string"},{label: "Data2", type: "number"}];
-          this.rows = [["Jan", 31],["Feb", 28],["Mar", 31]];
-        }
-      });
-    })();
-  </script>
+	<style>
+		:host {
+			display: block;
+		}
+	</style>
+	<template>
+		<google-chart type="{{chartType}}" options="{{options}}" cols="{{cols}}" rows="{{rows}}">
+		</google-chart>
+	</template>
+	<script>
+		Polymer({
+			is: 'chart-statistics',
+			properties: {
+				chartType: {
+					type: String,
+					notify: true
+				},
+				options: {
+					type: Object,
+					notify: true
+				},
+				cols: {
+					type: Array,
+					notify: true
+				},
+				rows: {
+					type: Array,
+					notify: true
+				}
+			},
+			ready: function() {
+				this.chartType = 'area';
+				this.options = { title: 'Some chart title' };
+				this.cols = [ { label: 'Data1', type: 'string' }, { label: 'Data2', type: 'number' } ];
+				this.rows = [ [ 'Jan', 31 ], [ 'Feb', 28 ],[ 'Mar', 31 ] ];
+			}
+		});
+	</script>
 </dom-module>

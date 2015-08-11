@@ -10,7 +10,7 @@
 			on-response="onResponse"
 			on-error="onError">
 		</iron-ajax>
-    <div class="horizontal layout center-center wrap">
+		<div class="horizontal layout center-center wrap">
 			<template is="dom-repeat" items="{{items}}">
 				<candidate-card user="{{item}}"></candidate-card>
 			</template>
@@ -28,13 +28,13 @@
 				}
 			},
 			getCandidates: function () {
-				get(this.$.candidateRequest, "/users")
+				get(this.$.candidateRequest, '/users');
 			},
 			onResponse: function (r) {
-				this.items = r.detail.response
+				this.items = r.detail.response;
 			},
 			onError: function (r) {
-				handleError(r.detail.response)
+				handleError(r.detail.response);
 			}
 		});
 	})();

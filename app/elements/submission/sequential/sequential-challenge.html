@@ -73,39 +73,38 @@
 				'afterPropertiesSet(challenge)'
 			],
 			afterPropertiesSet: function(){
-					var timer = localStorage.getItem("timer");
-					var currentTask = localStorage.getItem("currentTask");
-					if (timer != undefined && currentTask != undefined) {
-						this.$.content.innerHTML = "";
+					var timer = localStorage.getItem('timer');
+					var currentTask = localStorage.getItem('currentTask');
+					if (timer !== undefined && currentTask !== undefined) {
+						this.$.content.innerHTML = '';
 						this.loadTaskById(currentTask);
 						this.$.taskTimer.startWithOffset(timer);
 					}
 			},
-			ready: function(){
+			ready: function() {
 				this.showForwardArrow = false;
 				this.showBackArrow = false;
-				var component = this;
-				this.timeout = function(){
-					var taskTimeout = document.createElement("task-timeout");
-					component.$.content.innerHTML = "";
-					component.$.content.appendChild(taskTimeout);
-				}
 			},
-			startChallenge: function(){
+			timeout: function() {
+				var taskTimeout = document.createElement('task-timeout');
+				this.$.content.innerHTML = '';
+				this.$.content.appendChild(taskTimeout);
+			},
+			startChallenge: function() {
 				this.taskIndex = 0;
-				localStorage.setItem("timer", new Date().getTime());
+				localStorage.setItem('timer', new Date().getTime());
 				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				this.$.taskTimer.start();
 			},
 			loadTaskById: function(key){
-				localStorage.setItem("currentTask", key);
-				get(this.$.loadTaskRequest, "/task/" + key + "?result=" + localStorage.getItem("result"));
+				localStorage.setItem('currentTask', key);
+				get(this.$.loadTaskRequest, '/task/' + key + '?result=' + localStorage.getItem('result'));
 			},
 			onTaskResponse: function(r){
-				var task = r.detail.response
+				var task = r.detail.response;
 				var webInterface = document.createElement(task.Endpoints.WebInterface);
 				webInterface.task = task;
-				this.$.content.innerHTML = "";
+				this.$.content.innerHTML = '';
 				this.$.content.appendChild(webInterface);
 			},
 			displayArrows: function(){

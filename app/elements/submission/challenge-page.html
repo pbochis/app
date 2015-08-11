@@ -1,10 +1,10 @@
 <dom-module id="challenge-page">
 	<style>
-		:host{
+		:host {
 			display: block;
 			height: 100%;
 		}
-		#challenge{
+		#challenge {
 			height: 100%;
 		}
 	</style>
@@ -26,13 +26,13 @@
 				'afterPropertiesSet(challenge)'
 			],
 			afterPropertiesSet: function(){
-				if(this.challenge.Endpoints.WebInterface!="sequential-challenge"){
-					alert("This type of challenge is not yet available. We are sorry!");
+				if (this.challenge.Endpoints.WebInterface !== 'sequential-challenge'){
+					alert('This type of challenge is not yet available.');
 					return;
 				}
 				var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
 				webInterface.challenge = this.challenge;
-				this.$.challenge.innerHTML = "";
+				this.$.challenge.innerHTML = '';
 				this.$.challenge.appendChild(webInterface);
 			}
 		});

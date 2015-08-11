@@ -19,21 +19,21 @@
 	<script>
 		Polymer({
 			is: 'javaut-console',
-			properties:{
-				runOutput:{
+			properties: {
+				runOutput: {
 					type: Object,
 					notify: true
 				}
 			},
-			setOutput: function(runOutput){
+			setOutput: function(runOutput) {
 				this.runOutput = runOutput;
-				this.$.generalConsole.showConsole()
+				this.$.generalConsole.showConsole();
 			},
-			loading: function(){
-				this.$.generalConsole.loading()
+			loading: function() {
+				this.$.generalConsole.loading();
 			},
-			error: function(err){
-				this.$.generalConsole.error(err)
+			error: function(err) {
+				this.$.generalConsole.error(err);
 			}
 		});
 	</script>

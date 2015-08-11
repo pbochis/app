@@ -9,26 +9,25 @@
 		paper-material:hover{
 			background: rgb(200,200,200);
 		}
-		paper-material>.cardTop{
+		paper-material > .cardTop{
 			position: relative;
 			height: 250px;
 			text-overflow: ellipsis;
 		}
-		paper-material>.cardTop>.cardTopImage{
+		paper-material > .cardTop > .cardTopImage{
 			position: absolute;
 			bottom: 0;
 			width:100%;
 		}
 
-
-		paper-material>.cardTop>.cardTopTitle{
+		paper-material > .cardTop > .cardTopTitle{
 			position: absolute;
 			bottom: 0;
 			width: 100%;
 			height: 39px;
 		}
 
-		paper-material>.cardTop>.cardTopTitle>p{
+		paper-material > .cardTop > .cardTopTitle > p{
 			position: absolute;
 			bottom: 5px;
 			left: 15px;
@@ -36,7 +35,7 @@
 			font-size: 25px;
 		}
 
-		paper-material>.cardTop>.cardTopTitle>iron-icon{
+		paper-material > .cardTop > .cardTopTitle > iron-icon{
 			position: absolute;
 			bottom: 5px;
 			right: 15px;
@@ -74,20 +73,20 @@
 			},
 			getIcon: function(state){
 				switch(state){
-					case "invited":
-						return "mail";
-					case "coding":
-						return "star";
-					case "finished":
-						return "done";
+					case 'invited':
+						return 'mail';
+					case 'coding':
+						return 'star';
+					case 'finished':
+						return 'done';
 				}
 			},
-			getTitle: function(user){
-				return user.Name != "" && user.Name != undefined ? user.Name : user.Address;
+			getTitle: function(user) {
+				return user.Name !== '' && user.Name !== undefined ? user.Name : user.Address;
 			},
-			getInitialLetter: function(user){
+			getInitialLetter: function(user) {
 				return (user.Name || user.Address).charAt(0).toUpperCase();
 			}
-		})
+		});
 	</script>
 </dom-module>

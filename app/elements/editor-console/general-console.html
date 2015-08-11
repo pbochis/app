@@ -28,29 +28,29 @@
 	<script>
 		Polymer({
 			is: 'general-console',
-			properties:{
-				selected:{
+			properties: {
+				selected: {
 					type: Number,
 					notify: true
 				},
-				text:{
+				text: {
 					type: String,
 					notify: true
 				}
 			},
-			ready: function(){
+			ready: function() {
 				this.selected = 0;
-				this.text = "Console output.";
+				this.text = 'Console output.';
 			},
-			loading: function(){
+			loading: function() {
 				this.selected = 0;
-				this.text = "Loading...";
+				this.text = 'Loading...';
 			},
-			error: function(err){
+			error: function(err) {
 				this.selected = 0;
-				this.text = err!=undefined && err!="" ? err : "Something bad happened. Please try again later."
+				this.text = err !== undefined && err !== '' ? err : 'Something bad happened. Please try again later.';
 			},
-			showConsole: function(){
+			showConsole: function() {
 				this.selected = 1;
 			}
 		});

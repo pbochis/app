@@ -60,7 +60,7 @@
 				'onValueChanged(header)'
 			],
 			onValueChanged: function (header) {
-				if (header.indexOf('SELECTED') != -1) {
+				if (header.indexOf('SELECTED') !== -1) {
 					this.normalHeader = false;
 				}
 				else {
@@ -70,6 +70,6 @@
 			createChallenge: function () {
 				app.createChallenge();
 			}
-		})
+		});
 	</script>
 </dom-module>

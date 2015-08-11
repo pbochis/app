@@ -68,12 +68,12 @@
 				post(this.$.inviteCandidate, '/invitations', {
 					'Address': this.Address,
 					'Challenge': this.getSelectedChallenge()
-				})
+				});
 			},
 			onGetChallengesResponse: function (res) {
-				this.challenges = res.detail.response
+				this.challenges = res.detail.response;
 			},
-			onPostResponse: function (res) {
+			onPostResponse: function () {
 				// TODO(victorbalan, pbochis, flowlo): Refresh challenges
 				// page.redirect('/challenges/' + this.getSelectedChallenge());
 			},
@@ -89,6 +89,6 @@
 			toggleDialog: function () {
 				this.$.dialog.toggle();
 			}
-		})
+		});
 	</script>
 </dom-module>

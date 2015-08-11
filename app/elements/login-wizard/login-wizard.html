@@ -76,12 +76,12 @@ Polymer({
 	},
 	prev: function() {
 		// Can not get before e-mail.
-		if (this.selected == pageEmail) {
+		if (this.selected === pageEmail) {
 			return;
 		}
 		// Do not allow to go back after U2F, as e-mail and
 		// password already match.
-		if (this.selected == pageU2f) {
+		if (this.selected === pageU2f) {
 			return;
 		}
 		this.entryAnimation = 'slide-from-left-animation';
@@ -89,13 +89,13 @@ Polymer({
 		this.selected--;
 	},
 	next: function() {
-		if (this.selected == pagePassword && !u2fRequired) {
+		if (this.selected === pagePassword && !u2fRequired) {
 			this.requestToken();
 			return;
 		}
 		// Can not get further than U2F.
-		if (this.selected == pageU2f) {
-			return
+		if (this.selected === pageU2f) {
+			return;
 		}
 		this.entryAnimation = 'slide-from-right-animation';
 		this.exitAnimation = 'slide-left-animation';
@@ -111,7 +111,7 @@ Polymer({
 	onToken: function() {
 		accessToken = this.$.tokenRequest.lastResponse;
 		localStorage.accessToken = JSON.stringify(accessToken);
-		this.$.loginPageFinal.icon = "lock-open";
+		this.$.loginPageFinal.icon = 'lock-open';
 		var h = { 'Authorization': 'Token ' + accessToken.Value};
 		this.$.userRequest.headers = h;
 		this.$.companyRequest.headers = h;
