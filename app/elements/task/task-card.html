@@ -37,7 +37,8 @@
 			elevation="2"
 			class="card"
 			on-mouseover="onHovered"
-			on-mouseout="onUnhovered">
+			on-mouseout="onUnhovered"
+		>
 			<h2>{{task.Name}}</h2>
 			<template is="dom-if" if="{{showButton}}">
 				<paper-fab mini icon="add" on-click="toggleSelectTask"></paper-fab>
@@ -88,7 +89,7 @@
 			},
 			toggleSelectTask: function () {
 				var index = this.selectedTasks.indexOf(this.task);
-				if (index != -1) {
+				if (index !== -1) {
 					this.$.task.style.border = '';
 					this.splice('selectedTasks', index, 1);
 				} else {
@@ -105,12 +106,12 @@
 				}
 			},
 			_selectedTasksCleared: function (newValue, oldValue) {
-				if (newValue.indexOf(this.task) == -1) {
+				if (newValue.indexOf(this.task) === -1) {
 					this.$.task.style.border = '';
 				}
 			},
 			_globalValueChanged: function (newValue, oldValue) {
-				this.showButton = newValue
+				this.showButton = newValue;
 			}
 		})
 	</script>

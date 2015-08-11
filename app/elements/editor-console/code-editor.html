@@ -40,23 +40,23 @@
 				var data = {
 					Language: lang,
 					Code: this.getText()
-				}
+				};
 				post(this.$.runCodeRequest, '/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions', data);
 			},
 			getText: function() {
 				return this.$.editor.getValue();
 			},
 			setMode: function(lang){
-				var mode = 'ace/mode/java'
+				var mode = 'ace/mode/java';
 				switch (lang) {
 					case 'py':
-						mode = 'ace/mode/python'
+						mode = 'ace/mode/python';
 						break;
 					case 'c':
-						mode = 'ace/mode/c_cpp'
+						mode = 'ace/mode/c_cpp';
 						break;
 					case 'cpp':
-						mode = 'ace/mode/c_cpp'
+						mode = 'ace/mode/c_cpp';
 						break;
 				}
 				this.$.editor.getSession().setMode({
@@ -67,7 +67,7 @@
 			onError: function(error) {
 				handleError(error);
 			},
-			onResponse: function(r) {
+			onResponse: function() {
 			}
 		});
 	</script>

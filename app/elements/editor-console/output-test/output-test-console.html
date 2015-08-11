@@ -34,27 +34,27 @@
 			 }
 		 },
 		 setOutput: function(data){
-			 this.$.generalConsole.showConsole()
-			 var output = ""
-			 if(data!=undefined){
-				 if(data.Stderr != ""){
-					 output = data.Stderr !="" && data.Stderr!=undefined ? data.Stderr : data.Stdout
+			 this.$.generalConsole.showConsole();
+			 var output = '';
+			 if(data!==undefined){
+				 if(data.Stderr !== ''){
+					 output = data.Stderr !=='' && data.Stderr!==undefined ? data.Stderr : data.Stdout;
 				 }else{
-					 this.diffLines = data.DiffLines
-					 this.items = data.Stdout.split("\n");
+					 this.diffLines = data.DiffLines;
+					 this.items = data.Stdout.split('\n');
 				 }
 			 }else{
-				 output = "Bad request"
+				 output = 'Bad request';
 			 }
 		 },
 		 loading: function(){
-			 this.$.generalConsole.loading()
+			 this.$.generalConsole.loading();
 		 },
 		 error: function(err){
-			 this.$.generalConsole.error(err)
+			 this.$.generalConsole.error(err);
 		 },
 		 getClass: function(index){
-			 return this.diffLines.indexOf(index) !== -1 ? "red" : "green";
+			 return this.diffLines.indexOf(index) !== -1 ? 'red' : 'green';
 		 }
 	 });
  </script>
