@@ -1,9 +1,10 @@
 .card {
 	border-radius: 2px;
 	padding: 16px 16px 16px 16px;
-	width: calc(98.66% - 16px);
+	width: calc(98.66% - 32px);
 	margin: auto;
 	background: white;
+	text-align: left;
 }
 
 #drawer {
@@ -62,6 +63,25 @@ paper-toolbar > paper-menu-button {
 	background-color: rgba(228, 228, 228, 0.64)
 }
 
+dl {
+	width: 100%;
+	padding: 0.5em;
+}
+dt {
+	float: left;
+	clear: left;
+	width: 5%;
+	text-align: right;
+	font-weight: bold;
+}
+dt:after {
+	content: ":";
+}
+dd {
+	margin: 0 0 0 110px;
+	padding: 0 0 0.5em 0;
+	width: 50%;
+}
 :root {
 	height: 100%;
 }

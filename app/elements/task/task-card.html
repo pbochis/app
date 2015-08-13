@@ -10,7 +10,6 @@
 			width: 400px;
 			height: 300px;
 			margin: 5px;
-
 		}
 
 		paper-material {
@@ -82,10 +81,15 @@
 					type: Boolean,
 					notify: true,
 					observer: '_globalValueChanged'
+				},
+				noSelect: {
+					type:Boolean,
+					notify: true,
+					value: false
 				}
 			},
 			onHovered: function () {
-				this.showButton = true;
+				this.showButton = !this.noSelect;
 			},
 			onUnhovered: function () {
 				this.showButton = this.showAllButtons || false;
@@ -94,6 +98,9 @@
 				return util.computeDuration(task.Duration);
 			},
 			toggleSelectTask: function () {
+				if (this.noSelect){
+					return;
+				}
 				var index = this.selectedTasks.indexOf(this.task);
 				if (index !== -1) {
 					this.$.task.style.border = '';

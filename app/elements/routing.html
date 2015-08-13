@@ -42,9 +42,12 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/challenges/:challengeKey', function(data){
 		checkAuthorization();
-		app.$.challengeDetail.challengeKey = data.params.challengeKey;
+		checkIsCompany();
 		app.route = 'challenge-detail';
 		app.header = 'Challenges';
+		Polymer.Base.importHref('/elements/challenge/challenge-detail.html', function(){
+			app.$.challengeDetail.challengeKey = data.params.challengeKey;
+		});
 	});
 
 	page('/unauthorized', function() {
