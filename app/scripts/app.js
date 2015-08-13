@@ -47,7 +47,6 @@
 	app.logout = function() {
 		localStorage.clear();
 		app.refreshMenu();
-		app.$.paperDrawerPanel.closeDrawer();
 		page.redirect('/login');
 	};
 

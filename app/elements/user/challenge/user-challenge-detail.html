@@ -1,0 +1,110 @@
+<link rel="import" href="/elements/skill/skill-polygon.html">
+
+<dom-module id="user-challenge-detail">
+	<style>
+		:host {
+			display: block;
+			height: 100%;
+			width: 70%;
+			margin-left: 15%;
+			margin-right: 15%;
+		}
+		#userInfoWrapper {
+			height: calc(40% - 24px);
+			margin: 8px 16px 8px 16px;
+			overflow: auto;
+			background: white;
+		}
+		#challengeWrapper {
+			height: 40px;
+			padding-top: 15px;
+			text-align: center;
+			margin: 16px 16px 8px 16px;
+			overflow: auto;
+			background: white;
+		}
+		#challengeWrapper > h3 {
+			font-size: 25px;
+		}
+
+		#skillPolygonWrapper {
+			height: calc(100% - 16px);
+			width: 50%;
+		}
+		#diagramInfo {
+			 padding: 16px
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getUserRequest"
+			handle-as="json"
+			on-response="onGetUserResponse"
+			on-error="onGetUserError">
+		</iron-ajax>
+		<iron-ajax
+			id="getChallengeRequest"
+			handle-as="json"
+			on-response="onGetChallengeResponse">
+		</iron-ajax>
+		<div class="vertical layout">
+			<paper-material id="challengeWrapper" elevation="1">
+				<h3><span>{{user.Name}}</span> assesment for challenge <span>{{challenge.Name}}</span></h3>
+			</paper-material>
+			<paper-material id="userInfoWrapper" class="horizontal layout" elevation="1">
+				<div id="diagramInfo" class="flex vertical layout">
+					<p>Coding speed is good.</p>
+					<p>Algorithmics is excellent.</p>
+					<p>Security is lacking.</p>
+					<p>Readability is mediocre.</p>
+					<p>Efficiency is bellow average.</p>
+				</div>
+				<div id="skillPolygonWrapper">
+					<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>
+				</div>
+			</paper-material>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'user-challenge-detail',
+			properties: {
+				user: {
+					type: Object,
+					notify: true
+				},
+				challenge: {
+					type: Object,
+					notify: true
+				},
+				mockedSkills: {
+					type: Object,
+					value : {
+						'Algorithmics': 0.8,
+						'Readability': 0.6,
+						'Security': 0.1,
+						'Efficiency': 0.3,
+						'Coding Speed': 0.7
+					}
+				}
+			},
+			getData: function(userKey, challengeKey){
+				this.lastChallenge = undefined;
+				this.previousChallenges = undefined;
+				util.get(this.$.getUserRequest, '/users/' + userKey);
+				util.get(this.$.getChallengeRequest, '/challenges/' + challengeKey);
+			},
+			onGetUserResponse: function(r){
+				this.user = r.detail.response;
+				// TODO(victorbalan): pass the correct skillset.
+				this.$.skillPolygon.buildChart();
+			},
+			onGetUserError: function(err){
+				util.error(err);
+			},
+			onGetChallengeResponse: function(r){
+				this.challenge = r.detail.response;
+			},
+		});
+	</script>
+</dom-module>

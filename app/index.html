@@ -82,7 +82,7 @@
 				</div>
 			</paper-toolbar>
 		</template>
-		<div class="content">
+		<div id="sections" class="content">
 			<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight">
 				<section data-route="dashboard">
 					<paper-material elevation="1">
@@ -94,14 +94,6 @@
 
 						<p class="paper-font-subhead">You now have:</p>
 						<my-list></my-list>
-					</paper-material>
-				</section>
-				<section data-route="coders">
-					<paper-material elevation="1">
-						<h2 class="paper-font-display2">Coders</h2>
-
-						<p>The users coding right now:</p>
-						<current-coders></current-coders>
 					</paper-material>
 				</section>
 				<section data-route="login">
@@ -120,12 +112,20 @@
 					<challenge-detail id="challengeDetail"></challenge-detail>
 				</section>
 
-					<section data-route="challenge" class="fullHeight">
+				<section data-route="challenge" class="fullHeight">
 					<challenge-page challenge="{{challenge}}"></challenge-page>
 				</section>
 
 				<section data-route="tasks">
 					<task-list id="taskList"></task-list>
+				</section>
+
+				<section data-route="user" class="fullHeight">
+					<user-detail id="userDetail"></user-detail>
+				</section>
+
+				<section data-route="userChallenge" class="fullHeight">
+					<user-challenge-detail id="userChallengeDetail"></user-challenge-detail>
 				</section>
 
 				<section data-route="unauthorized">
