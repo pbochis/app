@@ -38,14 +38,14 @@ var util = {
 		ajaxRequest.body = JSON.stringify(body);
 		ajaxRequest.generateRequest();
 	},
-	put: function (ajaxRequest, route, body) {
+	put: function(ajaxRequest, route, body) {
 		ajaxRequest.url = this.build(route);
 		ajaxRequest.method = 'PUT';
 		ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken()};
 		ajaxRequest.body = JSON.stringify(body);
 		ajaxRequest.generateRequest();
 	},
-	computeDuration: function (duration) {
+	computeDuration: function(duration) {
 		var seconds = duration / 1e9;
 		var minutes = Math.floor(seconds / 60);
 		var hours = Math.floor(minutes / 60);
@@ -62,7 +62,7 @@ var util = {
 		}
 		return minutes + ' minutes';
 	},
-	error: function (error) {
+	error: function(error) {
 		if (this.initialError !== undefined) {
 			// TODO(flowlo): Do not disregard further errors,
 			// save them somewhere and report them too.

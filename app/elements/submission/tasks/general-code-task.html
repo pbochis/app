@@ -90,7 +90,7 @@
 				<paper-material id="botRightCard" elevation="1">
 					<div id="buttons" class="horizontal layout">
 						<paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
-						<language-selector id="languageSelector" languages={{languages}} on-change="languageChanged"></language-selector>
+						<language-selector id="languageSelector" languages="{{languages}}" on-change="languageChanged"></language-selector>
 						<span class="flex"></span>
 						<paper-button raised noink class$="{{finishedButtonClass}}" on-click="finishTask">Finish</paper-button>
 					</div>
