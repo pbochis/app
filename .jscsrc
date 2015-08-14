@@ -1,0 +1,16 @@
+{
+	"preset": "google",
+	"fileExtensions": [ ".js", "jscs" ],
+
+	"requireParenthesesAroundIIFE": true,
+	"maximumLineLength": 120,
+	"validateLineBreaks": "LF",
+	"validateIndentation": "\t",
+	"validateQuoteMarks": true,
+	"disallowTrailingComma": true,
+
+	"disallowSpacesInsideObjectBrackets": null,
+	"disallowImplicitTypeConversion": [ "string" ],
+
+	"safeContextKeyword": "that"
+}
