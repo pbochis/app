@@ -74,6 +74,7 @@
 		"console" : false,
 		"page"    : false,
 		"Polymer" : false,
-		"util"    : true
+		"util"    : true,
+		"Chart"   : true
 	}
 }

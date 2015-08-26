@@ -1,0 +1,70 @@
+<dom-module id="skill-polygon">
+	<style>
+		:host {
+			display: block;
+			padding: 2.5%;
+			height: 90%;
+			width: 90%;
+		}
+		canvas {
+			height: 100%;
+			min-height: 250px;
+			width: 100%;
+		}
+	</style>
+
+	<template>
+		<canvas id="polygonCanvas"></canvas>
+	</template>
+	<script type="application/javascript" src="/bower_components/Chart.js/Chart.js"></script>
+	<script>
+		Polymer({
+			is: 'skill-polygon',
+			properties: {
+				skills: {
+					type: Object,
+					observer: '_skillsSet'
+				},
+				_options: {
+					type: Object,
+					value: {
+						scaleOverride: true,
+						scaleSteps: 5,
+						scaleStepWidth: 20,
+						scaleStartValue: 0
+					}
+				}
+			},
+			buildChart: function(){
+				var ctx = this.$.polygonCanvas.getContext('2d');
+				var labels = [];
+				var values = [];
+				for (var i = 0; i < util.skillNames.length; i++){
+					var skillName = util.skillNames[i];
+					if (this.skills[skillName] > 0){
+						labels.push(skillName);
+						values.push(this.skills[skillName] * 100);
+					}
+				}
+
+				var data = {
+					labels: labels,
+					datasets: [
+						{
+							label: 'Skills',
+							data: values,
+							fillColor: 'rgba(151,187,205,0.2)',
+							strokeColor: 'rgba(151,187,205,1)',
+							pointColor: 'rgba(151,187,205,1)',
+							pointStrokeColor: '#fff',
+							pointHighlightFill: '#fff',
+							pointHighlightStroke: 'rgba(151,187,205,1)'
+						}
+					]
+				};
+				new Chart(ctx).Radar(data, this._options);
+			}
+		});
+	</script>
+
+</dom-module>
