@@ -1,5 +1,6 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="../task/task-card.html">
+<link rel="import" href="../skill/skill-polygon.html">
 
 <dom-module id="challenge-detail">
 	<style>
@@ -11,6 +12,11 @@
 			width: 30px;
 			cursor: pointer;
 		}
+
+		.grid {
+			padding: 1.25% 2.5%;
+		}
+
 		.card h1 {
 			padding: 20px 0;
 		}
@@ -38,7 +44,7 @@
 		  on-error="onError">
 		</iron-ajax>
 
-		<div class="vertical layout">
+		<div class="grid vertical layout">
 			<div class="row horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
 					<h1>{{challenge.Name}}</h1>
@@ -53,7 +59,7 @@
 				</paper-material>
 
 				<paper-material class="card grid-element">
-					<h1> Skills chart</h1>
+					<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>
 				</paper-material>
 			</div>
 
@@ -86,6 +92,16 @@
 			is: 'challenge-detail',
 			properties: {
 				challenge: Object,
+				mockedSkills: {
+					type: Object,
+					value : {
+						'Algorithmics': 0.8,
+						'Readability': 0.6,
+						'Security': 0.1,
+						'Efficiency': 0.3,
+						'Coding Speed': 0.7
+					}
+				},
 				tasks: {
 					type: Array,
 					notify: true
@@ -121,6 +137,7 @@
 				for (var i = 0; i < this.challenge.Tasks.length; i++) {
 					util.get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i]);
 				}
+				this.$.skillPolygon.buildChart();
 			},
 			onTaskResponse: function (res) {
 				this.push('tasks', res.detail.response);

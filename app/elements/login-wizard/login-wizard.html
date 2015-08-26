@@ -63,11 +63,11 @@ Polymer({
 		exitAnimation: String,
 		u2fRequired: {
 			type: Boolean,
-			value: false,
+			value: false
 		},
 		email: {
 			type: String,
-			notify: true,
+			notify: true
 		},
 		password: {
 			type: String,
@@ -148,7 +148,7 @@ Polymer({
 		localStorage.user = JSON.stringify(this.$.userRequest.lastResponse);
 	},
 	getTokenUrl: function() {
-		return util.build('/accessTokens');
+		return util.build('/tokens');
 	},
 	getUserUrl: function() {
 		return util.build('/user');

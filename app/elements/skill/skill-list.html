@@ -1,11 +1,10 @@
-<link rel="import" href="task-skill.html">
+<link rel="import" href="skill-mini.html">
 
 <dom-module id="skill-list">
 	<template>
 		<div class="horizontal layout">
 			<template is="dom-repeat" items="{{skills}}">
-				<task-skill skill="{{item}}">
-				</task-skill>
+				<skill-mini skill="{{item}}"></skill-mini>
 			</template>
 		</div>
 	</template>
