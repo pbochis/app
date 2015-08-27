@@ -50,17 +50,19 @@
 		}
 	</style>
 	<template>
-		<paper-material elevation="1" on-click="onClick">
-			<div class="cardTop" align="center">
-				<div class="cardTopImage">
-					 <text class="letter" x="0" y="0">{{getInitialLetter(user)}}</text>
+		<a href="{{goTo}}">
+			<paper-material elevation="1">
+				<div class="cardTop" align="center">
+					<div class="cardTopImage">
+						 <text class="letter" x="0" y="0">{{getInitialLetter(user)}}</text>
+					</div>
+					<div class="cardTopTitle">
+						<p>{{getTitle(user)}}</p>
+						<iron-icon icon="{{getIcon(user.State)}}"></iron-icon>
+					</div>
 				</div>
-				<div class="cardTopTitle">
-					<p>{{getTitle(user)}}</p>
-					<iron-icon icon="{{getIcon(user.State)}}"></iron-icon>
-				</div>
-			</div>
-		</paper-material>
+			</paper-material>
+		</a>
 	</template>
 	<script>
 		Polymer({
@@ -74,6 +76,7 @@
 			},
 			ready: function(){
 				this.isHovered = false;
+				this.goTo = '/user/' + this.user.Key;
 			},
 			getIcon: function(state){
 				switch(state){
@@ -90,9 +93,6 @@
 			},
 			getInitialLetter: function(user) {
 				return (user.Name || user.Address).charAt(0).toUpperCase();
-			},
-			onClick: function(){
-				page.redirect('/user/' + this.user.Key);
 			}
 		});
 	</script>

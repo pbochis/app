@@ -22,6 +22,11 @@
 		isLoggedIn: {
 			type: Boolean,
 			notify: true
+		},
+		selected: {
+			type: String,
+			notify: true,
+			value: '0'
 		}
 	};
 
@@ -64,6 +69,11 @@
 	// have resolved and content has been stamped to the page
 	app.addEventListener('dom-change', function() {
 		app.refreshMenu();
+		if(window.location.hash!==''){
+			// TODO(victorbalan): Find a way to set the correct selected tab instead
+			// of deselecting everything.
+			app.selected='-1';
+		}
 	});
 
 	// See https://github.com/Polymer/polymer/issues/1381

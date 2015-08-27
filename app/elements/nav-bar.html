@@ -15,7 +15,7 @@
 	</style>
 	<template>
 		<template is="dom-if" if="{{normalHeader}}">
-			<paper-tabs id="bottomTabs" selected="0" noink no-slide align-bottom>
+			<paper-tabs id="bottomTabs" selected="{{selected}}" noink no-slide align-bottom>
 				<span class="flex-5"></span>
 				<template is="dom-if" if="{{isCompany}}">
 					<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
@@ -56,6 +56,11 @@
 				},
 				isCoder: {
 					type: Boolean,
+					notify: true,
+					reflectToAttribute: true
+				},
+				selected: {
+					type: String,
 					notify: true,
 					reflectToAttribute: true
 				}
