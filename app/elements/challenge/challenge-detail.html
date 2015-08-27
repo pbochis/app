@@ -13,19 +13,20 @@
 			cursor: pointer;
 		}
 
-		.grid {
-			padding: 1.25% 2.5%;
-		}
-
 		.card h1 {
 			padding: 20px 0;
 		}
 		.card h4 {
 			padding: 20px 0;
 		}
-		.row .grid-element {
+		.grid-element {
 			margin: 16px;
 			width: calc(50% - 64px);
+		}
+
+		.grid-row {
+			margin: 16px;
+			width: calc(100% - 64px);
 		}
 	</style>
 
@@ -44,8 +45,8 @@
 		  on-error="onError">
 		</iron-ajax>
 
-		<div class="grid vertical layout">
-			<div class="row horizontal layout">
+		<div class="grid vertical layout mainContent">
+			<div class="horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
 					<h1>{{challenge.Name}}</h1>
 					<dl class="dl-horizontal">
@@ -63,27 +64,25 @@
 				</paper-material>
 			</div>
 
-			<div class="row horizontal layout">
-				<paper-material	class="card grid-element">
-					<h4>Leaderboard</h4>
-					<table>
+			<paper-material	class="card grid-row">
+				<h4>Leaderboard</h4>
+				<table>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+					</tr>
+					<template is="dom-repeat" items="{{coders}}" as="coder">
 						<tr>
-							<th>#</th>
-							<th>Name</th>
+							<td>{{computeIndex(index)}}</td>
+							<td>{{coder.Name}}</td>
 						</tr>
-						<template is="dom-repeat" items="{{coders}}" as="coder">
-							<tr>
-								<td>{{computeIndex(index)}}</td>
-								<td>{{coder.Name}}</td>
-							</tr>
-						</template>
-					</table>
-				</paper-material>
-				<div class="grid-element horizontal layout wrap">
-					<template is="dom-repeat" items="{{tasks}}">
-						<task-card task="{{item}}" no-select></task-card>
 					</template>
-				</div>
+				</table>
+			</paper-material>
+			<div class="grid-row horizontal layout wrap">
+				<template is="dom-repeat" items="{{tasks}}">
+					<task-card task="{{item}}" no-select></task-card>
+				</template>
 			</div>
 		</div>
 	</template>
