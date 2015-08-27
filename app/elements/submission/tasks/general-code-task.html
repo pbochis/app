@@ -120,6 +120,10 @@
 					notify: true,
 					reflectToAttribute: true
 				},
+				languages: {
+					type: Array,
+					notify: true
+				}
 			},
 			observers: [
 				'afterPropertiesSet(task)'
@@ -148,7 +152,7 @@
 							lang.name = 'Undefined';
 							break;
 					}
-					this.languages.push(lang);
+					this.push('languages', lang);
 				}
 			},
 			languageChanged: function(){

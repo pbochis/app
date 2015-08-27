@@ -119,7 +119,6 @@ Polymer({
 		this.$.userRequest.headers = h;
 		this.$.companyRequest.headers = h;
 		this.$.userRequest.generateRequest();
-		this.$.companyRequest.generateRequest();
 	},
 	onTokenError: function(err) {
 		if (err.detail.request.xhr.status !== 401) {
@@ -146,6 +145,7 @@ Polymer({
 	},
 	onUser: function() {
 		localStorage.user = JSON.stringify(this.$.userRequest.lastResponse);
+		this.$.companyRequest.generateRequest();
 	},
 	getTokenUrl: function() {
 		return util.build('/tokens');

@@ -92,28 +92,32 @@ dd {
 	height: 100%;
 }
 
-paper-header-panel{
+paper-header-panel {
 	height: 100%;
 }
 
-.paper-header-panel{
+.paper-header-panel {
 	height: 100%;
 }
 
-paper-header-panel>#mainContainer{
+paper-header-panel>#mainContainer {
 	height: 100%;
 }
 
-paper-header-panel>#mainPanel{
+paper-header-panel>#mainPanel {
 	height: 100%;
 }
 
-.content{
+#sections {
 	height: -moz-calc(100% - 105px);
 	height: -webkit-calc(100% - 105px);
 	height: calc(100% - 105px);
 }
 
-.fullHeight{
+.fullHeight {
 	height: 100%;
+}
+
+.halfHeight {
+	height: 50%;
 }
