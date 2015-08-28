@@ -7,7 +7,7 @@
 	</style>
 	<template>
 			<div>
-				<p>{{formatDuration()}}</p>
+				<p>{{formatedDuration}}</p>
 			</div>
 	</template>
 	<script>
@@ -21,14 +21,18 @@
 				},
 				tickInterval: {
 					type: Number
+				},
+				formatedDuration: {
+					type: String,
+					notify: true
 				}
 			},
-			formatDuration: function() {
+			_formatDuration: function() {
 				var d = this.duration / 1e9;
-				var h = Math.round(d / 3600) % 24;
-				var m = Math.round(d / 60) % 60;
-				var s = Math.round(d) % 60;
-				return ('0' + h).slice(-2) + ':' +  ('0' + m).slice(-2) +  ('0' + s).slice(-2);
+				var h = Math.floor(d / 3600) % 24;
+				var m = Math.floor(d / 60 % 60);
+				var s = Math.floor(d % 60);
+				this.formatedDuration = ('0' + h).slice(-2) + ':' +  ('0' + m).slice(-2) + ':' + ('0' + s).slice(-2);
 			},
 			start: function() {
 				if (this.duration <= 0) {
@@ -37,7 +41,10 @@
 				}
 
 				if (!this.tickInterval) {
-					this.tickInterval = window.setInterval(this.tick, 1000);
+					var component = this;
+					this.tickInterval = window.setInterval(function(){
+						component.tick();
+					}, 1000);
 				}
 			},
 			startWithOffset: function(offset) {
@@ -50,6 +57,7 @@
 					this.timeout();
 				}
 				this.duration -= 1e9;
+				this._formatDuration();
 			},
 			timeout: function() {
 				localStorage.removeItem('timer');

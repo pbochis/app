@@ -22,10 +22,15 @@
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				result: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
 				}
 			},
 			observers: [
-				'afterPropertiesSet(challenge)'
+				'afterPropertiesSet(challenge, result)'
 			],
 			afterPropertiesSet: function(){
 				if (this.challenge.Endpoints.WebInterface !== 'sequential-challenge'){
@@ -34,6 +39,7 @@
 				}
 				var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
 				webInterface.challenge = this.challenge;
+				webInterface.result = this.result;
 				this.$.challenge.innerHTML = '';
 				this.$.challenge.appendChild(webInterface);
 			}

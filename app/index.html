@@ -45,6 +45,7 @@
 <body unresolved class="fullbleed layout vertical fullHeight">
 <span id="browser-sync-binding"></span>
 	<template is="dom-bind" id="app" class="fullHeight">
+	<paper-progress indeterminate style="position: absolute; top: 105px; width: 100%;" style$="{{progressStyle}}"></paper-progress>
 	<iron-ajax
 		id="resultRequest"
 		method="POST"
@@ -83,7 +84,7 @@
 			</paper-toolbar>
 		</template>
 		<div id="sections" class="content">
-			<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight">
+			<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight" style$="{{ironPagesStyle}}">
 				<section data-route="dashboard">
 					<paper-material elevation="1">
 						<chart-statistics></chart-statistics>
@@ -113,7 +114,7 @@
 				</section>
 
 				<section data-route="challenge" class="fullHeight">
-					<challenge-page challenge="{{challenge}}"></challenge-page>
+					<challenge-page challenge="{{challenge}}" result="{{result}}"></challenge-page>
 				</section>
 
 				<section data-route="tasks">

@@ -58,58 +58,62 @@
 	<template>
 		<iron-ajax
 			id="getUserRequest"
+			loading="{{userLoading}}"
 			handle-as="json"
 			on-response="onGetUserResponse"
-			on-error="onGetUserError">
+			on-error="onUserError">
 		</iron-ajax>
 		<iron-ajax
 			id="getProfileRequest"
+			loading="{{profileLoading}}"
 			handle-as="json"
-			on-response="onGetProfileResponse">
+			on-response="onGetProfileResponse"
+			on-error="onError">
 		</iron-ajax>
 		<iron-ajax
 			id="getLatestChallenges"
+			loading="{{lastChallengesLoading}}"
 			handle-as="json"
 			on-response="onLastChallengesResponse"
-			on-error="onLastChallengesError">
+			on-error="onError">
 		</iron-ajax>
 		<div class="vertical layout fullHeight">
-				<paper-material id="top" elevation="1">
-					<div class="horizontal layout">
-						<div class="flex vertical layout">
-							<text class="letter">{{getInitialLetter(user)}}</text>
-							<h3>{{user.Name}}</h3>
-							<p>{{user.Address}}</p>
-						</div>
-						<div id="topRight">
-							<div id="skillPolygonWrapper">
-							</div>
-							<template is="dom-if" if="{{!hasCompletedChallenges}}">
-								<h3 id="noActivity">User has no activity yet</h3>
-							</template>
-						</div>
+			<paper-material id="top" elevation="1">
+				<div class="horizontal layout">
+					<div class="flex vertical layout">
+						<text class="letter">{{getInitialLetter(user)}}</text>
+						<h3>{{user.Name}}</h3>
+						<p>{{user.Address}}</p>
 					</div>
-				</paper-material>
-				<template is="dom-if" if="{{hasCompletedChallenges}}">
-					<div id="bottom" class="horizontal layout">
-						<paper-material id="midLeft" class="vertical layout" elevation="1">
-							<h3>Last challenge</h3>
-							<p>{{lastChallenge.Name}}</p>
-							<span class="flex"></span>
-							<div>
-								<paper-button style="float: right;" class="secondary" raised on-click="loadChallenge">Load more</paper-button>
-							</div>
-						</paper-material>
-						<template is="dom-if" if="{{displayPreviousChallenges}}">
-							<paper-material id="midRight" elevation="1">
-								<h3>Previous challenges</h3>
-								<template is="dom-repeat" items="{{previousChallenges}}">
-									<p>{{item.Name}}</p>
-								</template>
-							</paper-material>
+					<div id="topRight">
+						<div id="skillPolygonWrapper">
+						</div>
+						<template is="dom-if" if="{{!hasCompletedChallenges}}">
+							<h3 id="noActivity">User has no activity yet</h3>
 						</template>
 					</div>
-				</template>
+				</div>
+			</paper-material>
+			<template is="dom-if" if="{{hasCompletedChallenges}}">
+				<div id="bottom" class="horizontal layout">
+					<paper-material id="midLeft" class="vertical layout" elevation="1">
+						<h3>Last challenge</h3>
+						<p>{{lastChallenge.Name}}</p>
+						<span class="flex"></span>
+						<div>
+							<paper-button style="float: right;" class="secondary" raised on-click="loadChallenge">Load more</paper-button>
+						</div>
+					</paper-material>
+					<template is="dom-if" if="{{displayPreviousChallenges}}">
+						<paper-material id="midRight" elevation="1">
+							<h3>Previous challenges</h3>
+							<template is="dom-repeat" items="{{previousChallenges}}">
+								<p>{{item.Name}}</p>
+							</template>
+						</paper-material>
+					</template>
+				</div>
+			</template>
 		</div>
 	</template>
 	<script>
@@ -146,25 +150,43 @@
 					type: Boolean,
 					value: false,
 					notify: true
+				},
+				userLoading: {
+					type: Boolean,
+					notify: true
+				},
+				profileLoading: {
+					type: Boolean,
+					notify: true
+				},
+				lastChallengesLoading: {
+					type: Boolean,
+					notify: true
 				}
 			},
-			onGetUserResponse: function(r){
-				this.user = r.detail.response;
+			observers: [
+				'checkProgress(userLoading, profileLoading, lastChallengesLoading)'
+			],
+			checkProgress: function(userLoading, profileLoading, lastChallengesLoading){
+				if(!(userLoading || profileLoading || lastChallengesLoading)){
+					app.hideProgress();
+					this.chart.buildChart();
+				}
 			},
-			onGetUserError: function(err){
-				util.error(err);
-			},
-			getData: function(key){
+			refresh: function(){
 				this.lastChallenge = undefined;
 				this.previousChallenges = undefined;
 				this.hasCompletedChallenges = false;
 				this.displayPreviousChallenges = false;
 				this.$.skillPolygonWrapper.innerHTML = '';
+			},
+			getData: function(key){
+				this.refresh();
 				util.get(this.$.getUserRequest, '/users/' + key);
 				util.get(this.$.getProfileRequest, '/users/' + key + '/profile');
 			},
-			getLatestChallenges: function(profileKey){
-				util.get(this.$.getLatestChallenges, '/profiles/' + profileKey + '/challenges?finished=true&limit=10&order=-Finished');
+			onGetUserResponse: function(r){
+				this.user = r.detail.response;
 			},
 			onGetProfileResponse: function(r){
 				this.getLatestChallenges(r.detail.response.Key);
@@ -177,11 +199,10 @@
 				this.hasCompletedChallenges = true;
 				this.lastChallenge = challenges[0];
 
-				var chart = document.createElement('skill-polygon');
-				chart.skills = this.mockedSkills;
-				chart.id='skillPolygon';
-				this.$.skillPolygonWrapper.appendChild(chart);
-				chart.buildChart();
+				this.chart = document.createElement('skill-polygon');
+				this.chart.skills = this.mockedSkills;
+				this.chart.id='skillPolygon';
+				this.$.skillPolygonWrapper.appendChild(this.chart);
 
 				if(challenges.length===1){
 					return;
@@ -189,8 +210,8 @@
 				this.displayPreviousChallenges = true;
 				this.previousChallenges = challenges.slice(1, challenges.length);
 			},
-			onLastChallengesError: function(err){
-				util.error(err);
+			getLatestChallenges: function(profileKey){
+				util.get(this.$.getLatestChallenges, '/profiles/' + profileKey + '/challenges?finished=true&limit=10&order=-Finished');
 			},
 			getInitialLetter: function(user) {
 				return (user.Name || user.Address).charAt(0).toUpperCase();
@@ -199,6 +220,14 @@
 				// TODO(victorbalan): create routing module that passes the objects with the
 				// redirect so we don`t load everything twice.
 				page.redirect('/user/' + this.user.Key + '/challenge/' + this.lastChallenge.Key);
+			},
+			onUserError: function(err){
+				util.error(err);
+			},
+			onError: function(err, ironRequest){
+				if(ironRequest.request.status !== 404){
+					util.error(err);
+				}
 			}
 		});
 	</script>

@@ -22,7 +22,6 @@
 			url$="{{getTokenUrl()}}"
 			method="POST"
 			lastResponse="{{tokenResponse}}"
-			body='{"Description": "login"}'
 		>
 		</iron-ajax>
 		<iron-ajax id="userRequest"
@@ -110,6 +109,7 @@ Polymer({
 	},
 	requestToken: function() {
 		this.$.tokenRequest.headers = { 'Authorization': 'Basic ' + btoa(this.email + ':' + this.password)};
+		this.$.tokenRequest.body = JSON.stringify({Description: 'login'});
 		this.$.tokenRequest.generateRequest();
 	},
 	onToken: function() {

@@ -27,7 +27,25 @@
 			type: String,
 			notify: true,
 			value: '0'
+		},
+		ironPagesStyle: {
+			type: String,
+			notify: true
+		},
+		progressStyle: {
+			notify: true,
+			value: 'position: absolute; top: 105px; width: 100%; display: none;'
 		}
+	};
+
+	app.showProgress = function(){
+		app.progressStyle = 'position: absolute; top: 105px; width: 100%;';
+		app.ironPagesStyle = 'display: none;';
+	};
+
+	app.hideProgress = function(){
+		app.progressStyle = 'position: absolute; top: 105px; width: 100%; display: none;';
+		app.ironPagesStyle = '';
 	};
 
 	app.finishChallenge = function() {
@@ -99,11 +117,6 @@
 	app.onChallengeResponse = function(r) {
 		var challenge = r.detail.response;
 		app.challenge = challenge;
-
-		if (challenge.Tasks.indexOf(localStorage.getItem('currentTask')) === -1) {
-			localStorage.removeItem('currentTask');
-			localStorage.removeItem('timer');
-		}
 	};
 
 	app.onResultResponse = function(r) {

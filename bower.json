@@ -9,15 +9,19 @@
     "page": "visionmedia/page.js#~1.6.3",
     "ace-min-noconflict": "~1.1.9",
     "iron-icon": "PolymerElements/iron-icon#~1.0.2",
-    "google-chart": "GoogleWebComponents/google-chart#1.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#~1.0.1",
     "paper-fab": "PolymerElements/paper-fab#~1.0.3",
     "paper-tabs": "PolymerElements/paper-tabs#~1.0.1",
     "paper-menu-button": "PolymerElements/paper-menu-button#~1.0.2",
-    "Chart.js": "~1.0.2"
+    "Chart.js": "~1.0.2",
+    "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
+    "paper-progress": "PolymerElements/paper-progress#~1.0.2"
   },
   "devDependencies": {
     "web-component-tester": "*",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0"
+  },
+  "resolutions": {
+    "iron-ajax": "^1.0.0"
   }
 }

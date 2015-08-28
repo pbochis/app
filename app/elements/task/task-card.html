@@ -49,7 +49,8 @@
 	<template>
 		<paper-material
 			id="task"
-			elevation="2"
+			animated
+			elevation="{{elevation}}"
 			class="card"
 			on-mouseover="onHovered"
 			on-mouseout="onUnhovered"
@@ -102,6 +103,11 @@
 					type:Boolean,
 					notify: true,
 					value: false
+				},
+				elevation: {
+					type: Number,
+					notify: true,
+					value: 1
 				}
 			},
 			onHovered: function () {
@@ -118,10 +124,10 @@
 				}
 				var index = this.selectedTasks.indexOf(this.task);
 				if (index !== -1) {
-					this.$.task.style.border = '';
+					this.elevation = 1;
 					this.splice('selectedTasks', index, 1);
 				} else {
-					this.$.task.style.border = 'solid #000000';
+					this.elevation = 5;
 					this.push('selectedTasks', this.task);
 				}
 				if (this.selectedTasks.length > 0) {

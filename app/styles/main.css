@@ -121,3 +121,7 @@ paper-header-panel>#mainPanel {
 .halfHeight {
 	height: 50%;
 }
+
+.tab-content.paper-tab > a {
+	height: 100%;
+}

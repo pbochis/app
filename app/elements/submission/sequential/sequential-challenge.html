@@ -48,7 +48,7 @@
 		}
 	</style>
 	<template>
-		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout">
+		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout" style$="{{taskNavHeaderStyle}}">
 			<div id="backArrowWrapper">
 				<template is="dom-if" if="{{showBackArrow}}">
 					<paper-icon-button icon="arrow-back" on-click="previousTask"></paper-icon-button>
@@ -64,7 +64,7 @@
 				</template>
 			</div>
 		</paper-material>
-		<div id="content">
+		<div id="content" style$="{{contentStyle}}">
 			<paper-material id="startChallengeCard" elevation="1" class="card">
 				<div class="flex">
 					<challenge-display challenge="{{challenge}}"></challenge-display>
@@ -100,33 +100,64 @@
 					notify: true,
 					reflectToAttribute: true
 				},
+				result: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
 				task: {
 					type: Object,
 					notify: true
 				},
 				taskIndex: {
 					type: Number,
-					notify: true
+					notify: true,
+					value: 0
 				},
 				taskNavTitle: {
 					type: String,
 					notify: true
+				},
+				taskNavHeaderStyle:{
+					type: String,
+					notify: true,
+					value: 'display: none;'
+				},
+				contentStyle:{
+					type: String,
+					notify: true,
+					value: 'display: none;'
 				}
 			},
 			observers: [
-				'afterPropertiesSet(challenge)'
+				'afterPropertiesSet(challenge, result)'
 			],
 			afterPropertiesSet: function(){
+				var currentTask = '';
+				for(var i=0; i<this.result.StartTimes.length; i++){
+					if(new Date(this.result.StartTimes[i]).getTime()>0){
+						this.taskIndex = i;
+						currentTask = this.challenge.Tasks[i];
+					}
+				}
+				if(new Date(this.result.StartTimes[i]).getTime()>0){
+					app.hideProgress();
+					this.contentStyle = '';
+					this.$.content.innerHTML = '';
+					var finished = document.createElement('challenge-finished');
+					this.$.content.innerHTML = '';
+					this.$.content.appendChild(finished);
+				}else{
 					var timer = localStorage.getItem('timer');
-					var currentTask = localStorage.getItem('currentTask');
-					var currentTaskIndex = localStorage.getItem('currentTaskIndex');
-					this.taskIndex = 0;
-					if(timer !== null && currentTask !== null && currentTaskIndex !== null){
-						this.taskIndex = Number(currentTaskIndex);
+					if(timer !== null && currentTask !== '' && this.taskIndex >= 0){
 						this.loadTaskById(currentTask);
 						this.$.taskTimer.startWithOffset(Number(timer));
+					}else{
+						app.hideProgress();
+						this.contentStyle = '';
 					}
 					this.displayArrows();
+				}
 			},
 			timeout: function() {
 				var taskTimeout = document.createElement('task-timeout');
@@ -134,17 +165,17 @@
 				this.$.content.appendChild(taskTimeout);
 			},
 			startChallenge: function() {
+				this.$.content.innerHTML = '';
 				localStorage.setItem('timer', Date.now());
 				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				this.$.taskTimer.start();
 				this.displayArrows();
+				app.showProgress();
 			},
 			loadTaskById: function(key){
 				if(this.challenge.Tasks.length>1){
 					this.taskNavTitle = 'Task ' + (this.taskIndex+1) +' of ' + (this.challenge.Tasks.length);
 				}
-				localStorage.setItem('currentTask', key);
-				localStorage.setItem('currentTaskIndex', this.taskIndex);
 				util.get(this.$.loadTaskRequest, '/tasks/' + key + '?result=' + localStorage.getItem('result'));
 			},
 			onTaskResponse: function(r){
@@ -158,6 +189,9 @@
 					});
 					this.$.content.innerHTML = '';
 					this.$.content.appendChild(webInterface);
+					this._showTaskNav();
+					app.hideProgress();
+					this.contentStyle = '';
 				});
 			},
 			displayArrows: function(){
@@ -192,9 +226,17 @@
 					this.$.content.innerHTML = '';
 					this.$.content.appendChild(finished);
 					app.finishChallenge();
+					this._hideTaskNav();
 				}
 			},
-			onFinishTaskError: function() {
+			onFinishTaskError: function(err) {
+				util.error(err);
+			},
+			_showTaskNav: function(){
+				this.taskNavHeaderStyle = '';
+			},
+			_hideTaskNav: function(){
+				this.taskNavHeaderStyle = 'display: none';
 			}
 		});
 
