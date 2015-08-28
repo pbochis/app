@@ -83,5 +83,11 @@ var util = {
 		'Readability',
 		'Efficiency',
 		'Coding Speed'
+	],
+	languages: [
+		'java',
+		'py',
+		'c',
+		'js'
 	]
 };

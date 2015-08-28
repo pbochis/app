@@ -93,6 +93,14 @@ window.addEventListener('WebComponentsReady', function() {
 		});
 	});
 
+	page('/task/create', function(){
+		checkAuthorization();
+		checkIsCompany();
+		app.header = 'Create task';
+		app.route = 'task-create';
+		Polymer.Base.importHref('/elements/task/task-form.html');
+	});
+
 	page('/user/:userKey', function(context){
 		checkAuthorization();
 		checkIsCompany();

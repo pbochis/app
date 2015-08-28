@@ -1,0 +1,143 @@
+<link rel="import" href="/bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="/elements/markdown/render-markdown.html">
+<link rel="import" href="/bower_components/iron-form/iron-form.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+
+<dom-module id="task-form">
+	<style>
+		iron-autogrow-textarea {
+			border-color: black;
+			border: solid;
+			background-color: white;
+			width: 70%;
+			margin: 10px 0;
+		}
+
+		paper-input {
+			margin: 10px 0;
+			width: 70%;
+		}
+
+		h4 {
+			margin: 16px 0;
+		}
+
+		paper-material {
+			width: 90%;
+			padding: 5%;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="postTaskAjax"
+			handle-as="json"
+		  	on-response="onResponse"
+		  	on-error="onError">
+		</iron-ajax>
+		<div class="mainContent">
+			<paper-material class="card">
+				<h2>New task</h2>
+				<form is="iron-form" id="taskForm">
+					<paper-input id="name" label="Name" value="{{assignment.Name}}"></paper-input>
+
+					<iron-autogrow-textarea placeHolder="Description" id="descriptionInput" bind-value="{{assignment.Description}}" rows="5" max-rows="5"></iron-autogrow-textarea>
+					<render-markdown markdown="{{assignment.Description}}"></render-markdown>
+
+					<paper-input id="durationMinutes" label="Duration(minutes)" value="{{minutes}}"></paper-input>
+					<paper-input id="durationHours" label="Duration(hours)" value="{{hours}}"></paper-input>
+
+					<iron-autogrow-textarea placeHolder="Instructions" id="instructionsInput" bind-value="{{assignment.Instructions}}" rows="15" max-rows="15"></iron-autogrow-textarea>
+
+					<render-markdown markdown="{{assignment.Instructions}}"></render-markdown>
+
+					<paper-input id="webInterface" label="Web Interface" value="{{endpoints.WebInterface}}"></paper-input>
+					<paper-input id="gitRepository" label="Git Repository" value="{{endpoints.GitRepository}}"></paper-input>
+
+					<paper-input id="tasker" label="Tasker" value="{{task.Tasker}}"></paper-input>
+
+					<h4>Languages</h4>
+					<div>
+						<template is="dom-repeat" items="{{languages}}" as="lang">
+							<label for="{{lang}}">{{lang}}</label><input id="{{lang}}" type="checkbox"/>
+						</template>
+					</div>
+
+					<h4>Skills</h4>
+					<template is="dom-repeat" items="{{skills}}">
+						<paper-input id="{{item}}" label="{{item}}"></paper-input>
+					</template>
+
+					<paper-button class="colorful" raised on-click="_saveTask">Create</paper-button>
+				</form>
+			</paper-material>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'task-form',
+			properties: {
+				minutes: Number,
+				hours: Number,
+				skills: {
+					type: Array,
+					value: util.skillNames
+				},
+				languages: {
+					type: Array,
+					value: util.languages
+				},
+				endpoints: {
+					type: Object,
+					notify: true,
+					value: {}
+				},
+				assignment: {
+					type: Object,
+					notify: true,
+					value: {}
+				},
+				task: {
+					type: Object,
+					notify: true,
+					value: {}
+				}
+			},
+			_saveTask: function(){
+				this.assignment.Duration = 0;
+				if (this.hours > 0 ){
+					this.assignment.Duration += this.hours * 36 * 1e11;
+				}
+				if (this.minutes > 0){
+					this.assignment.Duration += this.minutes * 6 * 1e10;
+				}
+				var skillWeights = {};
+				var i;
+				for (i = 0; i < this.skills.length; i++){
+					var skillValue = parseFloat(document.getElementById(this.skills[i]).value);
+					if (!isNaN(skillValue) && skillValue >= 0 && skillValue <= 1){
+						skillWeights[this.skills[i]] = skillValue;
+					}
+				}
+				var selectedLangs = [];
+				for (i = 0; i < this.languages.length; i++){
+					if(document.getElementById(this.languages[i]).checked){
+						selectedLangs.push(this.languages[i]);
+					}
+				}
+				this.assignment.Endpoints = this.endpoints;
+				this.task.Assignment = this.assignment;
+				this.task.SkillWeights = skillWeights;
+				this.task.Languages = selectedLangs;
+				this.task.Tasker = parseInt(this.task.Tasker);
+				util.post(this.$.postTaskAjax, '/tasks', this.task);
+			},
+			onResponse: function(res){
+				page.redirect('/tasks/' + res.detail.response.Key);
+			},
+			onError: function(e){
+				util.error(e);
+			}
+		});
+	</script>
+</dom-module>

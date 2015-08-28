@@ -1,6 +1,7 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/elements/skill/skill-polygon.html">
+<link rel="import" href="/elements/markdown/render-markdown.html">
 
 <dom-module id="task-detail">
 	<style>
@@ -42,7 +43,7 @@
 
 			<paper-material	class="card grid-row">
 				<h4>Instructions</h4>
-				<p>{{task.Instructions}}</p>
+				<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
 			</paper-material>
 		</div>
 	</template>
