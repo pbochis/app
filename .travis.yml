@@ -12,11 +12,10 @@ before_install:
 script:
 - find . -path ./bower_components -prune -o -print | egrep "(html|js|json)$" | xargs jshint --extract=auto
 
-after_success:
-- if $($TRAVIS_SECURE_ENV_VARS)
-- then
-- curl https://sdk.cloud.google.com | CLOUDSDK_CORE_DISABLE_PROMPTS=1 $SHELL
-- ~/google-cloud-sdk/bin/gcloud -q components update preview app
-- ~/google-cloud-sdk/bin/gcloud -q auth activate-service-account --key-file service-account.json
-- ~/google-cloud-sdk/bin/gcloud -q preview app --project coduno deploy app.yaml --set-default
-- fi
+deploy:
+  provider: gae
+  edge:
+    source: flowlo/dpl
+    branch: gae
+  on:
+    all_branches: true
