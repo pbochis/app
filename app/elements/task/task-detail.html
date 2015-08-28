@@ -1,0 +1,78 @@
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/skill/skill-polygon.html">
+
+<dom-module id="task-detail">
+	<style>
+		.grid-element {
+			margin: 16px;
+			width: calc(50% - 64px);
+		}
+
+		.grid-row {
+			margin: 16px;
+			width: calc(100% - 64px);
+		}
+	</style>
+
+	<template>
+		<iron-ajax
+		  id="taskDetailAjax"
+		  handle-as="json"
+		  on-response="onTaskResponse"
+		  on-error="onError">
+		</iron-ajax>
+
+		<div class="vertical layout mainContent">
+			<div class="horizontal layout">
+				<paper-material class="card grid-element" elevation="1">
+					<h1>{{task.Name}}</h1>
+					<dl class="dl-horizontal">
+						<dt>Duration</dt>
+						<dd>{{duration}}</dd>
+						<dt>Description</dt>
+						<dd>{{task.Description}}</dd>
+					</dl>
+				</paper-material>
+
+				<paper-material class="card grid-element">
+					<skill-polygon id="skillPolygon" skills="{{task.SkillWeights}}"></skill-polygon>
+				</paper-material>
+			</div>
+
+			<paper-material	class="card grid-row">
+				<h4>Instructions</h4>
+				<p>{{task.Instructions}}</p>
+			</paper-material>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'task-detail',
+			properties: {
+				task: {
+					type: Object,
+					observer: '_taskSet',
+					notify: true
+				},
+				duration: {
+					type: String,
+					computed: '_computeDuration(task)'
+				}
+			},
+			getTask: function(key){
+				util.get(this.$.taskDetailAjax, '/tasks/' + key);
+			},
+			onTaskResponse: function(r){
+				this.task = r.detail.response;
+				this.$.skillPolygon.buildChart();
+			},
+			_computeDuration: function (task) {
+				return util.computeDuration(task.Duration);
+			},
+			_taskSet: function() {
+				this.$.skillPolygon.buildChart();
+			}
+		});
+	</script>
+</dom-module>

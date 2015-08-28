@@ -1,5 +1,6 @@
 <link rel="import" href="task-card.html">
 <link rel="import" href="/elements/challenge/challenge-modal.html">
+<link rel="import" href="/elements/task/task-detail.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="task-list">
@@ -50,11 +51,8 @@
 				}
 			},
 			listeners: {
-				'challengeCreated': 'resetSelected'
-			},
-			resetSelected: function () {
-				this.selectedTasks = [];
-				this.showAllButtons = false;
+				'challengeCreated': '_resetSelected',
+				'taskDetail': '_taskDetail'
 			},
 			createChallenge: function () {
 				this.$.challengeModal.toggle();
@@ -68,6 +66,11 @@
 			},
 			onError: function (error) {
 				util.error(error);
+			},
+			// listeners for external events
+			_resetSelected: function () {
+				this.selectedTasks = [];
+				this.showAllButtons = false;
 			}
 		});
 	</script>
