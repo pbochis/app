@@ -1,6 +1,7 @@
 <link rel="import" href="/bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/elements/skill/skill-list.html">
 
@@ -13,25 +14,25 @@
 		}
 
 		paper-material {
-			width: calc(98.66% - 32px);
-			height: calc(98.66% - 32px);
-			padding-right: 35px;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+		}
+
+		#content{
+			width: calc(100% - 32px);
+			height: calc(100% - 32px);
+			padding: 16px;
 			overflow: hidden;
 		}
 
-		paper-material h2, div {
+		#content h2, div {
 			margin: 7px;
 		}
 
 		.taskDuration iron-icon {
 			height: 20px;
 			width: 20px;
-		}
-
-		paper-fab {
-			width: 24px;
-			height: 24px;
-			--paper-fab-background: rgba(148, 167, 206, 0.5)
 		}
 
 		.task-selector {
@@ -45,6 +46,9 @@
 			top: 50px;
 			right: 10px;
 		}
+		a {
+			text-decoration: none;
+		}
 	</style>
 	<template>
 		<paper-material
@@ -55,24 +59,29 @@
 			on-mouseover="onHovered"
 			on-mouseout="onUnhovered"
 	  	>
-			<h2>{{task.Name}}</h2>
-			<template is="dom-if" if="{{showButton}}">
-				<paper-fab class="task-selector" icon="add" on-click="_toggleSelectTask"></paper-fab>
+			<template is="dom-if" if="{{showSelect}}">
+				<paper-icon-button id="taskSelector" class="task-selector"
+				icon="{{selectorIcon}}" on-click="_toggleSelectTask" style$="{{addButtonStyle}}"></paper-icon-button>
 			</template>
-			<template is="dom-if" if="{{showZoomButton}}">
-				<paper-fab class="task-detail" icon="zoom-in" on-click="_viewTaskDetail"></paper-fab>
-			</template>
-			<div class="taskDuration">
-				<iron-icon icon="alarm"></iron-icon>
-				<span>{{duration}}</span>
+			<div id="content" on-click="_viewTaskDetail">
+				<h2>{{task.Assignment.Name}}</h2>
+				<div class="taskDuration">
+					<iron-icon icon="alarm"></iron-icon>
+					<span>{{duration}}</span>
+				</div>
+				<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
 			</div>
-			<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
 		</paper-material>
 	</template>
 	<script>
 		Polymer({
 			is: 'task-card',
 			properties: {
+				noSelect: {
+					type: Boolean,
+					notify: true,
+					value: false
+				},
 				task: {
 					type: Object,
 					notify: true
@@ -81,77 +90,78 @@
 					type: String,
 					computed: '_computeDuration(task)'
 				},
-				selectedTasks: {
-					type: Array,
-					notify: true,
-					observer: '_selectedTasksCleared'
-				},
-				showButton: {
+				showSelect: {
 					type: Boolean,
 					notify: true
 				},
-				showAllButtons: {
+				selectionView: {
 					type: Boolean,
 					notify: true,
-					observer: '_globalValueChanged'
-				},
-				showZoomButton: {
-					type: Boolean,
-					notify: true
-				},
-				noSelect: {
-					type:Boolean,
-					notify: true,
-					value: false
+					observer: '_selectionViewObserver'
 				},
 				elevation: {
 					type: Number,
 					notify: true,
 					value: 1
+				},
+				addButtonStyle: {
+					type: String,
+					notify: true,
+					value: 'color: gray;'
+				},
+				selected: {
+					type: Boolean,
+					notify: true,
+				},
+				selectorIcon: {
+					type: String,
+					notify: true,
+					value: 'check-circle'
 				}
+			},
+			ready: function(){
+				this.goTo = '/tasks/' + this.task.Key;
 			},
 			onHovered: function () {
-				this.showButton = !this.noSelect;
-				this.showZoomButton = true;
+				this.showSelect = !this.noSelect && true;
+				this.elevation = 5;
 			},
 			onUnhovered: function () {
-				this.showZoomButton = false;
-				this.showButton = this.showAllButtons || false;
+				this.showSelect = this.selectionView || false;
+				this.elevation = this.selectionView && this.selected ? 5 : 1;
 			},
 			_toggleSelectTask: function () {
-				if (this.noSelect){
-					return;
-				}
-				var index = this.selectedTasks.indexOf(this.task);
-				if (index !== -1) {
-					this.elevation = 1;
-					this.splice('selectedTasks', index, 1);
-				} else {
+				this.selected = !this.selected;
+				if(this.selected){
+					this.addButtonStyle = 'color: #4285f4;';
+					this.selectorIcon = 'check-circle';
 					this.elevation = 5;
-					this.push('selectedTasks', this.task);
-				}
-				if (this.selectedTasks.length > 0) {
-					this.showAllButtons = true;
-					app.header = this.selectedTasks.length + ' SELECTED';
-				}
-				else {
-					this.showAllButtons = false;
-					app.header = 'Tasks';
-				}
-			},
-			_selectedTasksCleared: function (newValue) {
-				if (newValue.indexOf(this.task) === -1) {
-					this.$.task.style.border = '';
+					this.fire('task-added', this.task);
+				}else{
+					this.addButtonStyle = 'color: gray;';
+					this.selectorIcon = 'radio-button-unchecked';
+					this.elevation = 1;
+					this.fire('task-removed', this.task);
 				}
 			},
 			_computeDuration: function (task) {
-				return util.computeDuration(task.Duration);
+				return util.computeDuration(task.Assignment.Duration);
 			},
-			_globalValueChanged: function (newValue) {
-				this.showButton = newValue;
+			_selectionViewObserver: function () {
+				this.showSelect = this.selectionView;
+				if(!this.selectionView){
+					this.selectorIcon = 'check-circle';
+				}
+				if(this.showSelect && !this.selected){
+					this.selectorIcon = 'radio-button-unchecked';
+				}
 			},
 			_viewTaskDetail: function(){
-				page.redirect('/tasks/' + this.task.Key);
+				if(!this.selectionView){
+					page.redirect('/tasks/' + this.task.Key);
+				}else{
+					this._toggleSelectTask();
+				}
 			}
 		});
 	</script>
