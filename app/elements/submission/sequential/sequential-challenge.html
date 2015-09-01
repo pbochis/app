@@ -180,8 +180,8 @@
 			},
 			onTaskResponse: function(r){
 				var task = r.detail.response;
-				this.importHref('/elements/submission/tasks/' + task.Endpoints.WebInterface + '.html', function(){
-					var webInterface = document.createElement(task.Endpoints.WebInterface);
+				this.importHref('/elements/submission/tasks/' + task.Assignment.Endpoints.WebInterface + '.html', function(){
+					var webInterface = document.createElement(task.Assignment.Endpoints.WebInterface);
 					webInterface.task = task;
 					var component = this;
 					webInterface.addEventListener('task-finished', function(){

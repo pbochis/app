@@ -133,6 +133,11 @@
 			},
 			afterPropertiesSet: function(){
 				this.languages = [];
+
+				if (!this.task.Languages) {
+					return;
+				}
+
 				for (var i = 0; i < this.task.Languages.length; i++) {
 					var lang = { tag: this.task.Languages[i] };
 					switch (this.task.Languages[i]) {
