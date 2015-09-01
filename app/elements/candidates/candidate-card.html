@@ -10,9 +10,6 @@
 			margin: 20px;
 			background: rgb(255,255,255);
 		}
-		paper-material:hover{
-			background: rgb(200,200,200);
-		}
 		paper-material > .cardTop{
 			position: relative;
 			height: 250px;
@@ -51,7 +48,8 @@
 	</style>
 	<template>
 		<a href="{{goTo}}">
-			<paper-material elevation="1">
+			<paper-material animated elevation="{{elevation}}"
+				on-mouseover="onHovered" on-mouseout="onUnhovered" on-click="onClick">
 				<div class="cardTop" align="center">
 					<div class="cardTopImage">
 						 <text class="letter" x="0" y="0">{{getInitialLetter(user)}}</text>
@@ -72,6 +70,11 @@
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				elevation: {
+					type: Number,
+					notify: true,
+					value: 1
 				}
 			},
 			ready: function(){
@@ -93,6 +96,15 @@
 			},
 			getInitialLetter: function(user) {
 				return (user.Name || user.Address).charAt(0).toUpperCase();
+			},
+			onHovered: function () {
+				this.elevation = 5;
+			},
+			onUnhovered: function () {
+				this.elevation = 1;
+			},
+			onClick: function(){
+				app.showProgress();
 			}
 		});
 	</script>

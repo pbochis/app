@@ -43,7 +43,7 @@
 	<template>
 		<paper-material id="challenge" elevation="2" class="card">
 			<h2>{{challenge.Name}}</h2>
-			<a href="{{goTo}}"><paper-fab mini icon="chevron-right"></paper-fab></a>
+			<a href="{{goTo}}"><paper-fab mini icon="chevron-right" on-click="onClick"></paper-fab></a>
 			<div class="duration">
 				<iron-icon icon="alarm"></iron-icon>
 				<span>{{duration}}</span>
@@ -70,6 +70,9 @@
 			},
 			computeDuration: function (challenge) {
 				return util.computeDuration(challenge.Duration);
+			},
+			onClick: function(){
+				app.showProgress();
 			}
 		});
 	</script>

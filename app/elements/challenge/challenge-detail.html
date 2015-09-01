@@ -32,17 +32,19 @@
 
 	<template>
 		<iron-ajax
-		  id="challengeDetailAjax"
-		  handle-as="json"
-		  on-response="onResponse"
-		  on-error="onError">
+			id="challengeDetailAjax"
+			loading="{{challengeLoading}}"
+			handle-as="json"
+			on-response="onResponse"
+			on-error="onError">
 		</iron-ajax>
 
 		<iron-ajax
-		  id="taskDetailAjax"
-		  handle-as="json"
-		  on-response="onTaskResponse"
-		  on-error="onError">
+			id="taskDetailAjax"
+			loading="{{taskLoading}}"
+			handle-as="json"
+			on-response="onTaskResponse"
+			on-error="onError">
 		</iron-ajax>
 
 		<div class="grid vertical layout mainContent">
@@ -118,6 +120,23 @@
 				duration: {
 					type: String,
 					computed: 'computeDuration(challenge)'
+				},
+				challengeLoading: {
+					type: Boolean,
+					notify: true
+				},
+				taskLoading: {
+					type: Boolean,
+					notify: true
+				}
+			},
+			observers: [
+				'checkProgress(challengeLoading, taskLoading)'
+			],
+			checkProgress: function(challengeLoading, taskLoading){
+				if(!(challengeLoading || taskLoading)){
+					app.hideProgress();
+					this.$.skillPolygon.buildChart();
 				}
 			},
 			computeDuration: function(challenge){
@@ -136,7 +155,6 @@
 				for (var i = 0; i < this.challenge.Tasks.length; i++) {
 					util.get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i]);
 				}
-				this.$.skillPolygon.buildChart();
 			},
 			onTaskResponse: function (res) {
 				this.push('tasks', res.detail.response);

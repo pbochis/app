@@ -32,7 +32,7 @@
 			width: calc(100% - 24px);
 			height: calc(100% - 32px);
 		}
-		#leftCard>h2{
+		#topRightCard>h2{
 			height: 40px;
 			margin: 0;
 			padding-left: 16px;
@@ -77,15 +77,15 @@
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
-					<h2>Code editor</h2>
-					<div id="codeEditorWrapper">
-						<code-editor id="codeEditor"></code-editor>
-					</div>
+					<task-display task="{{task}}"></task-display>
 				</paper-material>
 			</div>
 			<div class="flex">
 				<paper-material id="topRightCard" elevation="1">
-					<task-display task="{{task}}"></task-display>
+					<h2>Code editor</h2>
+					<div id="codeEditorWrapper">
+						<code-editor id="codeEditor"></code-editor>
+					</div>
 				</paper-material>
 				<paper-material id="botRightCard" elevation="1">
 					<div id="buttons" class="horizontal layout">
