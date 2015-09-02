@@ -14,6 +14,12 @@
 		paper-dialog {
 			background-color: white;
 		}
+
+		#createTaskButton {
+			position: fixed;
+			right: 2%;
+			bottom: 5%;
+		}
 	</style>
 	<template>
 		<iron-ajax
@@ -22,6 +28,8 @@
 			on-response="onResponse"
 			on-error="onError">
 		</iron-ajax>
+
+		<paper-fab id="createTaskButton" on-click="_createTask" icon="create"></paper-fab>
 		<div class="horizontal layout wrap task-list">
 			<template is="dom-repeat" items="{{tasks}}" as="task">
 				<task-card selected-tasks="{{selectedTasks}}"
@@ -71,6 +79,9 @@
 			_resetSelected: function () {
 				this.selectedTasks = [];
 				this.showAllButtons = false;
+			},
+			_createTask: function() {
+				page.redirect('/task/create');
 			}
 		});
 	</script>

@@ -1,0 +1,29 @@
+<dom-module id="render-markdown">
+	
+	<style>
+		:host{
+			margin-top: 16px;
+			margin-bottom: 16px;
+		}
+	</style>
+	
+	<template>
+		<div id="markdownViewer"></div>	
+	</template>
+	<script src="/bower_components/markdown/lib/markdown.js" type="application/javascript"></script>
+	<script>
+		Polymer({
+			is: 'render-markdown',
+			properties: {
+				markdown: {
+					type: String,
+					notify: true,
+					observer: '_updateChanges'
+				}
+			},
+			_updateChanges: function(){
+				this.$.markdownViewer.innerHTML = markdown.toHTML(this.markdown);
+			}
+		});
+	</script>
+</dom-module>

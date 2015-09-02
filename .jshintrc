@@ -75,6 +75,7 @@
 		"page"    : false,
 		"Polymer" : false,
 		"util"    : true,
-		"Chart"   : true
+		"Chart"   : true,
+		"markdown": true
 	}
 }

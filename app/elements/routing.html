@@ -46,7 +46,7 @@ window.addEventListener('WebComponentsReady', function() {
 		app.route = 'challenge-detail';
 		app.header = 'Challenges';
 		Polymer.Base.importHref('/elements/challenge/challenge-detail.html', function(){
-			app.$.challengeDetail.challengeKey = data.params.challengeKey;
+			app.$.challengeDetail.loadData(data.params.challengeKey);
 		});
 	});
 
@@ -91,6 +91,14 @@ window.addEventListener('WebComponentsReady', function() {
 		Polymer.Base.importHref('/elements/task/task-detail.html', function() {
 			app.$.taskDetail.getTask(data.params.taskKey);
 		});
+	});
+
+	page('/task/create', function(){
+		checkAuthorization();
+		checkIsCompany();
+		app.header = 'Create task';
+		app.route = 'task-create';
+		Polymer.Base.importHref('/elements/task/task-form.html');
 	});
 
 	page('/user/:userKey', function(context){

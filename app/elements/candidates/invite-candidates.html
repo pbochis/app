@@ -1,0 +1,101 @@
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/bower_components/iron-form/iron-form.html">
+<link rel="import" href="invite-candidate-input.html">
+
+<dom-module id="invite-candidates">
+	<style>
+		.buttonGroup {
+			margin: 16px;
+			float: right;
+		}
+		#addCandidate {
+			cursor: pointer;
+		}
+		#dialog {
+			position: fixed;
+			top: 10%;
+			max-height: 60%;
+		}
+	</style>
+	<template>
+		<iron-ajax
+		  id="inviteCandidate"
+		  handle-as="json"
+		  on-response="onPostResponse"
+		  on-error="onError">
+		</iron-ajax>
+
+		<paper-dialog id="dialog" modal style="background: white;">
+			<h2>Invite candidates</h2>
+			<p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
+			<form is="iron-form" id="form">
+				<div id="candidates"></div>
+				<div id="addCandidate" on-click="_addCandidate">
+					<iron-icon icon="add"></iron-icon>
+					<span>Add another candidate</span>
+				</div>
+				<div class="buttonGroup">
+					<paper-button class="primary" dialog-dismiss>Cancel</paper-button>
+					<paper-button class="primary" raised on-click="inviteCandidates" dialog-confirm>Invite
+					</paper-button>
+				</div>
+			</form>
+		</paper-dialog>
+	</template>
+	<script>
+		Polymer({
+			is: 'invite-candidates',
+			properties: {
+				challenges: {
+					type: Array,
+					notify: true
+				},
+				challenge: {
+					type: Object,
+					notify: true
+				},
+				candidates: {
+					type: Array,
+					notify: true,
+					value: []
+				}
+			},
+			toggle: function(){
+				this._clearDialog();
+				this._addCandidate();
+				this.$.dialog.toggle();
+			},
+			inviteCandidates: function(){
+				for (var i = 0; i < this.candidates.length; i++){
+					var candidate = this.candidates[i];
+					if (candidate.Removed !== undefined && candidate.Address !== "" && candidate.Challenge !== undefined){
+						util.post(this.$.inviteCandidate, '/invitations', {
+							'Address': candidate.Address,
+							'Challenge': candidate.Challenge
+						});
+					}
+				}
+			},
+			_addCandidate: function(){
+				if (this.challenge){
+					this.push('candidates', {'Challenge': this.challenge.Key});
+				}else{
+					this.push('candidates', {});
+				}
+				var newInput = document.createElement('invite-candidate-input');
+				newInput.challenges = this.challenges;
+				newInput.challenge = this.challenge;
+				newInput.candidate = this.candidates[this.candidates.length - 1];
+				this.$.candidates.appendChild(newInput);
+			},
+			_clearDialog: function(){
+				var el;
+				while ((el = document.querySelector('invite-candidate-input')) != null){
+					el.remove();
+				}
+				this.candidates = []
+			}
+		});
+	</script>
+</dom-module>
