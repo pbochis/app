@@ -46,7 +46,7 @@ window.addEventListener('WebComponentsReady', function() {
 		app.route = 'challenge-detail';
 		app.header = 'Challenges';
 		Polymer.Base.importHref('/elements/challenge/challenge-detail.html', function(){
-			app.$.challengeDetail.challengeKey = data.params.challengeKey;
+			app.$.challengeDetail.loadData(data.params.challengeKey);
 		});
 	});
 
