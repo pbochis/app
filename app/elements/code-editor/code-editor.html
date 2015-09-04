@@ -1,3 +1,5 @@
+<link rel="import" href="/elements/submission/ws-element.html">
+
 <dom-module id="code-editor">
 	<style>
 		:host {
@@ -20,6 +22,7 @@
 			content-type="application/json"
 		>
 		</iron-ajax>
+		<ws-element url="{{wsUrl}}"></ws-element>
 		<div id="editor"></div>
 	</template>
 	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
@@ -28,8 +31,14 @@
 		/*global ace:false */
 		Polymer({
 			is: 'code-editor',
-			properties: {},
+			properties: {
+				wsUrl: {
+					type: String,
+					notify: true
+				}
+			},
 			ready: function(){
+				this.wsUrl = util.getWSUrl('/?result=' + localStorage.getItem('result'));
 				ace.require('ace/ext/language_tools');
 				this.$.editor = ace.edit(this.$.editor);
 				this.$.editor.setTheme('ace/theme/chrome');

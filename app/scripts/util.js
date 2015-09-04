@@ -10,6 +10,15 @@ var util = {
 
 		return prefix + suffix;
 	},
+	getWSUrl: function(suffix){
+		var prefix = 'ws://api.cod.uno:8090';
+
+		if (location.origin.indexOf('localhost') !== -1) {
+			prefix = 'ws://localhost:8090';
+		}
+
+		return prefix + suffix;
+	},
 	accessToken: function() {
 		if (localStorage.accessToken) {
 			return JSON.parse(localStorage.accessToken);

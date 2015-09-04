@@ -18,8 +18,6 @@
 			is: 'simple-code-task',
 			properties: {
 				task: {
-					type: Object,
-					notify: true,
 					reflectToAttribute: true
 				},
 				control: {
@@ -30,6 +28,20 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
+			listeners: {
+				'ws-onerror': 'onWsError',
+				'ws-onmessage': 'onWsMessage',
+				'ws-onopen': 'onWsOpen'
+			},
+			onWsOpen: function(){
+				console.log('WS OPENED');
+			},
+			onWsError: function(err){
+				console.log(err);
+			},
+			onWsMessage: function(data){
+				this.$.console.setOutput(JSON.parse(data.detail));
+			},
 			afterPropertiesSet: function(){
 				this.control = {};
 				var component = this;
@@ -38,8 +50,9 @@
 				};
 			},
 			onResponse: function(r){
-				localStorage.setItem('lastSubmission', r.detail.response.Key);
-				this.$.console.setOutput(r.detail.response);
+				if(r.detail.response !== null){
+					localStorage.setItem('lastSubmission', r.detail.response.Key);
+				}
 			},
 			onError: function(error){
 				util.error(error);

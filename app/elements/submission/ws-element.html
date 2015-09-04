@@ -1,0 +1,42 @@
+<dom-module id="ws-element">
+	<template>
+  </template>
+	<script>
+  Polymer({
+          is: 'ws-element',
+          socket: null,
+          properties: {
+              protocol: {
+                  type: String
+              },
+              url: {
+                  type: String
+              }
+          },
+					observers: [
+						'afterPropertiesSet(url)'
+					],
+					afterPropertiesSet: function(){
+              this.socket = new WebSocket(this.url);
+              this.socket.onerror = this.onError.bind(this);
+              this.socket.onopen = this.onOpen.bind(this);
+              this.socket.onmessage = this.onMessage.bind(this);
+          },
+          onError: function (error) {
+              this.fire('ws-onerror', error);
+          },
+          onOpen: function (event) {
+              this.fire('ws-onopen', event);
+          },
+          onMessage: function (event) {
+              this.fire('ws-onmessage', event.data);
+          },
+          send: function (message) {
+              this.socket.send(message);
+          },
+          close: function () {
+              this.socket.close();
+          }
+      });
+	</script>
+</dom-module>
