@@ -11,7 +11,7 @@
 		}
 
 		#inviteCandidates:active {
-			background-color: rgb(200,200,200);
+			background-color: rgb(200, 200, 200);
 		}
 
 		.card h1 {
@@ -49,7 +49,7 @@
 			on-error="onError">
 		</iron-ajax>
 
-		<invite-candidates id="inviteCandidatesModal" challenge="{{challenge}}"></invite-candidates>
+		<invite-candidates id="inviteCandidatesModal" challenges="{{challengeAsList}}"></invite-candidates>
 		<div class="grid vertical layout mainContent">
 			<div class="horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
@@ -69,7 +69,7 @@
 				</paper-material>
 			</div>
 
-			<paper-material	class="card grid-row">
+			<paper-material class="card grid-row">
 				<div id="inviteCandidates" on-click="_inviteCandidates">
 					<iron-icon icon="mail"></iron-icon>
 					<span>Invite candidates</span>
@@ -99,10 +99,13 @@
 		Polymer({
 			is: 'challenge-detail',
 			properties: {
-				challenge: Object,
+				challenge: {
+					type: Object,
+					notify: true
+				},
 				mockedSkills: {
 					type: Object,
-					value : {
+					value: {
 						'Algorithmics': 0.8,
 						'Readability': 0.6,
 						'Security': 0.1,
@@ -133,32 +136,37 @@
 				taskLoading: {
 					type: Boolean,
 					notify: true
+				},
+				challengeAsList: {
+					type: Array,
+					notify: true,
+					computed: '_challengeAsList(challenge)'
 				}
 			},
 			observers: [
 				'checkProgress(challengeLoading, taskLoading)'
 			],
-			loadData: function(challengeKey){
-				if (this.challengeKey === challengeKey){
+			loadData: function (challengeKey) {
+				if (this.challengeKey === challengeKey) {
 					app.hideProgress();
-				} else{
+				} else {
 					this.challengeKey = challengeKey;
 					util.get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey);
 				}
 			},
-			checkProgress: function(challengeLoading, taskLoading){
-				if(challengeLoading === false && taskLoading === false){
+			checkProgress: function (challengeLoading, taskLoading) {
+				if (challengeLoading === false && taskLoading === false) {
 					app.hideProgress();
 					this.$.skillPolygon.buildChart();
 				}
 			},
-			computeDuration: function(challenge){
+			computeDuration: function (challenge) {
 				return util.computeDuration(challenge.Duration);
 			},
-			computeIndex: function(index){
+			computeIndex: function (index) {
 				return index + 1;
 			},
-			_inviteCandidates: function(){
+			_inviteCandidates: function () {
 				this.$.inviteCandidatesModal.toggle();
 			},
 			onResponse: function (res) {
@@ -173,6 +181,9 @@
 			},
 			onError: function (error) {
 				util.error(error);
+			},
+			_challengeAsList: function (challenge) {
+				return [challenge];
 			}
 		});
 	</script>

@@ -2,7 +2,7 @@
 
 <dom-module id="invite-candidate-input">
 	<style>
-		:host{
+		:host {
 			display: block;
 		}
 
@@ -21,6 +21,15 @@
 			bottom: -27px;
 			margin-left: 20px;
 		}
+
+		#inputContainer p {
+			display: table-cell;
+			position: relative;
+			bottom: -29px;
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+
 		#inputContainer iron-icon {
 			display: table-cell;
 			position: relative;
@@ -32,17 +41,17 @@
 	<template>
 		<div id="inputContainer">
 			<paper-input id="address" label="Address" value="{{candidate.Address}}"></paper-input>
-			<select id="challenges" on-change="_setChallenge">
-				<template is="dom-if" if="{{singleChallenge}}">
-						<option disabled selected value="{{challenge.Key}}">{{challenge.Name}}</option>
-				</template>
-				<template is="dom-if" if="{{!singleChallenge}}">
-					<option disabled selected>Select a challenge</option>
-				</template>
-				<template is="dom-repeat" items="{{challenges}}">
-					<option value="{{item.Key}}">{{item.Name}}</option>
-				</template>
-			</select>
+			<template is="dom-if" if="{{isSingleChallenge}}">
+				<p>{{challenges.0.Name}}</p>
+			</template>
+			<template is="dom-if" if="{{!isSingleChallenge}}">
+				<select id="challenges" on-change="_setChallenge">
+					<option selected disabled>Please select a challenge</option>
+					<template is="dom-repeat" items="{{challenges}}">
+						<option value="{{item.Key}}">{{item.Name}}</option>
+					</template>
+				</select>
+			</template>
 			<iron-icon icon="remove" on-click="_removeItem"></iron-icon>
 		</div>
 		<br>
@@ -54,26 +63,23 @@
 				challenges: {
 					type: Array
 				},
-				challenge: {
-					type: Object
-				},
 				candidate: {
 					type: Object,
 					reflectToAttribute: true,
 					notify: true
 				},
-				singleChallenge: {
+				isSingleChallenge: {
 					type: Boolean,
-					computed: 'isSingleChallenge(challenge)'
+					computed: '_isSingleChallenge(challenges)'
 				}
 			},
-			isSingleChallenge: function(challenge){
-				return challenge !== undefined;
+			_isSingleChallenge: function(challenges){
+				return challenges.length === 1;
 			},
-			_setChallenge: function(){
-				this.candidate.Challenge = this.$.challenges.options[this.$.challenges.selectedIndex].value;
+			_setChallenge: function () {
+				this.candidate.Challenge = this.$$('#challenges').options[this.$$('#challenges').selectedIndex].value;
 			},
-			_removeItem: function(){
+			_removeItem: function () {
 				this.candidate.Removed = true;
 				this.remove();
 			}
