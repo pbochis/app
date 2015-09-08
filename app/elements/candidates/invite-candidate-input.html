@@ -1,0 +1,82 @@
+<link rel="import" href="/bower_components/paper-input/all-imports.html">
+
+<dom-module id="invite-candidate-input">
+	<style>
+		:host{
+			display: block;
+		}
+
+		#inputContainer {
+			display: table;
+		}
+
+		#inputContainer paper-input {
+			display: table-cell;
+			width: 300px;
+		}
+
+		#inputContainer select {
+			display: table-cell;
+			position: relative;
+			bottom: -27px;
+			margin-left: 20px;
+		}
+		#inputContainer iron-icon {
+			display: table-cell;
+			position: relative;
+			bottom: -15px;
+			margin-left: 25px;
+			cursor: pointer;
+		}
+	</style>
+	<template>
+		<div id="inputContainer">
+			<paper-input id="address" label="Address" value="{{candidate.Address}}"></paper-input>
+			<select id="challenges" on-change="_setChallenge">
+				<template is="dom-if" if="{{singleChallenge}}">
+						<option disabled selected value="{{challenge.Key}}">{{challenge.Name}}</option>
+				</template>
+				<template is="dom-if" if="{{!singleChallenge}}">
+					<option disabled selected>Select a challenge</option>
+				</template>
+				<template is="dom-repeat" items="{{challenges}}">
+					<option value="{{item.Key}}">{{item.Name}}</option>
+				</template>
+			</select>
+			<iron-icon icon="remove" on-click="_removeItem"></iron-icon>
+		</div>
+		<br>
+	</template>
+	<script>
+		Polymer({
+			is: 'invite-candidate-input',
+			properties: {
+				challenges: {
+					type: Array
+				},
+				challenge: {
+					type: Object
+				},
+				candidate: {
+					type: Object,
+					reflectToAttribute: true,
+					notify: true
+				},
+				singleChallenge: {
+					type: Boolean,
+					computed: 'isSingleChallenge(challenge)'
+				}
+			},
+			isSingleChallenge: function(challenge){
+				return challenge !== undefined;
+			},
+			_setChallenge: function(){
+				this.candidate.Challenge = this.$.challenges.options[this.$.challenges.selectedIndex].value;
+			},
+			_removeItem: function(){
+				this.candidate.Removed = true;
+				this.remove();
+			}
+		});
+	</script>
+</dom-module>

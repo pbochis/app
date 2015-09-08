@@ -24,6 +24,9 @@
 				skills: {
 					type: Object
 				},
+				chart: {
+					type: Object
+				},
 				_options: {
 					type: Object,
 					value: {
@@ -35,6 +38,9 @@
 				}
 			},
 			buildChart: function(){
+				if (this.chart !== undefined){
+					this.chart.destroy();
+				}
 				var ctx = this.$.polygonCanvas.getContext('2d');
 				var labels = [];
 				var values = [];
@@ -61,7 +67,7 @@
 						}
 					]
 				};
-				new Chart(ctx).Radar(data, this._options);
+				this.chart = new Chart(ctx).Radar(data, this._options);
 			}
 		});
 	</script>

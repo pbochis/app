@@ -1,10 +1,7 @@
+<link rel="import" href="invite-candidates.html">
 <link rel="import" href="candidate-list.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/bower_components/iron-form/iron-form.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="/bower_components/paper-input/all-imports.html">
 
 <dom-module id="candidate-page">
 	<style>
@@ -12,10 +9,6 @@
 			position: fixed;
 			right: 2%;
 			bottom: 5%;
-		}
-
-		.margined {
-			margin: 10px;
 		}
 	</style>
 	<template>
@@ -26,33 +19,8 @@
 			on-error="onError">
 		</iron-ajax>
 
-		<iron-ajax
-			id="inviteCandidate"
-			handle-as="json"
-			on-response="onPostResponse"
-			on-error="onError">
-		</iron-ajax>
-		<paper-fab id="createActionButton" on-click="toggleDialog" icon="create"></paper-fab>
-		<paper-dialog id="dialog" modal style="background: white;">
-			<h2>Invite candidate</h2>
-
-			<p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
-
-			<form is="iron-form" id="form">
-				<paper-input id="address" class="margined" label="Address" value="{{Address}}"></paper-input>
-				<select id="challenges" class="margined">
-					<template is="dom-repeat" items="{{challenges}}">
-						<option value="{{item.Key}}">{{item.Name}}</option>
-					</template>
-				</select>
-
-				<div style="float: right;">
-					<paper-button class="primary margined" dialog-dismiss>Cancel</paper-button>
-					<paper-button class="primary margined" raised on-click="inviteCandidate" dialog-confirm>Invite
-					</paper-button>
-				</div>
-			</form>
-		</paper-dialog>
+		<paper-fab id="createActionButton" on-click="_toggleDialog" icon="create"></paper-fab>
+		<invite-candidates id="inviteCandidates" challenges="{{challenges}}"></invite-candidates>
 		<candidate-list id="candidateList"></candidate-list>
 	</template>
 	<script>
@@ -71,30 +39,14 @@
 			getCandidates: function () {
 				this.$.candidateList.getCandidates();
 			},
-			inviteCandidate: function () {
-				util.post(this.$.inviteCandidate, '/invitations', {
-					'Address': this.Address,
-					'Challenge': this.getSelectedChallenge()
-				});
-			},
 			onGetChallengesResponse: function (res) {
 				this.challenges = res.detail.response;
-			},
-			onPostResponse: function () {
-				// TODO(victorbalan, pbochis, flowlo): Refresh challenges
-				// page.redirect('/challenges/' + this.getSelectedChallenge());
 			},
 			onError: function (error) {
 				util.error(error);
 			},
-			submitForm: function () {
-				this.$.form.submit();
-			},
-			getSelectedChallenge: function () {
-				return this.$.challenges.options[this.$.challenges.selectedIndex].value;
-			},
-			toggleDialog: function () {
-				this.$.dialog.toggle();
+			_toggleDialog: function () {
+				this.$.inviteCandidates.toggle();
 			}
 		});
 	</script>
