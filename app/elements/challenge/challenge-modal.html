@@ -1,10 +1,27 @@
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-input/all-imports.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
 
 <dom-module id="challenge-modal">
+	<style>
+		:host {
+			width: 100%;
+			height: 100%;
+		}
+
+		#dialog {
+			position: fixed;
+			top: 10%;
+			max-height: 60%;
+			width: 40%;
+		}
+
+		.buttonGroup {
+			margin: 16px;
+			float: right;
+		}
+	</style>
 	<template>
 		<iron-ajax
 			id="postChallengeAjax"
@@ -14,23 +31,19 @@
 		</iron-ajax>
 
 		<paper-dialog id="dialog" modal>
-			<h2>These are the challenges tou selected: </h2>
-
+			<h2>These are the tasks you selected: </h2>
 			<template is="dom-repeat" items="{{selectedTasks}}" as="selectedTask">
-				<div><span>{{_computeIndex(index)}}</span> <span>{{selectedTask.Name}}</span></div>
+				<div><span>{{_computeIndex(index)}}</span> <span>{{selectedTask.Assignment.Name}}</span></div>
 			</template>
 
 			<form is="iron-form" id="form">
 				<paper-input id="name" class="margined" label="Name" value="{{Name}}"></paper-input>
-				<paper-input id="description" class="margined" label="Description"
-										 value="{{Description}}"></paper-input>
-				<paper-input id="instructions" class="margined" label="Instructions"
-										 value="{{Instructions}}"></paper-input>
-				<paper-input id="duration" class="margined" label="Duration(minutes)"
-										 value="{{Duration}}"></paper-input>
-				<div style="float: right;">
-					<paper-button dialog-dismiss class="margined">Cancel</paper-button>
-					<paper-button dialog-confirm class="colorful margined" raised on-click="saveChallenge">Create
+				<paper-input id="description" class="margined" label="Description" value="{{Description}}"></paper-input>
+				<paper-input id="instructions" class="margined" label="Instructions" value="{{Instructions}}"></paper-input>
+				<paper-input id="duration" class="margined" label="Duration(minutes)" value="{{Duration}}"></paper-input>
+				<div class="buttonGroup">
+					<paper-button dialog-dismiss>Cancel</paper-button>
+					<paper-button class="primary" dialog-confirm raised on-click="saveChallenge">Create
 					</paper-button>
 				</div>
 			</form>
@@ -66,19 +79,20 @@
 					'Duration': 6 * 1e10 * parseInt(this.Duration),
 					'Endpoints': {'WebInterface': 'sequential-challenge'}
 				});
+				this.selectedTasks = [];
 			},
 			onChallengeResponse: function (res) {
 				this.fire('challengeCreated');
 				page.redirect('/challenges/' + res.detail.response.Key);
 			},
-			_computeDuration: function(){
+			_computeDuration: function () {
 				var duration = 0;
-				for (var i = 0; i < this.selectedTasks.length; i++){
-					duration += this.selectedTasks[i].Duration;
+				for (var i = 0; i < this.selectedTasks.length; i++) {
+					duration += this.selectedTasks[i].Assignment.Duration;
 				}
 				this.Duration = duration / 6 / 1e10;
 			},
-			_computeIndex: function(index){
+			_computeIndex: function (index) {
 				return index + 1;
 			}
 		});
