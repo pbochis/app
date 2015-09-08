@@ -34,6 +34,26 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
+			listeners: {
+				'ws-onerror': 'onWsError',
+				'ws-onmessage': 'onWsMessage',
+				'ws-onopen': 'onWsOpen'
+			},
+			onWsOpen: function(){
+				console.log('WS OPENED');
+			},
+			onWsError: function(err){
+				console.log(err);
+			},
+			onWsMessage: function(data){
+				var response = JSON.parse(data.detail);
+				if(response.Results === undefined || response.Results.length === 0 || response.Stderr !== ''){
+					this.finishButtonClass = 'error';
+				}else{
+					this.finishButtonClass = 'success';
+				}
+				this.$.console.setOutput(JSON.parse(data.detail));
+			},
 			afterPropertiesSet: function(){
 				this.control = {};
 				var component = this;
@@ -41,14 +61,7 @@
 					component.$.console.loading();
 				};
 			},
-			onResponse: function(r){
-				localStorage.setItem('lastSubmission', r.detail.response.Key);
-				if(r.detail.response.Results.Failures !== 0 || r.detail.response.Results.Errors !== 0){
-					this.finishButtonClass = 'error';
-				}else{
-					this.finishButtonClass = 'success';
-				}
-				this.$.console.setOutput(r.detail.response);
+			onResponse: function(){
 			},
 			onError: function(error){
 				util.error(error);
