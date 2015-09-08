@@ -32,9 +32,7 @@
 		<paper-fab id="createTaskButton" on-click="_createTask" icon="create"></paper-fab>
 		<div class="horizontal layout wrap task-list">
 			<template is="dom-repeat" items="{{tasks}}" as="task">
-				<task-card selected-tasks="{{selectedTasks}}"
-									 task="{{task}}"
-									 show-all-buttons="{{showAllButtons}}">
+				<task-card task="{{task}}" selection-view="{{showAllButtons}}">
 				</task-card>
 			</template>
 		</div>
@@ -60,7 +58,9 @@
 			},
 			listeners: {
 				'challengeCreated': '_resetSelected',
-				'taskDetail': '_taskDetail'
+				'taskDetail': '_taskDetail',
+				'task-removed': '_removeTask',
+				'task-added': '_addTask'
 			},
 			createChallenge: function () {
 				this.$.challengeModal.toggle();
@@ -82,6 +82,24 @@
 			},
 			_createTask: function() {
 				page.redirect('/task/create');
+			},
+			_removeTask: function(event){
+				var index = this.selectedTasks.indexOf(event.detail);
+				this.splice('selectedTasks', index, 1);
+				this._taskSelectionLogic();
+			},
+			_addTask: function(event){
+				this.push('selectedTasks', event.detail);
+				this._taskSelectionLogic();
+			},
+			_taskSelectionLogic: function(){
+				if(this.selectedTasks.length > 0){
+					this.showAllButtons = true;
+					app.header = this.selectedTasks.length + ' SELECTED';
+				}else{
+					this.showAllButtons = false;
+					app.header = 'Tasks';
+				}
 			}
 		});
 	</script>
