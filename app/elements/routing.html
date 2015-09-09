@@ -25,7 +25,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/challenge', function() {
 		checkAuthorization();
 		app.route = 'challenge';
-		app.header = 'Challenge';
 		Polymer.Base.importHref('/elements/submission/challenge-page.html', function(){
 			app.startChallenge();
 		});
@@ -34,7 +33,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/challenges', function () {
 		checkAuthorization();
 		app.route = 'challenges';
-		app.header = 'Challenges';
 		Polymer.Base.importHref('/elements/challenge/challenge-list.html', function(){
 			app.$.challengeList.getChallenges();
 		});
@@ -44,7 +42,6 @@ window.addEventListener('WebComponentsReady', function() {
 		checkAuthorization();
 		checkIsCompany();
 		app.route = 'challenge-detail';
-		app.header = 'Challenges';
 		Polymer.Base.importHref('/elements/challenge/challenge-detail.html', function(){
 			app.$.challengeDetail.loadData(data.params.challengeKey);
 		});
@@ -52,7 +49,6 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/unauthorized', function() {
 		app.route = 'unauthorized';
-		app.header = 'Unauthorized';
 	});
 
 	page('/coders/:id', function(data) {
@@ -66,7 +62,6 @@ window.addEventListener('WebComponentsReady', function() {
 		checkAuthorization();
 		checkIsCompany();
 		app.route = 'candidate';
-		app.header = 'Candidates';
 		Polymer.Base.importHref('/elements/candidates/candidate-page.html', function(){
 			app.$.candidatePage.getChallenges();
 			app.$.candidatePage.getCandidates();
@@ -76,7 +71,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/tasks', function() {
 		checkAuthorization();
 		checkIsCompany();
-		app.header = 'Tasks';
 		app.route = 'tasks';
 		Polymer.Base.importHref('/elements/task/task-list.html', function(){
 			app.$.taskList.getTasks();
@@ -86,7 +80,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/tasks/:taskKey', function(data) {
 		checkAuthorization();
 		checkIsCompany();
-		app.header = 'Tasks detail';
 		app.route = 'task-detail';
 		Polymer.Base.importHref('/elements/task/task-detail.html', function() {
 			app.$.taskDetail.getTask(data.params.taskKey);
@@ -96,7 +89,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/task/create', function(){
 		checkAuthorization();
 		checkIsCompany();
-		app.header = 'Create task';
 		app.route = 'task-create';
 		Polymer.Base.importHref('/elements/task/task-form.html');
 	});
@@ -104,7 +96,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/user/:userKey', function(context){
 		checkAuthorization();
 		checkIsCompany();
-		app.header = 'Profile';
 		app.route = 'user';
 		Polymer.Base.importHref('/elements/user/user-detail.html', function(){
 			app.$.userDetail.getData(context.params.userKey);
@@ -114,7 +105,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/user/:userKey/challenge/:challengeKey', function(context){
 		checkAuthorization();
 		checkIsCompany();
-		app.header = 'Challenge detail';
 		app.route = 'userChallenge';
 		Polymer.Base.importHref('/elements/user/challenge/user-challenge-detail.html', function(){
 			app.$.userChallengeDetail.getData(context.params.userKey, context.params.challengeKey);
@@ -130,7 +120,6 @@ window.addEventListener('WebComponentsReady', function() {
 			}
 		} else {
 			app.route = 'login';
-			app.header = 'Login';
 			Polymer.Base.importHref('/elements/login-wizard/login-wizard.html');
 		}
 	});
@@ -141,7 +130,6 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/error', function() {
 		app.$.error.initialError = util.initialError;
-		app.header = 'Error Report';
 		app.route = 'error';
 	});
 

@@ -21,6 +21,7 @@
 	</style>
 	<template>
 		<general-console id="generalConsole">
+			<p>{{normalStd}}</p>
 			<template is="dom-repeat" items="{{items}}">
 				<p><span>{{index}}</span>. <span class$="{{getClass(index)}}">{{item}}</span></p>
 			</template>
@@ -44,7 +45,7 @@
 			 var output = '';
 			 if(data!==undefined){
 				 if(data.Stderr !== ''){
-					 output = data.Stderr !=='' && data.Stderr!==undefined ? data.Stderr : data.Stdout;
+					 output = data.Stderr;
 				 }else{
 					 this.diffLines = data.DiffLines;
 					 this.items = data.Stdout.split('\n');
@@ -52,6 +53,7 @@
 			 }else{
 				 output = 'Bad request';
 			 }
+			 this.normalStd = output;
 		 },
 		 loading: function(){
 			 this.$.generalConsole.loading();

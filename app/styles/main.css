@@ -44,25 +44,14 @@ paper-menu a {
 }
 
 #bottomTabs {
-	background-color: #4B4F62;
+	background-color: #00000000;
 }
 
-paper-toolbar > div {
-	padding-bottom: 5px;
-}
-
-paper-toolbar > paper-icon-button {
-	padding-bottom: 13px;
-}
-
-paper-toolbar > paper-menu-button {
-	padding-bottom: 13px;
-}
 
 .link {
-	padding: 5px 10px 5px 0;
+	padding: 0px 10px 5px 0;
 	cursor: pointer;
-	margin: 5px 5px 5px 0;
+	margin: 0px 5px 5px 0;
 }
 
 .link:hover {
@@ -109,9 +98,9 @@ paper-header-panel>#mainPanel {
 }
 
 #sections {
-	height: -moz-calc(100% - 105px);
-	height: -webkit-calc(100% - 105px);
-	height: calc(100% - 105px);
+	height: -moz-calc(100% - 64px);
+	height: -webkit-calc(100% - 64px);
+	height: calc(100% - 64px);
 }
 
 .fullHeight {

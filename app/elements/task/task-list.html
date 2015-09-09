@@ -2,9 +2,15 @@
 <link rel="import" href="/elements/challenge/challenge-modal.html">
 <link rel="import" href="/elements/task/task-detail.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 
 <dom-module id="task-list">
 	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+
 		.task-list {
 			padding: 10px;
 		}
@@ -14,14 +20,37 @@
 			right: 2%;
 			bottom: 5%;
 		}
+
+		#header{
+			background-color: #7C7C7A;
+			padding: 0px 10px;
+		}
+
+		#headerText{
+			color: white;
+			padding: 0;
+		}
+
+		paper-icon-button{
+			color: white;
+		}
 	</style>
 	<template>
 		<iron-ajax
 			id="getTasksAjax"
 			handle-as="json"
 			on-response="onResponse"
-			on-error="onError">
+			on-error="onError"
+			style="display: none;">
 		</iron-ajax>
+
+		<template is="dom-if" if="{{displayHeader}}">
+			<div id="header" class="horizontal layout">
+				<p id="headerText">{{header}}</p>
+				<div class="flex"></div>
+				<paper-icon-button class="self-center" icon="done" on-click="createChallenge"></paper-icon-button>
+			</div>
+		</template>
 
 		<paper-fab id="createTaskButton" on-click="_createTask" icon="create"></paper-fab>
 		<div class="horizontal layout wrap task-list">
@@ -42,6 +71,10 @@
 				},
 				selectedTasks: {
 					type: Array,
+					notify: true
+				},
+				displayHeader: {
+					type: Boolean,
 					notify: true
 				},
 				showAllButtons: {
@@ -89,10 +122,11 @@
 			_taskSelectionLogic: function(){
 				if(this.selectedTasks.length > 0){
 					this.showAllButtons = true;
-					app.header = this.selectedTasks.length + ' SELECTED';
+					this.header = this.selectedTasks.length + ' SELECTED';
+					this.displayHeader = true;
 				}else{
 					this.showAllButtons = false;
-					app.header = 'Tasks';
+					this.displayHeader = false;
 				}
 			}
 		});
