@@ -1,6 +1,7 @@
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="invite-candidate-input.html">
 
 <dom-module id="invite-candidates">
@@ -24,7 +25,7 @@
 		<iron-ajax
 			id="inviteCandidate"
 			handle-as="json"
-			on-response="onPostResponse"
+			on-response="onResponse"
 			on-error="onError">
 		</iron-ajax>
 
@@ -46,6 +47,7 @@
 				</div>
 			</form>
 		</paper-dialog>
+		<paper-toast id="toast" text="Candidates invited."></paper-toast>
 	</template>
 	<script>
 		Polymer({
@@ -94,6 +96,13 @@
 					el.remove();
 				}
 				this.candidates = [];
+			},
+			onError: function(err){
+				util.error(err);
+			},
+			onResponse: function(){
+				this.$.toast.show();
+				page.redirect('/candidates');
 			}
 		});
 	</script>
