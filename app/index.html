@@ -67,10 +67,23 @@
 
 	<paper-header-panel class="fullHeight">
 		<template is="dom-if" if="{{isLoggedIn}}">
-			<paper-toolbar class="medium-tall" style="height: 105px;">
+			<paper-toolbar>
 				<paper-icon-button icon="code"></paper-icon-button>
-				<div class="title">CODUNO</div>
-				<span class="flex"></span>
+				<div>CODUNO</div>
+				<div class="flex">
+					<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
+						<span class="flex-5"></span>
+						<template is="dom-if" if="{{isCompany}}">
+							<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
+							<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
+							<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
+						</template>
+						<template is="dom-if" if="{{isCoder}}">
+							<paper-tab link><a href="/challenge" class="center-center horizontal layout fullHeight">Challenge</a></paper-tab>
+						</template>
+						<span class="flex-5"></span>
+					</paper-tabs>
+				</div>
 				<paper-menu-button horizontal-align="right">
 					<paper-icon-button icon="supervisor-account" class="dropdown-trigger"></paper-icon-button>
 					<paper-menu class="dropdown-content">
@@ -78,9 +91,6 @@
 							<paper-item><a href="/logout" style="color: #444444; text-decoration: none;">Logout</a></paper-item>
 					</paper-menu>
 				</paper-menu-button>
-				<div class="secnav bottom fit">
-					<nav-bar header="{{header}}" is-company="{{isCompany}}" is-coder="{{isCoder}}" selected="{{selected}}"></nav-bar>
-				</div>
 			</paper-toolbar>
 		</template>
 		<div id="sections" class="content">

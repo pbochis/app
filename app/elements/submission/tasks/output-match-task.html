@@ -43,6 +43,7 @@
 			},
 			onWsMessage: function(data){
 				console.log(data);
+				this.$.console.setOutput(JSON.parse(data.detail));
 			},
 			afterPropertiesSet: function(){
 				this.control = {};
