@@ -43,8 +43,8 @@
 			margin: 0;
 			padding-top: 10px;
 		}
-		#leftFill{
-			width: 50px;
+		#leftProgressFlex{
+			margin-right: 50px;
 		}
 	</style>
 	<template>
@@ -54,7 +54,7 @@
 					<paper-icon-button icon="arrow-back" on-click="previousTask"></paper-icon-button>
 				</template>
 			</div>
-			<span class="flex"></span>
+			<span id="leftProgressFlex" class="flex"></span>
 			<p id="taskNavTitle">{{taskNavTitle}}</p>
 			<span class="flex"></span>
 			<countdown-timer id="taskTimer" duration="{{challenge.Duration}}" timeout="{{timeout}}"></countdown-timer>
