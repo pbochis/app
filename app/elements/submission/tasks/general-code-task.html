@@ -73,6 +73,13 @@
 			content-type="application/json"
 			>
 		</iron-ajax>
+		<iron-ajax
+			id="getTemplateAjax"
+			handle-as="text"
+			on-response="onTemplateResponse"
+			on-error="onTemplateError"
+			>
+		</iron-ajax>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
@@ -126,9 +133,6 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
-			ready: function(){
-				this.$.codeEditor.setMode('java');
-			},
 			afterPropertiesSet: function(){
 				this.languages = [];
 
@@ -157,9 +161,28 @@
 					}
 					this.push('languages', lang);
 				}
+				this.$.codeEditor.setMode(this.languages[0].tag);
+				this.getTemplate(this.languages[0].tag);
+
 			},
 			languageChanged: function(){
-				this.$.codeEditor.setMode(this.$.languageSelector.getSelectedLanguage().tag);
+				var languageTag = this.$.languageSelector.getSelectedLanguage().tag;
+				this.$.codeEditor.setMode(languageTag);
+				this.getTemplate(languageTag);
+			},
+			getTemplate: function(language){
+				if (!this.task.Template || this.task.Template === ''){
+					util.get(this.$.getTemplateAjax,'/code/download/default/' + language);
+				}else{
+					util.get(this.$.getTemplateAjax,'/code/download/' + this.task.Template + '/' + language);
+				}
+			},
+			onTemplateResponse: function(request){
+				this.$.codeEditor.setText(request.detail.response);
+			},
+			onTemplateError: function(){
+				// Do nothing. Just serve no code template
+				this.$.codeEditor.setText('');
 			},
 			runCode: function(){
 				var lang = this.$.languageSelector.getSelectedLanguage().tag;
