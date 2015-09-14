@@ -56,6 +56,9 @@
 			getText: function() {
 				return this.$.editor.getValue();
 			},
+			setText: function(text){
+				this.$.editor.getSession().setValue(text);
+			},
 			setMode: function(lang){
 				var mode = 'ace/mode/java';
 				switch (lang) {
