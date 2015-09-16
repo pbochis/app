@@ -73,6 +73,14 @@
 			</paper-material>
 		</div>
 		<iron-ajax
+			id="getResultRequest"
+			handle-as="json"
+			on-response="onResultResponse"
+			on-error="onResultError"
+			content-type="application/json"
+			>
+		</iron-ajax>
+		<iron-ajax
 			id="loadTaskRequest"
 			handle-as="json"
 			on-response="onTaskResponse"
@@ -86,7 +94,7 @@
 			debounce-duration="1000"
 			content-type="application/json"
 			on-response="onFinishTaskResponse"
-			on-err="onFinishTaskError"
+			on-error="onFinishTaskError"
 			>
 		</iron-ajax>
 	</template>
@@ -214,7 +222,7 @@
 			finishTask: function(){
 				util.post(this.$.finishTaskRequest,
 					'/results/'+ localStorage.getItem('result') +
-					'/finlSubmission/' + this.taskIndex +
+					'/finalSubmissions/' + this.taskIndex +
 					'?submissionKey' + localStorage.getItem('lastSubmission'), {});
 			},
 			onFinishTaskResponse: function(){
@@ -222,6 +230,7 @@
 				if(this.taskIndex < this.challenge.Tasks.length){
 					this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				}else{
+					util.get(this.$.getResultRequest, '/results/' + localStorage.getItem('result'));
 					var finished = document.createElement('challenge-finished');
 					this.$.content.innerHTML = '';
 					this.$.content.appendChild(finished);
@@ -231,6 +240,12 @@
 			},
 			onFinishTaskError: function(err) {
 				util.error(err);
+			},
+			onResultResponse: function(r){
+				console.log(r);
+			},
+			onResultError: function(err){
+				console.log(err);
 			},
 			_showTaskNav: function(){
 				this.taskNavHeaderStyle = '';

@@ -1,0 +1,109 @@
+<link rel="import" href="test-stats-element.html">
+
+<dom-module id="test-stats-console">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		p{
+			font-family: "Lucida Console", Monaco, monospace;
+		}
+		#consoleWrapper{
+			overflow: auto;
+		}
+	</style>
+	<template>
+	<iron-ajax
+		id="getTestsRequest"
+		handle-as="json"
+		on-response="onTestsResponse"
+		on-error="onTestsError"
+		content-type="application/json"
+		>
+	</iron-ajax>
+		<div id="consoleWrapper">
+			<p>{{stderr}}</p>
+			<div id="data" class="horizontal layout" style$="{{dataStyle}}">
+			</div>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'test-stats-console',
+			properties: {
+				counter: {
+					type: Number,
+					value: 1
+				},
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				isLoading: {
+					type: Boolean,
+					notify: true,
+					value: false
+				},
+				tests: {
+					type: Array
+				},
+				dataStyle: {
+					type: String
+				}
+			},
+			observers: [
+				'_afterPropertiesSet(task)'
+			],
+			_afterPropertiesSet: function(){
+				util.get(this.$.getTestsRequest, '/tasks/' + this.task.Key + '/tests');
+			},
+			setOutput: function(data){
+				console.log(data);
+				if(!!data.Stderr){
+					this.dataStyle = 'display: none';
+				}else{
+					this.dataStyle = '';
+				}
+				this.stderr = data.Stderr;
+				this.appendTestStats(data, false);
+			},
+			loading: function(){
+				for(var i=0;i<this.tests.length;i++){
+					this.$$('#' + this.tests[i].Key).loading = true;
+				}
+			},
+			error: function(err){
+				console.log(err);
+			},
+			appendTestStats: function(data, empty){
+				//TODO deal with stderr
+				var element = this.$$('#' + data.Test);
+				if(!!element){
+					element.test = data;
+				}else{
+					element = document.createElement('test-stats-element');
+					element.id = data.Test;
+					if(!empty){
+						element.test = data;
+					}
+					element.counter = this.counter;
+					element.loading = this.isLoading;
+					this.$.data.appendChild(element);
+					this.counter ++;
+				}
+			},
+			onTestsResponse: function(r){
+				var data = r.detail.response;
+				this.tests = data;
+				for(var i=0;i<data.length;i++){
+					this.appendTestStats({Test: data[i].Key}, true);
+				}
+			},
+			onTestsError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

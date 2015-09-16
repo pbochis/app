@@ -1,5 +1,5 @@
 <link rel="import" href="general-code-task.html">
-<link rel="import" href="/elements/code-editor/consoles/output-test-console.html">
+<link rel="import" href="/elements/code-editor/consoles/test-stats-console.html">
 
 <dom-module id="output-match-task">
 	<style>
@@ -10,7 +10,7 @@
 	</style>
 	<template>
 		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError" finished-button-class="{{finishButtonClass}}">
-			<output-test-console id="console"></output-test-console>
+			<test-stats-console id="console" task="{{task}}"></test-stats-console>
 		</code-task>
 	</template>
 	<script>
@@ -42,7 +42,6 @@
 				console.log(err);
 			},
 			onWsMessage: function(data){
-				console.log(data);
 				this.$.console.setOutput(JSON.parse(data.detail));
 			},
 			afterPropertiesSet: function(){
