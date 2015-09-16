@@ -11,7 +11,7 @@ var util = {
 		return prefix + suffix;
 	},
 	getWSUrl: function(suffix){
-		var prefix = 'wss://cod.uno:8090';
+		var prefix = 'wss://ws.cod.uno:8090';
 
 		if (location.origin.indexOf('localhost') !== -1) {
 			prefix = 'ws://localhost:8090';
