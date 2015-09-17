@@ -1,0 +1,86 @@
+<link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
+
+<dom-module id="test-stats-element">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		.text{
+			margin-top: 10px;
+		}
+		.circle {
+			width: 150px;
+			height: 150px;
+			-moz-border-radius: 100px;
+			-webkit-border-radius: 100px;
+			border-radius: 100px;
+		}
+		.empty{
+			line-height:160px;
+		}
+		.red{
+			background: #CD4F39;
+		}
+		.green{
+			background: #86C67C;
+		}
+		.gray{
+			border: 1px solid black;
+		}
+		.wrapper{
+			text-align:center;
+			margin: 15px;
+		}
+	</style>
+	<template>
+		<div class="wrapper">
+			<div class$="{{divClass}}">
+				<span class="empty"></span>
+				<paper-spinner id="spinner" alt="Loading contacts list"></paper-spinner>
+			</div>
+			<h3 class="text">Test <span>{{counter}}</span></h3>
+		</div>
+	</template>
+	<script>
+	 Polymer({
+		 is: 'test-stats-element',
+		 properties:{
+			 counter: {
+				 type: Number,
+				 notify: true,
+				 reflectAsAttribute: true
+			 },
+			 test: {
+				 type: Object,
+				 notify: true,
+				 reflectAsAttribute: true
+			 },
+			 divClass: {
+				 type: String,
+				 notify: true,
+				 value: 'circle gray'
+			 },
+			 loading: {
+				 type: Boolean,
+				 notify: true,
+				 reflectToAttribute: true
+			 }
+		 },
+		 observers: [
+			 '_afterPropertiesSet(test)',
+			 '_loadingObs(loading)'
+		 ],
+		 _afterPropertiesSet: function(){
+			 this.$.spinner.active = false;
+			 this.divClass = this.test.Failed ? 'circle red': 'circle green';
+		 },
+		 _loadingObs: function(){
+			 if(this.loading){
+				 this.$.spinner.active = true;
+				 this.divClass = 'circle';
+			 }
+		 }
+	 });
+ </script>
+</dom-module>
