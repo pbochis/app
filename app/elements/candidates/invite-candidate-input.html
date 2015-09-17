@@ -80,7 +80,7 @@
 				this.candidate.Challenge = this.$$('#challenges').options[this.$$('#challenges').selectedIndex].value;
 			},
 			_removeItem: function () {
-				this.candidate.Removed = true;
+				this.fire('removeCandidate', this.candidate);
 				this.remove();
 			}
 		});

@@ -35,7 +35,9 @@
 			<p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
 
 			<form is="iron-form" id="form">
-				<div id="candidates"></div>
+				<template is="dom-repeat" items="{{candidates}}">
+					<invite-candidate-input challenges="{{challenges}}" candidate="{{item}}"></invite-candidate-input>
+				</template>
 				<div id="addCandidate" on-click="_addCandidate">
 					<iron-icon icon="add"></iron-icon>
 					<span>Add another candidate</span>
@@ -63,6 +65,9 @@
 					value: []
 				}
 			},
+			listeners: {
+				'removeCandidate': '_removeCandidate'
+			},
 			toggle: function () {
 				this._clearDialog();
 				this._addCandidate();
@@ -71,7 +76,7 @@
 			inviteCandidates: function () {
 				for (var i = 0; i < this.candidates.length; i++) {
 					var candidate = this.candidates[i];
-					if (!candidate.Removed && candidate.Address !== '' && candidate.Challenge !== undefined) {
+					if (candidate.Address !== '' && candidate.Challenge !== undefined) {
 						util.post(this.$.inviteCandidate, '/invitations', {
 							'Address': candidate.Address,
 							'Challenge': candidate.Challenge
@@ -85,10 +90,10 @@
 				} else {
 					this.push('candidates', {});
 				}
-				var newInput = document.createElement('invite-candidate-input');
-				newInput.challenges = this.challenges;
-				newInput.candidate = this.candidates[this.candidates.length - 1];
-				this.$.candidates.appendChild(newInput);
+			},
+			_removeCandidate: function(event){
+				var index = this.candidates.indexOf(event.detail);
+				this.splice('candidates', index, 1);
 			},
 			_clearDialog: function () {
 				var el;
