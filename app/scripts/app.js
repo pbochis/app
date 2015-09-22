@@ -34,17 +34,17 @@
 		},
 		progressStyle: {
 			notify: true,
-			value: 'position: absolute; top: 105px; width: 100%; display: none;'
+			value: 'display: none;'
 		}
 	};
 
 	app.showProgress = function(){
-		app.progressStyle = 'position: absolute; top: 105px; width: 100%;';
+		app.progressStyle = '';
 		app.ironPagesStyle = 'display: none;';
 	};
 
 	app.hideProgress = function(){
-		app.progressStyle = 'position: absolute; top: 105px; width: 100%; display: none;';
+		app.progressStyle = 'display: none;';
 		app.ironPagesStyle = '';
 	};
 

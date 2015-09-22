@@ -45,7 +45,6 @@
 <body unresolved class="fullbleed layout vertical fullHeight">
 <span id="browser-sync-binding"></span>
 	<template is="dom-bind" id="app" class="fullHeight">
-	<paper-progress indeterminate style="position: absolute; top: 105px; width: 100%;" style$="{{progressStyle}}"></paper-progress>
 	<iron-ajax
 		id="resultRequest"
 		method="POST"
@@ -91,6 +90,7 @@
 							<paper-item><a href="/logout" style="color: #444444; text-decoration: none;">Logout</a></paper-item>
 					</paper-menu>
 				</paper-menu-button>
+				<paper-progress class="secnav bottom fit" indeterminate style$="{{progressStyle}}"></paper-progress>
 			</paper-toolbar>
 		</template>
 		<div id="sections" class="content">
