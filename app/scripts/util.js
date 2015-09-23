@@ -86,13 +86,6 @@ var util = {
 		page.redirect('/error');
 	},
 	initialError: undefined,
-	skillNames: [
-		'Algorithmics',
-		'Security',
-		'Readability',
-		'Efficiency',
-		'Coding Speed'
-	],
 	languages: [
 		'java',
 		'py',

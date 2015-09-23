@@ -47,6 +47,11 @@
 			handle-as="json"
 			on-response="onGetChallengeResponse">
 		</iron-ajax>
+		<iron-ajax
+			id="getResultRequest"
+			handle-as="json"
+			on-response="onGetResultResponse">
+		</iron-ajax>
 		<div class="vertical layout">
 			<paper-material id="challengeWrapper" elevation="1">
 				<h3><span>{{user.Name}}</span> assesment for challenge <span>{{challenge.Name}}</span></h3>
@@ -60,7 +65,7 @@
 					<p>Efficiency is bellow average.</p>
 				</div>
 				<div id="skillPolygonWrapper">
-					<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>
+					<skill-polygon id="skillPolygon" skills="{{skills}}"></skill-polygon>
 				</div>
 			</paper-material>
 		</div>
@@ -77,15 +82,9 @@
 					type: Object,
 					notify: true
 				},
-				mockedSkills: {
+				skills: {
 					type: Object,
-					value : {
-						'Algorithmics': 0.8,
-						'Readability': 0.6,
-						'Security': 0.1,
-						'Efficiency': 0.3,
-						'Coding Speed': 0.7
-					}
+					notify: true
 				}
 			},
 			getData: function(userKey, challengeKey){
@@ -93,11 +92,10 @@
 				this.previousChallenges = undefined;
 				util.get(this.$.getUserRequest, '/users/' + userKey);
 				util.get(this.$.getChallengeRequest, '/challenges/' + challengeKey);
+				util.get(this.$.getResultRequest, '/results/user/' + userKey + '/challenge/' + challengeKey);
 			},
 			onGetUserResponse: function(r){
 				this.user = r.detail.response;
-				// TODO(victorbalan): pass the correct skillset.
-				this.$.skillPolygon.buildChart();
 			},
 			onGetUserError: function(err){
 				util.error(err);
@@ -105,6 +103,11 @@
 			onGetChallengeResponse: function(r){
 				this.challenge = r.detail.response;
 			},
+			onGetResultResponse: function(r){
+				console.log(r.detail.response);
+				this.skills = r.detail.response.Skills;
+				this.$.skillPolygon.buildChart();
+			}
 		});
 	</script>
 </dom-module>

@@ -44,12 +44,9 @@
 				var ctx = this.$.polygonCanvas.getContext('2d');
 				var labels = [];
 				var values = [];
-				for (var i = 0; i < util.skillNames.length; i++){
-					var skillName = util.skillNames[i];
-					if (this.skills[skillName] > 0){
-						labels.push(skillName);
-						values.push(this.skills[skillName] * 100);
-					}
+				for(var key in this.skills){
+					labels.push(key);
+					values.push(this.skills[key] * 100);
 				}
 
 				var data = {
