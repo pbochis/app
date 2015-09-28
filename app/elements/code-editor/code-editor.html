@@ -13,15 +13,6 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="runCodeRequest"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			debounce-duration="1000"
-			content-type="application/json"
-		>
-		</iron-ajax>
 		<ws-element url="{{wsUrl}}"></ws-element>
 		<div id="editor"></div>
 	</template>
@@ -35,6 +26,11 @@
 				wsUrl: {
 					type: String,
 					notify: true
+				},
+				fileName: {
+					type: String,
+					notify: false,
+					value: 'Application.java'
 				}
 			},
 			ready: function(){
@@ -47,11 +43,21 @@
 				});
 			},
 			runCode: function(lang, taskKey) {
-				var data = {
-					Language: lang,
-					Code: this.getText()
+				var body = new FormData();
+				// TODO(flowlo): Set correct MIME type.
+				body.append('files', new Blob([this.getText()], { type: 'text/plain'}), this.fileName);
+				// NOTE(flowlo): This does not use util.post because
+				// we need a multipart form.
+				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
+				var xhr = new XMLHttpRequest();
+				xhr.onerror = function(e) {
+					// TODO(flowlo): Maybe pass this to util.error?
+					console.log(e);
 				};
-				util.post(this.$.runCodeRequest, '/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions', data);
+				xhr.withCredentials = true;
+				xhr.open('POST', url, true);
+				xhr.setRequestHeader('Authorization', 'Token ' + util.accessToken().Value);
+				xhr.send(body);
 			},
 			getText: function() {
 				return this.$.editor.getValue();
@@ -60,27 +66,26 @@
 				this.$.editor.getSession().setValue(text);
 			},
 			setMode: function(lang){
-				var mode = 'ace/mode/java';
+				var mode = 'ace/mode/java', fileName = 'Application.java';
 				switch (lang) {
 					case 'py':
 						mode = 'ace/mode/python';
+						fileName = 'app.py';
 						break;
 					case 'c':
 						mode = 'ace/mode/c_cpp';
+						fileName = 'app.c';
 						break;
 					case 'cpp':
 						mode = 'ace/mode/c_cpp';
+						fileName = 'app.cpp';
 						break;
 				}
+				this.fileName = fileName;
 				this.$.editor.getSession().setMode({
 					path: mode,
 					v: Date.now()
 				});
-			},
-			onError: function(error) {
-				util.error(error);
-			},
-			onResponse: function() {
 			}
 		});
 	</script>
