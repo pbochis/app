@@ -147,7 +147,7 @@
 				}, 500);
 			},
 			_afterPropertiesSet: function(){
-				util.get(this.$.getTemplateAjax,'/code/download/' + this.task.Template + '/' + this.task.Template);
+				util.get(this.$.getTemplateAjax,'/tasks/' + this.task.Key + '/templates?language=json');
 			},
 			attached: function(){
 				var element = this;

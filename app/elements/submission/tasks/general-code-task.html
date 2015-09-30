@@ -67,10 +67,10 @@
 	</style>
 	<template>
 		<iron-ajax
-			id="getTemplateAjax"
+			id="getTemplatesAjax"
 			handle-as="text"
-			on-response="onTemplateResponse"
-			on-error="onTemplateError"
+			on-response="onTemplatesResponse"
+			on-error="onTemplatesError"
 			>
 		</iron-ajax>
 		<div id="componentWrapper" class="horizontal layout">
@@ -164,16 +164,28 @@
 				this.getTemplate(languageTag);
 			},
 			getTemplate: function(language){
-				if (!this.task.Template || this.task.Template === ''){
-					util.get(this.$.getTemplateAjax,'/code/download/default/' + language);
-				}else{
-					util.get(this.$.getTemplateAjax,'/code/download/' + this.task.Template + '/' + language);
+				util.get(this.$.getTemplatesAjax,'/tasks/' + this.task.Key + '/templates?language=' + language);
+			},
+			onTemplatesResponse: function(request){
+				var urls = JSON.parse(request.detail.response);
+				if (!urls || urls.length === 0) {
+					// No template available.
+					return;
 				}
+				var url = urls[0];
+				if (urls.length > 1) {
+					console.log('Cannot handle multiple template files.');
+				}
+
+				var that = this;
+				var xhr = new XMLHttpRequest();
+				xhr.onload = function() {
+					that.$.codeEditor.setText(xhr.responseText);
+				};
+				xhr.open('GET', url);
+				xhr.send();
 			},
-			onTemplateResponse: function(request){
-				this.$.codeEditor.setText(request.detail.response);
-			},
-			onTemplateError: function(){
+			onTemplatesError: function(){
 				// Do nothing. Just serve no code template
 				this.$.codeEditor.setText('');
 			},
