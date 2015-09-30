@@ -43,7 +43,9 @@ var util = {
 	post: function(ajaxRequest, route, body) {
 		ajaxRequest.url = this.build(route);
 		ajaxRequest.method = 'POST';
-		ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken().Value};
+		if(!!this.accessToken()){
+			ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken().Value};
+		}
 		ajaxRequest.body = JSON.stringify(body);
 		ajaxRequest.generateRequest();
 	},
