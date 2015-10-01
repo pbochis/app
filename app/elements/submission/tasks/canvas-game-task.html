@@ -69,8 +69,13 @@
 	</style>
 	<template>
 		<iron-ajax
+			id="getCodeRequest"
+			handle-as="json"
+			on-response="onGetCodeResponse">
+		</iron-ajax>
+		<iron-ajax
 			id="getTemplateAjax"
-			handle-as="text"
+			handle-as="json"
 			on-response="onTemplateResponse"
 			on-error="onTemplateError"
 			>
@@ -302,8 +307,16 @@
 				this.drawRobot(move.X, move.Y);
 				this.counter++;
 			},
-			onTemplateResponse: function(request){
-				var data = JSON.parse(request.detail.response);
+			onTemplateResponse: function(r){
+				// TODO(victorbalan): Create template loading service.
+				if(r.detail.response.length === 0) {
+					return;
+				}
+				this.$.getCodeRequest.url = r.detail.response[0];
+				this.$.getCodeRequest.generateRequest();
+			},
+			onGetCodeResponse: function(r){
+				var data = r.detail.response;
 				this.oldPosition = data.Start;
 				this.startPosition = data.Start;
 				this.finishPosition = data.Finish;

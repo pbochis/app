@@ -95,20 +95,12 @@
 		</template>
 		<div id="sections" class="content">
 			<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight" style$="{{ironPagesStyle}}">
-				<section data-route="dashboard">
-					<paper-material elevation="1">
-						<chart-statistics></chart-statistics>
-						<h1 class="paper-font-body5">Here the statistics will be.</h1>
-					</paper-material>
-					<paper-material elevation="1">
-						<my-greeting></my-greeting>
-
-						<p class="paper-font-subhead">You now have:</p>
-						<my-list></my-list>
-					</paper-material>
-				</section>
 				<section data-route="login">
-					<login-wizard></login-wizard>
+					<login-wizard id="loginWizard"></login-wizard>
+				</section>
+
+				<section data-route="register">
+					<register-page></register-page>
 				</section>
 
 				<section data-route="candidate">

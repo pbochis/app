@@ -22,6 +22,11 @@ window.addEventListener('WebComponentsReady', function() {
 		app.login();
 	});
 
+	page('/register', function() {
+		app.route = 'register';
+		Polymer.Base.importHref('/elements/register/register-page.html');
+	});
+
 	page('/challenge', function() {
 		checkAuthorization();
 		app.route = 'challenge';
@@ -111,7 +116,7 @@ window.addEventListener('WebComponentsReady', function() {
 		});
 	});
 
-	page('/login', function() {
+	page('/login', function(ctx) {
 		if (hasAuthorization()) {
 			if (localStorage.company) {
 				page('/candidates');
@@ -120,7 +125,18 @@ window.addEventListener('WebComponentsReady', function() {
 			}
 		} else {
 			app.route = 'login';
-			Polymer.Base.importHref('/elements/login-wizard/login-wizard.html');
+			Polymer.Base.importHref('/elements/login-wizard/login-wizard.html', function(){
+				if(!ctx.querystring){
+					return;
+				}
+				var qs = ctx.querystring.split('&');
+				for(var i=0;i<qs.length;i++) {
+					if(qs[i].indexOf('address=')===0) {
+						app.$.loginWizard.setEmail(qs[i].split('=')[1]);
+						return;
+					}
+				}
+			});
 		}
 	});
 

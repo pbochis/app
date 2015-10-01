@@ -3,8 +3,10 @@
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-input/all-imports.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/elements/services/user-service.html">
 
-<dom-module id="login-page-email">
+<dom-module id="register-page">
 	<style type="text/css">
 :host {
 	/* layout properties for the host element */
@@ -57,6 +59,7 @@ paper-material > div > paper-button {
 }
 	</style>
 	<template>
+		<user-service id="userService" user={{savedUser}}></user-service>
 		<paper-material elevation="1">
 			<div>
 				<div>
@@ -64,46 +67,62 @@ paper-material > div > paper-button {
 				</div>
 			</div>
 			<div>
-				<paper-input type="text" label="Username or e-mail" value="{{email}}" autofocus="true" on-keydown="onKeydown"></paper-input>
-				<paper-button class$="{{empty}}" flat colorful on-change="checkEmpty" on-click="next">Next</paper-button>
+				<paper-input type="text" label="Name <e-mail>" value="{{user.Address}}" autofocus="true" on-keydown="onKeydown"></paper-input>
+				<paper-input type="text" label="Username" value="{{user.Nick}}" autofocus="true" on-keydown="onKeydown"></paper-input>
+				<paper-input type="password" label="Password" value="{{user.Password}}" autofocus="true" on-keydown="onKeydown"></paper-input>
+				<paper-input type="password" label="Repeat password" value="{{repeatedPassword}}" autofocus="true" on-keydown="onKeydown"></paper-input>
+				<paper-button class$="{{empty}}" flat colorful on-change="checkEmpty" on-click="register">Register</paper-button>
 			</div>
 			<div class="horizontal layout">
 				<span class="flex"></span>
-				<a href="/register">Do not have an account? Sign up here.</a>
+				<a href="/login">Already have an account? Sign in here.</a>
 				<span class="flex"></span>
 			</div>
 		</paper-material>
+		<paper-toast id="toast"></paper-toast>
 	</template>
 </dom-module>
 
 <script>
 Polymer({
-	is: 'login-page-email',
+	is: 'register-page',
 	properties: {
-		email: {
-			type: String,
-			notify: true
-		},
 		empty: {
 			type: String,
 			notify: true
 		},
+		user: {
+			type: Object,
+			value: {}
+		},
+		savedUser: {
+			type: Object,
+			observer: '_savedUserChanged'
+		}
 	},
 	behaviors: [
 		Polymer.NeonAnimatableBehavior
 	],
-	next: function() {
-		if (this.email === '') {
+	_savedUserChanged: function(savedUser){
+		console.log(savedUser);
+		page.redirect('/login?address=' + savedUser.Address);
+	},
+	register: function() {
+		if(this.user.Password !== this.repeatedPassword){
+			this.$.toast.text = 'Passwords do not match';
+			this.$.toast.show();
 			return;
 		}
-		this.fire('next', { value: this.email });
+		this.$.userService.save(this.user);
+		console.log(this.user);
+		console.log(this.repeatedPassword);
 	},
 	checkEmpty: function() {
 		this.empty = this.email === '' ? 'empty' : '';
 	},
 	onKeydown: function(e) {
 		if (e.keyCode === 13) {
-			this.fire('next');
+			this.register();
 		}
 	}
 });

@@ -1,0 +1,35 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="user-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="postUser"
+			handle-as="json"
+			last-response="{{user}}"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'user-service',
+			properties: {
+				user: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			save: function(user){
+				util.post(this.$.postUser, '/users', user);
+			},
+			_onError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

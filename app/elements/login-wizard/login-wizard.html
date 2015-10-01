@@ -80,6 +80,10 @@ Polymer({
 	listeners: {
 		'neon-animation-finish': '_afterNeon'
 	},
+	setEmail: function(email){
+		this.email = email;
+		this.next();
+	},
 	prev: function() {
 		// Can not get before e-mail.
 		if (this.selected === pageEmail) {
