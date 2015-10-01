@@ -1,0 +1,49 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="submission-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getSubmissionsByResultAndTaskId"
+			handle-as="json"
+			last-response="{{submissions}}"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getSubmissionById"
+			handle-as="json"
+			last-response="{{submission}}"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'submission-service',
+			properties: {
+				submissions: {
+					type: Array,
+					notify: true,
+					reflectToAttribute: true
+				},
+				submission: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getById: function(key){
+				util.get(this.$.getSubmissionById, '/submissions/' + key);
+			},
+			getByResultAndTaskId: function(resultKey, taskKey){
+				util.get(this.$.getSubmissionsByResultAndTaskId, '/results/' + resultKey + '/task/' + taskKey +'/submissions');
+			},
+			_onError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>
