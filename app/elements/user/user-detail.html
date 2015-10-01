@@ -4,7 +4,6 @@
 <link rel="import" href="challenge/user-challenge-detail.html">
 
 <dom-module id="user-detail">
-
 	<style>
 		:host {
 			display: block;
@@ -61,21 +60,27 @@
 			loading="{{userLoading}}"
 			handle-as="json"
 			on-response="onGetUserResponse"
-			on-error="onUserError">
+			on-error="onUserError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 		<iron-ajax
 			id="getProfileRequest"
 			loading="{{profileLoading}}"
 			handle-as="json"
 			on-response="onGetProfileResponse"
-			on-error="onError">
+			on-error="onError"
+			with-credentials="true"
+			method="GET">
 		</iron-ajax>
 		<iron-ajax
 			id="getLatestChallenges"
 			loading="{{lastChallengesLoading}}"
 			handle-as="json"
 			on-response="onLastChallengesResponse"
-			on-error="onError">
+			on-error="onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 		<div class="vertical layout fullHeight">
 			<paper-material id="top" elevation="1">
@@ -182,8 +187,10 @@
 			},
 			getData: function(key){
 				this.refresh();
-				util.get(this.$.getUserRequest, '/users/' + key);
-				util.get(this.$.getProfileRequest, '/users/' + key + '/profile');
+				this.$.getUserRequest.url = util.build('/users/' + key);
+				this.$.getUserRequest.generateRequest();
+				this.$.getProfileRequest.url = util.build('/users/' + key + '/profile');
+				this.$.getProfileRequest.generateRequest();
 			},
 			onGetUserResponse: function(r){
 				this.user = r.detail.response;
@@ -211,7 +218,8 @@
 				this.previousChallenges = challenges.slice(1, challenges.length);
 			},
 			getLatestChallenges: function(profileKey){
-				util.get(this.$.getLatestChallenges, '/profiles/' + profileKey + '/challenges?finished=true&limit=10&order=-Finished');
+				this.$.getLatestChallenges = util.build('/profiles/' + profileKey + '/challenges?finished=true&limit=10&order=-Finished');
+				this.$.getLatestChallenges.generateRequest();
 			},
 			getInitialLetter: function(user) {
 				return (user.Name || user.Address).charAt(0).toUpperCase();

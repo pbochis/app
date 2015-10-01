@@ -27,7 +27,10 @@
 			id="postChallengeAjax"
 			handle-as="json"
 			on-response="onChallengeResponse"
-			on-error="onError">
+			on-error="onError"
+			content-type="application/json"
+			with-credentials="true"
+			method="POST">
 		</iron-ajax>
 
 		<paper-dialog id="dialog" modal>
@@ -71,14 +74,16 @@
 				for (var i = 0; i < this.selectedTasks.length; i++) {
 					taskKeys.push(this.selectedTasks[i].Key);
 				}
-				util.post(this.$.postChallengeAjax, '/challenges', {
+				this.$.postChallengeAjax = util.build('/challenges');
+				this.$.postChallengeAjax.body = {
 					'Tasks': taskKeys,
 					'Description': this.Description,
 					'Name': this.Name,
 					'Instructions': this.Instructions,
 					'Duration': 6 * 1e10 * parseInt(this.Duration),
 					'Endpoints': {'WebInterface': 'sequential-challenge'}
-				});
+				};
+				this.$.postChallengeAjax.generateRequest();
 				this.selectedTasks = [];
 			},
 			onChallengeResponse: function (res) {

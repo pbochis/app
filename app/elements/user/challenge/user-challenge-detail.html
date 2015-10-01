@@ -43,12 +43,16 @@
 			id="getUserRequest"
 			handle-as="json"
 			on-response="onGetUserResponse"
-			on-error="onGetUserError">
+			on-error="onGetUserError"
+			with-credentials="true"
+			method="GET">
 		</iron-ajax>
 		<iron-ajax
 			id="getResultRequest"
 			handle-as="json"
-			on-response="onGetResultResponse">
+			on-response="onGetResultResponse"
+			with-credentials="true"
+			method="GET">
 		</iron-ajax>
 		<div class="vertical layout">
 			<paper-material id="challengeWrapper" elevation="1">
@@ -89,14 +93,15 @@
 				'_challengeChanged(challenge)'
 			],
 			_challengeChanged: function(){
-				util.get(this.$.getResultRequest, '/results/user/' + this.userKey + '/challenge/' + this.challengeKey);
+				this.$.getResultRequest = util.build('/results/user/' + this.userKey + '/challenge/' + this.challengeKey);
+				this.$.getResultRequest.generateRequest();
 			},
 			getData: function(userKey, challengeKey){
 				this.userKey = userKey;
 				this.challengeKey = challengeKey;
 				this.lastChallenge = undefined;
 				this.previousChallenges = undefined;
-				util.get(this.$.getUserRequest, '/users/' + userKey);
+				this.$.getUserRequest.utl = util.build('/users/' + userKey);
 				this.$.challengeService.getById(challengeKey);
 			},
 			onGetUserResponse: function(r){

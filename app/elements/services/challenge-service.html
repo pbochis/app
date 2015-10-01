@@ -11,7 +11,9 @@
 			id="getChallengeById"
 			handle-as="json"
 			last-response="{{challenge}}"
-			on-error="_onError">
+			on-error="_onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 	</template>
 	<script>
@@ -25,7 +27,8 @@
 				}
 			},
 			getById: function(key){
-				util.get(this.$.getChallengeById, '/challenges/' + key);
+				this.$.getChallengeById = util.build('/challenges/' + key);
+				this.$.getChallengeById.generateRequest();
 			},
 			_onError: function(err){
 				util.error(err);

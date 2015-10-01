@@ -11,7 +11,9 @@
 			id="getTaskById"
 			handle-as="json"
 			last-response="{{task}}"
-			on-error="_onError">
+			on-error="_onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 	</template>
 	<script>
@@ -25,7 +27,8 @@
 				}
 			},
 			getById: function(key){
-				util.get(this.$.getTaskById, '/tasks/' + key);
+				this.$.getTaskById = util.build('/tasks/' + key);
+				this.$.getTaskById.generateRequest();
 			},
 			_onError: function(err){
 				util.error(err);

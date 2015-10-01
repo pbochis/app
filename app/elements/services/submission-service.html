@@ -11,13 +11,17 @@
 			id="getSubmissionsByResultAndTaskId"
 			handle-as="json"
 			last-response="{{submissions}}"
-			on-error="_onError">
+			on-error="_onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 		<iron-ajax
 			id="getSubmissionById"
 			handle-as="json"
 			last-response="{{submission}}"
-			on-error="_onError">
+			on-error="_onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 	</template>
 	<script>
@@ -36,10 +40,12 @@
 				}
 			},
 			getById: function(key){
-				util.get(this.$.getSubmissionById, '/submissions/' + key);
+				this.$.getSubmissionById = util.build('/submissions/' + key);
+				this.$.getSubmissionById.generateRequest();
 			},
 			getByResultAndTaskId: function(resultKey, taskKey){
-				util.get(this.$.getSubmissionsByResultAndTaskId, '/results/' + resultKey + '/task/' + taskKey +'/submissions');
+				this.$.getSubmissionsByResultAndTaskId = util.build('/results/' + resultKey + '/task/' + taskKey +'/submissions');
+				this.$.getSubmissionsByResultAndTaskId.generateRequest();
 			},
 			_onError: function(err){
 				util.error(err);

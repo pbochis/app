@@ -13,7 +13,9 @@
 			id="getChallengesAjax"
 			handle-as="json"
 			on-response="onResponse"
-			on-error="onError">
+			on-error="onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 		<template is="dom-if" if="{{isEmpty}}">
 			<h1> You curently don't have any challenges. You can create a challenge from the tasks page</h1>
@@ -34,7 +36,8 @@
 				}
 			},
 			getChallenges: function () {
-				util.get(this.$.getChallengesAjax, '/companies/' + util.company().Key + '/challenges');
+				this.$.getChallengesAjax.url = util.build('/companies/' + util.company().Key + '/challenges');
+				this.$.getChallengesAjax.generateRequest();
 			},
 			onResponse: function (req) {
 				this.challenges = req.detail.response;

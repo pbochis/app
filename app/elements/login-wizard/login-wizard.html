@@ -15,13 +15,12 @@
 		<paper-toast id="toastCredentials" text="Invalid username/e-mail and password combination, please try again."></paper-toast>
 		<iron-ajax id="tokenRequest"
 			handle-as="json"
-			on-response="onToken"
-			on-error="onTokenError"
+			on-response="onCookie"
+			on-error="onCookieError"
 			debounce-duration="1000"
 			with-credentials="true"
-			url$="{{getTokenUrl()}}"
-			method="POST"
-			lastResponse="{{tokenResponse}}"
+			url$="{{getCookieUrl()}}"
+			method="PUT"
 		>
 		</iron-ajax>
 		<iron-ajax id="userRequest"
@@ -29,6 +28,7 @@
 			on-response="onUser"
 			with-credentials="true"
 			url$="{{getUserUrl()}}"
+			method="GET"
 		>
 		</iron-ajax>
 		<iron-ajax id="companyRequest"
@@ -37,6 +37,7 @@
 			on-error="onCompanyError"
 			with-credentials="true"
 			url$="{{getCompanyUrl()}}"
+			method="GET"
 		>
 		</iron-ajax>
 	</template>
@@ -70,10 +71,6 @@ Polymer({
 		},
 		password: {
 			type: String,
-			notify: true
-		},
-		tokenResponse: {
-			type: Object,
 			notify: true
 		}
 	},
@@ -113,18 +110,12 @@ Polymer({
 	},
 	requestToken: function() {
 		this.$.tokenRequest.headers = { 'Authorization': 'Basic ' + btoa(this.email + ':' + this.password)};
-		this.$.tokenRequest.body = JSON.stringify({Description: 'login'});
 		this.$.tokenRequest.generateRequest();
 	},
-	onToken: function() {
-		var accessToken = this.$.tokenRequest.lastResponse;
-		localStorage.accessToken = JSON.stringify(accessToken);
-		var h = { 'Authorization': 'Token ' + util.accessToken().Value};
-		this.$.userRequest.headers = h;
-		this.$.companyRequest.headers = h;
+	onCookie: function() {
 		this.$.userRequest.generateRequest();
 	},
-	onTokenError: function(err) {
+	onCookieError: function(err) {
 		if (err.detail.request.xhr.status !== 401) {
 			util.error(err);
 			return;
@@ -151,8 +142,8 @@ Polymer({
 		localStorage.user = JSON.stringify(this.$.userRequest.lastResponse);
 		this.$.companyRequest.generateRequest();
 	},
-	getTokenUrl: function() {
-		return util.build('/tokens');
+	getCookieUrl: function() {
+		return util.build('/cookie');
 	},
 	getUserUrl: function() {
 		return util.build('/user');

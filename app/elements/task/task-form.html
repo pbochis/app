@@ -32,8 +32,11 @@
 		<iron-ajax
 			id="postTaskAjax"
 			handle-as="json"
-		  	on-response="onResponse"
-		  	on-error="onError">
+			on-response="onResponse"
+			on-error="onError"
+			method="POST"
+			with-credentials="true"
+			content-type="application/json">
 		</iron-ajax>
 		<div class="mainContent">
 			<paper-material class="card">
@@ -129,8 +132,10 @@
 				this.task.Assignment = this.assignment;
 				this.task.SkillWeights = skillWeights;
 				this.task.Languages = selectedLangs;
-				this.task.Tasker = parseInt(this.task.Tasker);
-				util.post(this.$.postTaskAjax, '/tasks', this.task);
+				this.task.Tasker = parseInt(this.task.Tasker, 10);
+				this.$.postTaskAjax.url = util.build('/tasks');
+				this.$.postTaskAjax.body = this.task;
+				this.$.postTaskAjax.generateRequest();
 			},
 			onResponse: function(res){
 				page.redirect('/tasks/' + res.detail.response.Key);
