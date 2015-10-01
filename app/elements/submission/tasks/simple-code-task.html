@@ -9,7 +9,7 @@
 		}
 	</style>
 	<template>
-		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError">
+		<code-task task="{{task}}" control="{{control}}">
 			<simple-console id="console"></simple-console>
 		</code-task>
 	</template>
@@ -48,14 +48,6 @@
 				this.control.loading = function(){
 					component.$.console.loading();
 				};
-			},
-			onResponse: function(r){
-				if(r.detail.response !== null){
-					localStorage.setItem('lastSubmission', r.detail.response.Key);
-				}
-			},
-			onError: function(error){
-				util.error(error);
 			}
 		});
 	</script>

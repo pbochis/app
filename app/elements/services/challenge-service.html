@@ -1,0 +1,35 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="challenge-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getChallengeById"
+			handle-as="json"
+			last-response="{{challenge}}"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-service',
+			properties: {
+				challenge: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getById: function(key){
+				util.get(this.$.getChallengeById, '/challenges/' + key);
+			},
+			_onError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

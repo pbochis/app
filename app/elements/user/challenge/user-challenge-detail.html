@@ -1,4 +1,6 @@
 <link rel="import" href="/elements/skill/skill-polygon.html">
+<link rel="import" href="/elements/services/challenge-service.html">
+<link rel="import" href="user-task-detail.html">
 
 <dom-module id="user-challenge-detail">
 	<style>
@@ -36,16 +38,12 @@
 		}
 	</style>
 	<template>
+		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
 		<iron-ajax
 			id="getUserRequest"
 			handle-as="json"
 			on-response="onGetUserResponse"
 			on-error="onGetUserError">
-		</iron-ajax>
-		<iron-ajax
-			id="getChallengeRequest"
-			handle-as="json"
-			on-response="onGetChallengeResponse">
 		</iron-ajax>
 		<iron-ajax
 			id="getResultRequest"
@@ -56,18 +54,18 @@
 			<paper-material id="challengeWrapper" elevation="1">
 				<h3><span>{{user.Name}}</span> assesment for challenge <span>{{challenge.Name}}</span></h3>
 			</paper-material>
-			<paper-material id="userInfoWrapper" class="horizontal layout" elevation="1">
-				<div id="diagramInfo" class="flex vertical layout">
-					<p>Coding speed is good.</p>
-					<p>Algorithmics is excellent.</p>
-					<p>Security is lacking.</p>
-					<p>Readability is mediocre.</p>
-					<p>Efficiency is bellow average.</p>
-				</div>
-				<div id="skillPolygonWrapper">
-					<skill-polygon id="skillPolygon" skills="{{skills}}"></skill-polygon>
-				</div>
-			</paper-material>
+			<template is="dom-if" if="{{displaySkillInfo}}">
+				<paper-material id="userInfoWrapper" class="horizontal layout" elevation="1">
+					<div id="diagramInfo" class="flex vertical layout">
+						<p>Diagram info.</p>
+					</div>
+					<div id="skillPolygonWrapper">
+						<skill-polygon id="skillPolygon" skills="{{skills}}"></skill-polygon>
+					</div>
+				</paper-material>
+			</template>
+			<div id="taskDetails" class="vertical layout">
+			</div>
 		</div>
 	</template>
 	<script>
@@ -87,12 +85,19 @@
 					notify: true
 				}
 			},
+			observers: [
+				'_challengeChanged(challenge)'
+			],
+			_challengeChanged: function(){
+				util.get(this.$.getResultRequest, '/results/user/' + this.userKey + '/challenge/' + this.challengeKey);
+			},
 			getData: function(userKey, challengeKey){
+				this.userKey = userKey;
+				this.challengeKey = challengeKey;
 				this.lastChallenge = undefined;
 				this.previousChallenges = undefined;
 				util.get(this.$.getUserRequest, '/users/' + userKey);
-				util.get(this.$.getChallengeRequest, '/challenges/' + challengeKey);
-				util.get(this.$.getResultRequest, '/results/user/' + userKey + '/challenge/' + challengeKey);
+				this.$.challengeService.getById(challengeKey);
 			},
 			onGetUserResponse: function(r){
 				this.user = r.detail.response;
@@ -100,13 +105,26 @@
 			onGetUserError: function(err){
 				util.error(err);
 			},
-			onGetChallengeResponse: function(r){
-				this.challenge = r.detail.response;
-			},
 			onGetResultResponse: function(r){
-				console.log(r.detail.response);
 				this.skills = r.detail.response.Skills;
-				this.$.skillPolygon.buildChart();
+				if(Object.keys(this.skills) === 0){
+					this.displaySkillInfo = false;
+				}else{
+					this.displaySkillInfo = true;
+					// TODO: Investigate why we need a timeout of 1 ms.
+					var element = this;
+					window.setTimeout(function(){
+						element.$$('#skillPolygon').buildChart();
+					}, 1);
+				}
+				this.$.taskDetails.innerHTML = '';
+				for(var i=0;i<this.challenge.Tasks.length;i++){
+					var userTaskDetail = document.createElement('user-task-detail');
+					userTaskDetail.taskKey = this.challenge.Tasks[i];
+					userTaskDetail.resultKey = r.detail.response.Key;
+					userTaskDetail.startTime = new Date(r.detail.response.StartTimes[i]);
+					this.$.taskDetails.appendChild(userTaskDetail);
+				}
 			}
 		});
 	</script>

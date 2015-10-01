@@ -173,6 +173,9 @@
 
 				this.correct = new Image();
 				this.correct.src = '/images/ok.png';
+
+				this.explosion = new Image();
+				this.explosion.src = '/images/explosion.png';
 			},
 			initCoins: function(){
 				this.coin = new Image();
@@ -296,9 +299,11 @@
 						y: move.X * this.yRatio + 1
 					};
 					this.ctx.fillRect(currentRect.x, currentRect.y, this.xRatio-2, this.yRatio-2);
-					this.drawImage(this.wrong, move.X, move.Y);
+					this.drawImage(this.explosion, move.X, move.Y);
+					return;
 				}else if(move.Type === 'OUT_OF_BOUNDS'){
 					alert('Out of bounds!');
+					return;
 				}
 
 				// TODO(victorbalan): Draw robot path
@@ -332,7 +337,11 @@
 			runCode: function(){
 				this.loadTemplate();
 				this.$.codeEditor.runCode('robot', this.task.Key);
+				this.$.codeEditor.setMode('robot');
 			},
+			finishTask: function(){
+				this.fire('task-finished');
+			}
 		});
 	</script>
 </dom-module>

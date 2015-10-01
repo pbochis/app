@@ -87,6 +87,12 @@ var util = {
 		}
 		page.redirect('/error');
 	},
+	getFormatedTime: function(d){
+		var h = Math.floor(d / 3600) % 24;
+		var m = Math.floor(d / 60 % 60);
+		var s = Math.floor(d % 60);
+		return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2) + ':' + ('0' + s).slice(-2);
+	},
 	initialError: undefined,
 	languages: [
 		'java',

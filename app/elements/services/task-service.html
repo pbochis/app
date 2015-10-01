@@ -1,0 +1,35 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="task-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getTaskById"
+			handle-as="json"
+			last-response="{{task}}"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'task-service',
+			properties: {
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getById: function(key){
+				util.get(this.$.getTaskById, '/tasks/' + key);
+			},
+			_onError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

@@ -26,11 +26,6 @@
 				wsUrl: {
 					type: String,
 					notify: true
-				},
-				fileName: {
-					type: String,
-					notify: false,
-					value: 'Application.java'
 				}
 			},
 			ready: function(){
@@ -45,7 +40,7 @@
 			runCode: function(lang, taskKey) {
 				var body = new FormData();
 				// TODO(flowlo): Set correct MIME type.
-				body.append('files', new Blob([this.getText()], { type: 'text/plain'}), this.fileName);
+				body.append('files', new Blob([this.getText()], { type: 'text/plain'}), this._getFile(lang));
 				// NOTE(flowlo): This does not use util.post because
 				// we need a multipart form.
 				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
@@ -66,26 +61,40 @@
 				this.$.editor.getSession().setValue(text);
 			},
 			setMode: function(lang){
-				var mode = 'ace/mode/java', fileName = 'Application.java';
+				var mode = 'ace/mode/java';
 				switch (lang) {
 					case 'py':
 						mode = 'ace/mode/python';
-						fileName = 'app.py';
 						break;
 					case 'c':
 						mode = 'ace/mode/c_cpp';
-						fileName = 'app.c';
 						break;
 					case 'cpp':
 						mode = 'ace/mode/c_cpp';
-						fileName = 'app.cpp';
+						break;
+					case 'robot':
+						mode = 'ace/mode/c_cpp';
 						break;
 				}
-				this.fileName = fileName;
 				this.$.editor.getSession().setMode({
 					path: mode,
 					v: Date.now()
 				});
+			},
+			_getFile: function(lang){
+				switch (lang) {
+					case 'java':
+						return 'Application.java';
+					case 'py':
+						return 'app.py';
+					case 'c':
+						return 'app.c';
+					case 'cpp':
+						return 'app.cpp';
+					case 'robot':
+						return 'robot.json';
+				}
+				return 'default';
 			}
 		});
 	</script>

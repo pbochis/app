@@ -2,6 +2,7 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/elements/skill/skill-polygon.html">
 <link rel="import" href="/elements/markdown/render-markdown.html">
+<link rel="import" href="/elements/services/task-service.html">
 
 <dom-module id="task-detail">
 	<style>
@@ -17,13 +18,6 @@
 	</style>
 
 	<template>
-		<iron-ajax
-		  id="taskDetailAjax"
-		  handle-as="json"
-		  on-response="onTaskResponse"
-		  on-error="onError">
-		</iron-ajax>
-
 		<div class="vertical layout mainContent">
 			<div class="horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
@@ -46,6 +40,7 @@
 				<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
 			</paper-material>
 		</div>
+		<task-service id="taskService" task="{{task}}"></task-service>
 	</template>
 	<script>
 		Polymer({
@@ -62,11 +57,7 @@
 				}
 			},
 			getTask: function(key){
-				util.get(this.$.taskDetailAjax, '/tasks/' + key);
-			},
-			onTaskResponse: function(r){
-				this.task = r.detail.response;
-				this.$.skillPolygon.buildChart();
+				this.$.taskService.getById(key);
 			},
 			_computeDuration: function (task) {
 				return util.computeDuration(task.Assignment.Duration);

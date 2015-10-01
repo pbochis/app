@@ -9,7 +9,7 @@
 		}
 	</style>
 	<template>
-		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError" finished-button-class="{{finishButtonClass}}">
+		<code-task task="{{task}}" control="{{control}}" finished-button-class="{{finishButtonClass}}">
 			<test-stats-console id="console" task="{{task}}"></test-stats-console>
 		</code-task>
 	</template>
@@ -50,18 +50,6 @@
 				this.control.loading = function(){
 					component.$.console.loading();
 				};
-			},
-			onResponse: function(){
-				// localStorage.setItem('lastSubmission', r.detail.response.Key);
-				// if(r.detail.response.DiffLines !== null){
-				// 	this.finishButtonClass = 'error';
-				// }else{
-				// 	this.finishButtonClass = 'success';
-				// }
-				// this.$.console.setOutput(r.detail.response);
-			},
-			onError: function(error){
-				util.error(error);
 			}
 		});
 	</script>

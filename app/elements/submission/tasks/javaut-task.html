@@ -9,7 +9,7 @@
 		}
 	</style>
 	<template>
-		<code-task task="{{task}}" control="{{control}}" on-response="onResponse" on-error="onError" finished-button-class="{{finishButtonClass}}">
+		<code-task task="{{task}}" control="{{control}}" finished-button-class="{{finishButtonClass}}">
 			<javaut-console id="console"></javaut-console>
 		</code-task>
 	</template>
@@ -60,11 +60,6 @@
 				this.control.loading = function(){
 					component.$.console.loading();
 				};
-			},
-			onResponse: function(){
-			},
-			onError: function(error){
-				util.error(error);
 			}
 		});
 	</script>
