@@ -67,38 +67,42 @@
 					this.dataStyle = '';
 				}
 				this.stderr = data.Stderr;
-				this.appendTestStats(data, false);
+				this.appendTestStats(data);
+				this.stopLoading();
 			},
 			loading: function(){
+				this.dataStyle = '';
+				this.stderr = '';
 				for(var i=0;i<this.tests.length;i++){
 					this.$$('#' + this.tests[i].Key).loading = true;
+				}
+			},
+			stopLoading: function(){
+				for(var i=0;i<this.tests.length;i++){
+					this.$$('#' + this.tests[i].Key).loading = false;
 				}
 			},
 			error: function(err){
 				console.log(err);
 			},
-			appendTestStats: function(data, empty){
-				//TODO deal with stderr
+			appendTestStats: function(data){
 				var element = this.$$('#' + data.Test);
 				if(!!element){
 					element.test = data;
-				}else{
-					element = document.createElement('test-stats-element');
-					element.id = data.Test;
-					if(!empty){
-						element.test = data;
-					}
-					element.counter = this.counter;
-					element.loading = this.isLoading;
-					this.$.data.appendChild(element);
-					this.counter ++;
 				}
+			},
+			initTestElements: function(data){
+				var element = document.createElement('test-stats-element');
+				element.id = data.Test;
+				element.counter = this.counter;
+				this.$.data.appendChild(element);
+				this.counter ++;
 			},
 			onTestsResponse: function(r){
 				var data = r.detail.response;
 				this.tests = data;
 				for(var i=0;i<data.length;i++){
-					this.appendTestStats({Test: data[i].Key}, true);
+					this.initTestElements({Test: data[i].Key});
 				}
 			},
 			onTestsError: function(err){
