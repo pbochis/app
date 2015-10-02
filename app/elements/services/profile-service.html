@@ -14,6 +14,7 @@
 			content-type="application/json"
 			last-response="{{profile}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 	</template>
@@ -28,10 +29,15 @@
 				}
 			},
 			getByUserId: function(key){
+				app.startLoading();
 				this.$.getSingleProfile.url = util.build('/users/' + key + '/profile');
 				this.$.getSingleProfile.generateRequest();
 			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
 			_onError: function(err){
+				app.stopLoading();
 				util.error(err);
 			}
 		});

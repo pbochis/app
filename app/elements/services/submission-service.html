@@ -9,19 +9,21 @@
 	<template>
 		<iron-ajax
 			id="getSubmissionsByResultAndTaskId"
+			method="GET"
 			handle-as="json"
 			last-response="{{submissions}}"
-			on-error="_onError"
-			method="GET"
-			with-credentials="true">
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
 			id="getSubmissionById"
+			method="GET"
 			handle-as="json"
 			last-response="{{submission}}"
-			on-error="_onError"
-			method="GET"
-			with-credentials="true">
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
 		</iron-ajax>
 	</template>
 	<script>
@@ -40,14 +42,20 @@
 				}
 			},
 			getById: function(key){
+				app.startLoading();
 				this.$.getSubmissionById = util.build('/submissions/' + key);
 				this.$.getSubmissionById.generateRequest();
 			},
 			getByResultAndTaskId: function(resultKey, taskKey){
+				app.startLoading();
 				this.$.getSubmissionsByResultAndTaskId = util.build('/results/' + resultKey + '/task/' + taskKey +'/submissions');
 				this.$.getSubmissionsByResultAndTaskId.generateRequest();
 			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
 			_onError: function(err){
+				app.stopLoading();
 				util.error(err);
 			}
 		});

@@ -14,6 +14,7 @@
 			content-type="application/json"
 			last-response="{{result}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 	</template>
@@ -28,10 +29,15 @@
 				}
 			},
 			getByUserAndChallengeId: function(userKey, challengeKey){
+				app.startLoading();
 				this.$.getSingleResult.url = util.build('/results/user/' + userKey + '/challenge/' + challengeKey);
 				this.$.getSingleResult.generateRequest();
 			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
 			_onError: function(err){
+				app.stopLoading();
 				util.error(err);
 			}
 		});

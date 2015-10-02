@@ -14,6 +14,7 @@
 			content-type="application/json"
 			last-response="{{task}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
@@ -23,6 +24,7 @@
 			content-type="application/json"
 			last-response="{{task}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
@@ -32,6 +34,7 @@
 			content-type="application/json"
 			last-response="{{tasks}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 	</template>
@@ -51,19 +54,26 @@
 				}
 			},
 			save: function(task){
+				app.startLoading();
 				this.$.postTask.body = task;
 				this.$.postTask.url = util.build('/tasks');
 				this.$.postTask.generateRequest();
 			},
 			getById: function(key){
+				app.startLoading();
 				this.$.getSingleTask.url = util.build('/tasks/' + key);
 				this.$.getSingleTask.generateRequest();
 			},
 			getAll: function(){
+				app.startLoading();
 				this.$.getMultiTasks.url = util.build('/tasks');
 				this.$.getMultiTasks.generateRequest();
 			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
 			_onError: function(err){
+				app.stopLoading();
 				util.error(err);
 			}
 		});

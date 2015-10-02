@@ -14,6 +14,7 @@
 			content-type="application/json"
 			last-response="{{challenge}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
@@ -23,6 +24,7 @@
 			content-type="application/json"
 			last-response="{{challenge}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
@@ -32,6 +34,7 @@
 			content-type="application/json"
 			last-response="{{challenges}}"
 			with-credentials="true"
+			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
 	</template>
@@ -51,24 +54,32 @@
 				}
 			},
 			save: function(challenge){
+				app.startLoading();
 				this.$.postChallenge.url = util.build('/challenges');
 				this.$.postChallenge.body = challenge;
 				this.$.postChallenge.generateRequest();
 			},
 			getById: function(key){
+				app.startLoading();
 				this.$.getSingleChallenge.url = util.build('/challenges/' + key);
 				this.$.getSingleChallenge.generateRequest();
 			},
 			getLatestChallengesByProfileId: function(profileKey){
+				app.startLoading();
 				// TODO(victorbalan): Refactor the way we deal with query params.
 				this.$.getMultiChallenges.url = util.build('/profiles/' + profileKey + '/challenges?finished=true&limit=10&order=-Finished');
 				this.$.getMultiChallenges.generateRequest();
 			},
 			getByCompanyId: function(companyKey){
+				app.startLoading();
 				this.$.getMultiChallenges.url = util.build('/companies/' + companyKey + '/challenges');
 				this.$.getMultiChallenges.generateRequest();
 			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
 			_onError: function(err){
+				app.stopLoading();
 				util.error(err);
 			}
 		});
