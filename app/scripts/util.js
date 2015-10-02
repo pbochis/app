@@ -48,6 +48,7 @@ var util = {
 	},
 	error: function(error) {
 		if (error.detail.request.xhr.status === 401) {
+			app.isLoggedIn = false;
 			return page.redirect('/login');
 		}
 		app.error = error;
