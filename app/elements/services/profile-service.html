@@ -1,0 +1,45 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="profile-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getSingleProfile"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{profile}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'profile-service',
+			properties: {
+				profile: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getByUserId: function(key){
+				app.startLoading();
+				this.$.getSingleProfile.url = util.build('/users/' + key + '/profile');
+				this.$.getSingleProfile.generateRequest();
+			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
+			_onError: function(err){
+				app.stopLoading();
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

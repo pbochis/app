@@ -1,6 +1,7 @@
-<link rel="import" href="invite-candidates.html">
 <link rel="import" href="candidate-list.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="invite-candidates.html">
+<link rel="import" href="/elements/services/challenge-service.html">
+
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 
 <dom-module id="candidate-page">
@@ -12,14 +13,7 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="getChallengesAjax"
-			handle-as="json"
-			on-response="onGetChallengesResponse"
-			on-error="onError"
-			with-credentials="true"
-			method="GET">
-		</iron-ajax>
+		<challenge-service id="challengeService" challenges="{{challenges}}"></challenge-service>
 
 		<paper-fab id="createActionButton" on-click="_toggleDialog" icon="create"></paper-fab>
 		<invite-candidates id="inviteCandidates" challenges="{{challenges}}"></invite-candidates>
@@ -36,17 +30,10 @@
 				}
 			},
 			getChallenges: function () {
-				this.$.getChallengesAjax.url = util.build('/companies/' + util.company().Key + '/challenges');
-				this.$.getChallengesAjax.generateRequest();
+				this.$.challengeService.getByCompanyId(util.company().Key);
 			},
 			getCandidates: function () {
 				this.$.candidateList.getCandidates();
-			},
-			onGetChallengesResponse: function (res) {
-				this.challenges = res.detail.response;
-			},
-			onError: function (error) {
-				util.error(error);
 			},
 			_toggleDialog: function () {
 				this.$.inviteCandidates.toggle();

@@ -1,6 +1,8 @@
-<link rel="import" href="/elements/skill/skill-polygon.html">
-<link rel="import" href="/elements/services/challenge-service.html">
 <link rel="import" href="user-task-detail.html">
+<link rel="import" href="/elements/services/challenge-service.html">
+<link rel="import" href="/elements/services/result-service.html">
+<link rel="import" href="/elements/services/user-service.html">
+<link rel="import" href="/elements/skill/skill-polygon.html">
 
 <dom-module id="user-challenge-detail">
 	<style>
@@ -39,6 +41,8 @@
 	</style>
 	<template>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<result-service id="resultService" result="{{result}}"></result-service>
+		<user-service id="userService" user="{{user}}"></user-service>
 		<iron-ajax
 			id="getUserRequest"
 			handle-as="json"
@@ -82,36 +86,33 @@
 				},
 				challenge: {
 					type: Object,
-					notify: true
+					notify: true,
+					observer: '_challengeChanged'
 				},
 				skills: {
 					type: Object,
 					notify: true
+				},
+				result: {
+					type: Object,
+					notify: true,
+					observer: '_resultChanged'
 				}
-			},
-			observers: [
-				'_challengeChanged(challenge)'
-			],
-			_challengeChanged: function(){
-				this.$.getResultRequest = util.build('/results/user/' + this.userKey + '/challenge/' + this.challengeKey);
-				this.$.getResultRequest.generateRequest();
 			},
 			getData: function(userKey, challengeKey){
 				this.userKey = userKey;
 				this.challengeKey = challengeKey;
 				this.lastChallenge = undefined;
 				this.previousChallenges = undefined;
-				this.$.getUserRequest.utl = util.build('/users/' + userKey);
+
+				this.$.userService.getById(userKey);
 				this.$.challengeService.getById(challengeKey);
 			},
-			onGetUserResponse: function(r){
-				this.user = r.detail.response;
+			_challengeChanged: function(){
+				this.$.resultService.getByUserAndChallengeId(this.userKey, this.challengeKey);
 			},
-			onGetUserError: function(err){
-				util.error(err);
-			},
-			onGetResultResponse: function(r){
-				this.skills = r.detail.response.Skills;
+			_resultChanged: function(result){
+				this.skills = result.Skills;
 				if(Object.keys(this.skills) === 0){
 					this.displaySkillInfo = false;
 				}else{
@@ -126,8 +127,8 @@
 				for(var i=0;i<this.challenge.Tasks.length;i++){
 					var userTaskDetail = document.createElement('user-task-detail');
 					userTaskDetail.taskKey = this.challenge.Tasks[i];
-					userTaskDetail.resultKey = r.detail.response.Key;
-					userTaskDetail.startTime = new Date(r.detail.response.StartTimes[i]);
+					userTaskDetail.resultKey = result.Key;
+					userTaskDetail.startTime = new Date(result.StartTimes[i]);
 					this.$.taskDetails.appendChild(userTaskDetail);
 				}
 			}

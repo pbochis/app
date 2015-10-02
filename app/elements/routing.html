@@ -10,7 +10,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/token/:token', function(context) {
-		app.showProgress();
 		var token = context.params.token;
 		var decodedToken = atob(token).split(':');
 
@@ -111,7 +110,7 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/login', function(ctx) {
 		app.route = 'login';
-		Polymer.Base.importHref('/elements/login-wizard/login-wizard.html', function(){
+		Polymer.Base.importHref('/elements/login/login-wizard/login-wizard.html', function(){
 			if(!ctx.querystring){
 				return;
 			}

@@ -71,8 +71,7 @@
 			is: 'challenge-card',
 			properties: {
 				challenge: {
-					type: Object,
-					notify: true
+					type: Object
 				},
 				duration: {
 					type: String,
@@ -80,7 +79,6 @@
 				},
 				elevation: {
 					type: Number,
-					notify: true,
 					value: 1
 				}
 			},
@@ -89,9 +87,6 @@
 			},
 			computeDuration: function (challenge) {
 				return util.computeDuration(challenge.Duration);
-			},
-			onClick: function () {
-				app.showProgress();
 			},
 			_onHovered: function () {
 				this.elevation = 5;

@@ -49,7 +49,7 @@
 	<template>
 		<a href="{{goTo}}">
 			<paper-material animated elevation="{{elevation}}"
-				on-mouseover="onHovered" on-mouseout="onUnhovered" on-click="onClick">
+				on-mouseover="onHovered" on-mouseout="onUnhovered">
 				<div class="cardTop" align="center">
 					<div class="cardTopImage">
 						 <text class="letter" x="0" y="0">{{getInitialLetter(user)}}</text>
@@ -68,12 +68,10 @@
 			properties: {
 				user: {
 					type: Object,
-					notify: true,
 					reflectToAttribute: true
 				},
 				elevation: {
 					type: Number,
-					notify: true,
 					value: 1
 				}
 			},
@@ -102,9 +100,6 @@
 			},
 			onUnhovered: function () {
 				this.elevation = 1;
-			},
-			onClick: function(){
-				app.showProgress();
 			}
 		});
 	</script>

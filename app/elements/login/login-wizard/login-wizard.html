@@ -2,11 +2,14 @@
 <link rel="import" href="/bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/elements/login-page-email/login-page-email.html">
-<link rel="import" href="/elements/login-page-password/login-page-password.html">
-<link rel="import" href="/elements/login-page-u2f/login-page-u2f.html">
+<link rel="import" href="/elements/login/login-page-email/login-page-email.html">
+<link rel="import" href="/elements/login/login-page-password/login-page-password.html">
+<link rel="import" href="/elements/login/login-page-u2f/login-page-u2f.html">
+<link rel="import" href="/elements/services/user-service.html">
+
 <dom-module id="login-wizard">
 	<template>
+		<user-service id="userService" user="{{user}}"></user-service>
 		<neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 			<login-page-email email="{{email}}" on-next="next"></login-page-email>
 			<login-page-password email="{{email}}" password="{{password}}" on-next="next" on-prev="prev"></login-page-password>
@@ -21,14 +24,6 @@
 			with-credentials="true"
 			url$="{{getCookieUrl()}}"
 			method="PUT"
-		>
-		</iron-ajax>
-		<iron-ajax id="userRequest"
-			handle-as="json"
-			on-response="onUser"
-			with-credentials="true"
-			url$="{{getUserUrl()}}"
-			method="GET"
 		>
 		</iron-ajax>
 		<iron-ajax id="companyRequest"
@@ -48,13 +43,17 @@ var u2fRequired = false;
 
 // Page indexes.
 var pageEmail = 0, pagePassword = 1, pageU2f = 2;
-
+// TODO(victorbalan): Move requests in own service.
 Polymer({
 	is: 'login-wizard',
 	behaviors: [
 		Polymer.NeonAnimatableBehavior
 	],
 	properties: {
+		user: {
+			type: Object,
+			observer: '_userChanged'
+		},
 		selected: {
 			type: Number,
 			value: 0
@@ -76,6 +75,10 @@ Polymer({
 	},
 	listeners: {
 		'neon-animation-finish': '_afterNeon'
+	},
+	_userChanged: function(){
+		localStorage.user = JSON.stringify(this.user);
+		this.$.companyRequest.generateRequest();
 	},
 	setEmail: function(email){
 		this.email = email;
@@ -113,7 +116,7 @@ Polymer({
 		this.$.tokenRequest.generateRequest();
 	},
 	onCookie: function() {
-		this.$.userRequest.generateRequest();
+		this.$.userService.whoAmI();
 	},
 	onCookieError: function(err) {
 		if (err.detail.request.xhr.status !== 401) {
@@ -138,19 +141,11 @@ Polymer({
 	onCompanyError: function() {
 		app.login();
 	},
-	onUser: function() {
-		localStorage.user = JSON.stringify(this.$.userRequest.lastResponse);
-		this.$.companyRequest.generateRequest();
-	},
 	getCookieUrl: function() {
 		return util.build('/cookie');
 	},
-	getUserUrl: function() {
-		return util.build('/user');
-	},
 	getCompanyUrl: function() {
-		return this.getUserUrl() + '/company';
-	},
-	onUserError: util.error
+		return util.build('/user/company');
+	}
 });
 </script>

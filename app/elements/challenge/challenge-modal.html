@@ -1,3 +1,5 @@
+<link rel="import" href="/elements/services/challenge-service.html">
+
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-input/all-imports.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
@@ -23,15 +25,7 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="postChallengeAjax"
-			handle-as="json"
-			on-response="onChallengeResponse"
-			on-error="onError"
-			content-type="application/json"
-			with-credentials="true"
-			method="POST">
-		</iron-ajax>
+		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
 
 		<paper-dialog id="dialog" modal>
 			<h2>These are the tasks you selected: </h2>
@@ -40,10 +34,10 @@
 			</template>
 
 			<form is="iron-form" id="form">
-				<paper-input id="name" class="margined" label="Name" value="{{Name}}"></paper-input>
-				<paper-input id="description" class="margined" label="Description" value="{{Description}}"></paper-input>
-				<paper-input id="instructions" class="margined" label="Instructions" value="{{Instructions}}"></paper-input>
-				<paper-input id="duration" class="margined" label="Duration(minutes)" value="{{Duration}}"></paper-input>
+				<paper-input id="name" class="margined" label="Name" value="{{challengeToSave.Name}}"></paper-input>
+				<paper-input id="description" class="margined" label="Description" value="{{challengeToSave.Description}}"></paper-input>
+				<paper-input id="instructions" class="margined" label="Instructions" value="{{challengeToSave.Instructions}}"></paper-input>
+				<paper-input id="duration" class="margined" label="Duration(minutes)" value="{{challengeDuration}}"></paper-input>
 				<div class="buttonGroup">
 					<paper-button dialog-dismiss>Cancel</paper-button>
 					<paper-button class="primary" dialog-confirm raised on-click="saveChallenge">Create
@@ -60,10 +54,21 @@
 					type: Array,
 					notify: true
 				},
-				Description: String,
-				Name: String,
-				Instructions: String,
-				Duration: Number
+				challenge: {
+					type: Object,
+					notify: true,
+					observer: '_chalengeChanged'
+				},
+				challengeDuration: Number,
+				challengeToSave: {
+					type: Object,
+					value: {}
+				}
+			},
+			_chalengeChanged: function(){
+				// TODO: rename to 'challenge-created'
+				this.fire('challengeCreated');
+				page.redirect('/challenges/' + this.challenge.Key);
 			},
 			toggle: function () {
 				this._computeDuration();
@@ -74,28 +79,19 @@
 				for (var i = 0; i < this.selectedTasks.length; i++) {
 					taskKeys.push(this.selectedTasks[i].Key);
 				}
-				this.$.postChallengeAjax = util.build('/challenges');
-				this.$.postChallengeAjax.body = {
-					'Tasks': taskKeys,
-					'Description': this.Description,
-					'Name': this.Name,
-					'Instructions': this.Instructions,
-					'Duration': 6 * 1e10 * parseInt(this.Duration),
-					'Endpoints': {'WebInterface': 'sequential-challenge'}
-				};
-				this.$.postChallengeAjax.generateRequest();
+				this.challengeToSave.Tasks = taskKeys;
+				this.challengeToSave.Duration = 6 * 1e10 * this.challengeDuration;
+				this.challengeToSave.Endpoints = {'WebInterface': 'sequential-challenge'};
+
+				this.$.challengeService.save(this.challengeToSave);
 				this.selectedTasks = [];
-			},
-			onChallengeResponse: function (res) {
-				this.fire('challengeCreated');
-				page.redirect('/challenges/' + res.detail.response.Key);
 			},
 			_computeDuration: function () {
 				var duration = 0;
 				for (var i = 0; i < this.selectedTasks.length; i++) {
 					duration += this.selectedTasks[i].Assignment.Duration;
 				}
-				this.Duration = duration / 6 / 1e10;
+				this.challengeDuration = duration / 6 / 1e10;
 			},
 			_computeIndex: function (index) {
 				return index + 1;

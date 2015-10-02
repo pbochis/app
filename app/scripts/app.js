@@ -36,15 +36,41 @@
 		progressStyle: {
 			notify: true,
 			value: 'display: none;'
+		},
+		error: {
+			type: Object,
+			notify: true
+		},
+		pendingRequests: {
+			type: Number,
+			value: 0
 		}
 	};
 
-	app.showProgress = function(){
+	// TODO(victorbalan): this is an atomic operation so we need an js atomic library
+	app.startLoading = function(){
+		if(this.pendingRequests <= 0){
+			this.pendingRequests = 0;
+			app._showProgress();
+		}
+		app.pendingRequests ++;
+	};
+
+	// TODO(victorbalan): this is an atomic operation so we need an js atomic library
+	app.stopLoading = function(){
+		app.pendingRequests --;
+		if(app.pendingRequests <= 0){
+			app.pendingRequests = 0;
+			app._hideProgress();
+		}
+	};
+
+	app._showProgress = function(){
 		app.progressStyle = '';
 		app.ironPagesStyle = 'display: none;';
 	};
 
-	app.hideProgress = function(){
+	app._hideProgress = function(){
 		app.progressStyle = 'display: none;';
 		app.ironPagesStyle = '';
 	};

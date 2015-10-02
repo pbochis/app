@@ -1,7 +1,8 @@
 <link rel="import" href="task-card.html">
+
 <link rel="import" href="/elements/challenge/challenge-modal.html">
 <link rel="import" href="/elements/task/task-detail.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/services/task-service.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 
 <dom-module id="task-list">
@@ -36,14 +37,7 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="getTasksAjax"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			with-credentials="true"
-			method="GET">
-		</iron-ajax>
+		<task-service id="taskService" tasks="{{tasks}}"></task-service>
 
 		<template is="dom-if" if="{{displayHeader}}">
 			<div id="header" class="horizontal layout">
@@ -72,7 +66,8 @@
 				},
 				selectedTasks: {
 					type: Array,
-					notify: true
+					notify: true,
+					value: []
 				},
 				displayHeader: {
 					type: Boolean,
@@ -85,6 +80,7 @@
 				}
 			},
 			listeners: {
+				// TODO: please no camel case for events :(
 				'challengeCreated': '_resetSelected',
 				'taskDetail': '_taskDetail',
 				'task-removed': '_removeTask',
@@ -94,20 +90,11 @@
 				this.$.challengeModal.toggle();
 			},
 			getTasks: function () {
-				this.$.getTasksAjax.url = util.build('/tasks');
-				this.$.getTasksAjax.generateRequest();
+				this.$.taskService.getAll();
 			},
-			onResponse: function (res) {
-				this.tasks = res.detail.response;
-				this.selectedTasks = [];
-			},
-			onError: function (error) {
-				util.error(error);
-			},
-			// listeners for external events
-			_resetSelected: function () {
-				this.selectedTasks = [];
-				this.showAllButtons = false;
+			_addTask: function(event){
+				this.push('selectedTasks', event.detail);
+				this._taskSelectionLogic();
 			},
 			_createTask: function() {
 				page.redirect('/task/create');
@@ -117,9 +104,10 @@
 				this.splice('selectedTasks', index, 1);
 				this._taskSelectionLogic();
 			},
-			_addTask: function(event){
-				this.push('selectedTasks', event.detail);
-				this._taskSelectionLogic();
+			// listeners for external events
+			_resetSelected: function () {
+				this.selectedTasks = [];
+				this.showAllButtons = false;
 			},
 			_taskSelectionLogic: function(){
 				if(this.selectedTasks.length > 0){

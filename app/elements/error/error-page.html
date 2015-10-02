@@ -1,51 +1,49 @@
 <dom-module id="error-page">
+	<style>
+		:host {
+			display: block;
+			height: 100%;
+			width: 70%;
+			margin-left: 15%;
+			margin-right: 15%;
+		}
+		paper-material {
+			background: white;
+			padding: 16px;
+			margin: 16px;
+		}
+		h3 {
+			word-wrap: break-word;
+		}
+	</style>
 	<template>
-		<iron-ajax
-			id="sendErrorAjax"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			with-credentials="true"
-			content-type="application/json"
-			method="PUT">
-		</iron-ajax>
 		<paper-material elevation="1">
-			<h1> Something went wrong. Please offer us more details about your experience</h1>
-			<form is="iron-form" id="form">
-				<iron-autogrow-textarea rows="5" maxRows="5" value="feedback"></iron-autogrow-textarea>
-				<paper-button raised on-click="sendFeedback">Create</paper-button>
-			</form>
+			<h3>{{message}}</h3>
 		</paper-material>
 	</template>
 	<script>
 		Polymer({
 			is: 'error-page',
 			properties: {
-				initialError: {
-					type: Object,
+				message: {
+					type: String,
 					notify: true
 				},
-				feedback: String,
-				ticketKey: String
+				error: {
+					type: Object,
+					reflectAsAttribute: true
+				}
 			},
 			observers: [
-					'afterPropertiesSet(initialError)'
+				'_afterPropertiesSet(error)'
 			],
-			afterPropertiesSet: function(){
-				// TODO(pbochis): Enable error posting after creating the route in the api.
-				// util.post(this.$.sendErrorAjax,'/error', {'Error': this.initialError})
-			},
-			onResponse: function(res){
-				this.ticketId = res.detail.response;
-			},
-			sendFeedback: function(){
-				this.$.sendErrorAjax.url = util.build('/error');
-				this.$.sendErrorAjax.body = {
-					Key:      this.ticketKey,
-					Error:    this.initialError,
-					Feedback: this.feedback
-				};
-				this.$.sendErrorAjax.generateRequest();
+			_afterPropertiesSet: function(){
+				var response = this.error.detail.request.xhr.response;
+				if(!!response && !!response.Message){
+					this.message = response.Message;
+				}else {
+					this.message = 'Something went wrong. We are sorry for this experience. You can report it on https://github.com/coduno/api/issues';
+				}
 			}
 		});
 	</script>

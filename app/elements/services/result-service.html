@@ -1,0 +1,45 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="result-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getSingleResult"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{result}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'result-service',
+			properties: {
+				result: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getByUserAndChallengeId: function(userKey, challengeKey){
+				app.startLoading();
+				this.$.getSingleResult.url = util.build('/results/user/' + userKey + '/challenge/' + challengeKey);
+				this.$.getSingleResult.generateRequest();
+			},
+			_onResponse: function(){
+				app.stopLoading();
+			},
+			_onError: function(err){
+				app.stopLoading();
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>
