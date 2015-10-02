@@ -275,7 +275,7 @@
 					y: this.oldPosition.X * this.yRatio + 1
 				};
 
-				var moveType = this.oldPosition.Type;
+				var moveType = this.oldPosition.Event;
 				if(moveType === 'MOVE'){
 					this.ctx.fillRect(rect.x, rect.y, this.xRatio-2, this.yRatio-2);
 				}else if(moveType === 'WRONG_PICK'){
@@ -288,7 +288,7 @@
 					this.ctx.fillRect(rect.x, rect.y, this.xRatio-2, this.yRatio-2);
 					this.drawImage(this.wrong, this.oldPosition.X, this.oldPosition.Y);
 				}
-				if(move.Type === 'HIT_OBSTACLE'){
+				if(move.Event === 'HIT_OBSTACLE'){
 					var currentRect = {
 						x: move.Y * this.xRatio + 1,
 						y: move.X * this.yRatio + 1
@@ -296,7 +296,7 @@
 					this.ctx.fillRect(currentRect.x, currentRect.y, this.xRatio-2, this.yRatio-2);
 					this.drawImage(this.explosion, move.X, move.Y);
 					return;
-				}else if(move.Type === 'OUT_OF_BOUNDS'){
+				}else if(move.Event === 'OUT_OF_BOUNDS'){
 					alert('Out of bounds!');
 					return;
 				}
