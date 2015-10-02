@@ -1,0 +1,69 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="template-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getTemplateList"
+			method="GET"
+			handle-as="json"
+			with-credentials="true"
+			on-response="_onList"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getTemplate"
+			method="GET"
+			handle-as="blob"
+			with-credentials="true"
+			on-response="_onTemplate"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'template-service',
+			properties: {
+				templates: {
+					type: Array,
+					notify: true,
+					reflectToAttribute: true
+				},
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getTemplates: function(language) {
+				this.$.getTemplateList.url = util.build('/companies/' + companyKey + '/challenges');
+				this.$.getTemplateList.generateRequest('/tasks/' + this.task.Key + (language ? '?language=' + language : ''));
+			}
+			_onList: function(e) {
+				var urls = e.detail.response;
+				if (!urls || urls.length === 0) {
+					// No template available.
+					return;
+				}
+				for (var i = 0; i < urls.length; i++) {
+					this.$.getTemplate.url = urls[i];
+					this.$.getTemplate.generateRequest();
+				}
+			},
+			_onTemplate: function(e, req) {
+				var fnre = /filename\s*=\s*(")?([\w\.\/]+)(?(1)\1|)/
+				var match = req.xhr.getResponseHeader('Content-Disposition').exec(fnre)
+
+				console.log(e.detail.response, match);
+			},
+			_onError: function(err) {
+				app.stopLoading();
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>
