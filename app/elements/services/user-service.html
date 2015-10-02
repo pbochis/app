@@ -9,12 +9,39 @@
 	<template>
 		<iron-ajax
 			id="postUser"
+			method="POST"
 			handle-as="json"
+			content-type="application/json"
 			last-response="{{user}}"
-			on-error="_onError"
-			method="GET"
 			with-credentials="true"
-			content-type="application/json">
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getSingleUser"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{user}}"
+			with-credentials="true"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getMultiUsers"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{users}}"
+			with-credentials="true"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="inviteUser"
+			method="POST"
+			handle-as="json"
+			content-type="application/json"
+			with-credentials="true"
+			on-response="_userInvited"
+			on-error="_onError">
 		</iron-ajax>
 	</template>
 	<script>
@@ -25,12 +52,37 @@
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				users: {
+					type: Array,
+					notify: true,
+					reflectToAttribute: true
 				}
 			},
 			save: function(user){
 				this.$.postUser.body = user;
-				this.$.postUser = util.build('/users');
+				this.$.postUser.url = util.build('/users');
 				this.$.postUser.generateRequest();
+			},
+			whoAmI: function(){
+				this.$.getSingleUser.url = util.build('/user');
+				this.$.getSingleUser.generateRequest();
+			},
+			getById: function(key){
+				this.$.getSingleUser.url = util.build('/users/' + key);
+				this.$.getSingleUser.generateRequest();
+			},
+			getAll: function(){
+				this.$.getMultiUsers.url = util.build('/users');
+				this.$.getMultiUsers.generateRequest();
+			},
+			invite: function(user){
+				this.$.inviteUser.url = util.build('/invitations');
+				this.$.inviteUser.body = user;
+				this.$.inviteUser.generateRequest();
+			},
+			_userInvited: function(){
+				this.fire('user-invited');
 			},
 			_onError: function(err){
 				util.error(err);

@@ -1,6 +1,7 @@
 <link rel="import" href="/elements/services/submission-service.html">
 <link rel="import" href="/elements/services/task-service.html">
 <link rel="import" href="/elements/user/challenge/test-results/diff-result.html">
+
 <link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
 
 <dom-module id="user-task-detail">
@@ -49,6 +50,7 @@
 		</paper-material>
 	</template>
 	<script>
+		// TODO(victorbalan): Refactor requests and move into own service.
 		Polymer({
 			is: 'user-task-detail',
 			properties: {

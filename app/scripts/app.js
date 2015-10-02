@@ -36,17 +36,23 @@
 		progressStyle: {
 			notify: true,
 			value: 'display: none;'
+		},
+		error: {
+			type: Object,
+			notify: true
 		}
 	};
 
 	app.showProgress = function(){
-		app.progressStyle = '';
-		app.ironPagesStyle = 'display: none;';
+		// TODO: enable later
+		// app.progressStyle = '';
+		// app.ironPagesStyle = 'display: none;';
 	};
 
 	app.hideProgress = function(){
-		app.progressStyle = 'display: none;';
-		app.ironPagesStyle = '';
+		// TODO: enable later
+		// app.progressStyle = 'display: none;';
+		// app.ironPagesStyle = '';
 	};
 
 	app.finishChallenge = function() {

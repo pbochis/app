@@ -47,17 +47,10 @@ var util = {
 		return minutes + ' minutes';
 	},
 	error: function(error) {
-		if (this.initialError !== undefined) {
-			// TODO(flowlo): Do not disregard further errors,
-			// save them somewhere and report them too.
-			console.log('Looks like handleError was called twice. This should not have happened.');
-			return;
-		}
-
-		this.initialError = error;
 		if (error.detail.request.xhr.status === 401) {
 			return page.redirect('/login');
 		}
+		app.error = error;
 		page.redirect('/error');
 	},
 	getFormatedTime: function(d){

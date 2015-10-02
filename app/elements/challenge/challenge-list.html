@@ -1,5 +1,7 @@
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="challenge-card.html">
+<link rel="import" href="/elements/services/challenge-service.html">
+
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="challenge-list">
 	<style>
@@ -7,22 +9,15 @@
 			padding: 10px;
 		}
 	</style>
-
 	<template>
-		<iron-ajax
-			id="getChallengesAjax"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			method="GET"
-			with-credentials="true">
-		</iron-ajax>
+		<challenge-service id="challengeService" challenges="{{challenges}}"></challenge-service>
+
 		<template is="dom-if" if="{{isEmpty}}">
 			<h1> You curently don't have any challenges. You can create a challenge from the tasks page</h1>
 		</template>
 		<div class="horizontal layout wrap challenge-list ">
-			<template is="dom-repeat" items="{{challenges}}" as="challenge">
-				<challenge-card challenge="{{challenge}}"></challenge-card>
+			<template is="dom-repeat" items="{{challenges}}">
+				<challenge-card challenge="{{item}}"></challenge-card>
 			</template>
 		</div>
 	</template>
@@ -36,14 +31,7 @@
 				}
 			},
 			getChallenges: function () {
-				this.$.getChallengesAjax.url = util.build('/companies/' + util.company().Key + '/challenges');
-				this.$.getChallengesAjax.generateRequest();
-			},
-			onResponse: function (req) {
-				this.challenges = req.detail.response;
-			},
-			onError: function (error) {
-				util.error(error);
+				this.$.challengeService.getByCompanyId(util.company().Key);
 			},
 			challengeInfo: function (e) {
 				page.redirect('/challenges/' + e.model.challenge.Key);

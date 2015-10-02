@@ -1,5 +1,5 @@
 <link rel="import" href="candidate-card.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/services/user-service.html">
 
 <dom-module id="candidate-list">
 	<style>
@@ -8,41 +8,26 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="candidateRequest"
-			on-response="onResponse"
-			on-error="onError"
-			with-credentials="true"
-			content-type="application/json"
-			method="GET">
-		</iron-ajax>
+		<user-service id="userService" users="{{users}}"></user-service>
 		<div class="horizontal layout center-center wrap">
-			<template is="dom-repeat" items="{{items}}">
+			<template is="dom-repeat" items="{{users}}">
 				<candidate-card user="{{item}}"></candidate-card>
 			</template>
 		</div>
 	</template>
 </dom-module>
 <script>
-	(function () {
-		Polymer({
-			is: 'candidate-list',
-			properties: {
-				greeting: {
-					type: Array,
-					notify: true
-				}
-			},
-			getCandidates: function () {
-				this.$.candidateRequest.url = util.build('/users');
-				this.$.candidateRequest.generateRequest();
-			},
-			onResponse: function (r) {
-				this.items = r.detail.response;
-			},
-			onError: function (error) {
-				util.error(error);
+	Polymer({
+		is: 'candidate-list',
+		properties: {
+			users: {
+				type: Array,
+				notify: true
 			}
-		});
-	})();
+		},
+		// TODO(victorbalan): check what happens if we replace with ready
+		getCandidates: function(){
+			this.$.userService.getAll();
+		}
+	});
 </script>

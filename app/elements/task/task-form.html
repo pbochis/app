@@ -1,5 +1,7 @@
-<link rel="import" href="/bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="/elements/markdown/render-markdown.html">
+<link rel="import" href="/elements/services/task-service.html">
+
+<link rel="import" href="/bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
@@ -29,33 +31,26 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="postTaskAjax"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			method="POST"
-			with-credentials="true"
-			content-type="application/json">
-		</iron-ajax>
+		<task-service id="taskService" task="{{savedTask}}"></task-service>
+
 		<div class="mainContent">
 			<paper-material class="card">
 				<h2>New task</h2>
 				<form is="iron-form" id="taskForm">
-					<paper-input id="name" label="Name" value="{{assignment.Name}}"></paper-input>
+					<paper-input id="name" label="Name" value="{{task.Assignment.Name}}"></paper-input>
 
-					<iron-autogrow-textarea placeHolder="Description" id="descriptionInput" bind-value="{{assignment.Description}}" rows="5" max-rows="5"></iron-autogrow-textarea>
+					<iron-autogrow-textarea placeHolder="Description" id="descriptionInput" bind-value="{{task.Assignment.Description}}" rows="5" max-rows="5"></iron-autogrow-textarea>
 					<render-markdown markdown="{{assignment.Description}}"></render-markdown>
 
 					<paper-input id="durationMinutes" label="Duration(minutes)" value="{{minutes}}"></paper-input>
 					<paper-input id="durationHours" label="Duration(hours)" value="{{hours}}"></paper-input>
 
-					<iron-autogrow-textarea placeHolder="Instructions" id="instructionsInput" bind-value="{{assignment.Instructions}}" rows="15" max-rows="15"></iron-autogrow-textarea>
+					<iron-autogrow-textarea placeHolder="Instructions" id="instructionsInput" bind-value="{{task.Assignment.Instructions}}" rows="15" max-rows="15"></iron-autogrow-textarea>
 
-					<render-markdown markdown="{{assignment.Instructions}}"></render-markdown>
+					<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
 
-					<paper-input id="webInterface" label="Web Interface" value="{{endpoints.WebInterface}}"></paper-input>
-					<paper-input id="gitRepository" label="Git Repository" value="{{endpoints.GitRepository}}"></paper-input>
+					<paper-input id="webInterface" label="Web Interface" value="{{task.Assignment.Endpoints.WebInterface}}"></paper-input>
+					<paper-input id="gitRepository" label="Git Repository" value="{{task.Assignment.Endpoints.GitRepository}}"></paper-input>
 
 					<paper-input id="tasker" label="Tasker" value="{{task.Tasker}}"></paper-input>
 
@@ -90,30 +85,28 @@
 					type: Array,
 					value: util.languages
 				},
-				endpoints: {
-					type: Object,
-					notify: true,
-					value: {}
-				},
-				assignment: {
-					type: Object,
-					notify: true,
-					value: {}
-				},
 				task: {
 					type: Object,
-					notify: true,
-					value: {}
+					value: {
+						Assignment: {
+							Endpoints: {}
+						}
+					}
+				},
+				savedTask: {
+					type: Object,
+					observer: '_savedTaskChanged'
 				}
 			},
 			_saveTask: function(){
-				this.assignment.Duration = 0;
+				var duration = 0;
 				if (this.hours > 0 ){
-					this.assignment.Duration += this.hours * 36 * 1e11;
+					duration  += this.hours * 36 * 1e11;
 				}
 				if (this.minutes > 0){
-					this.assignment.Duration += this.minutes * 6 * 1e10;
+					duration += this.minutes * 6 * 1e10;
 				}
+				this.task.Assignment.Duration = duration;
 				var skillWeights = {};
 				var i;
 				for (i = 0; i < this.skills.length; i++){
@@ -128,20 +121,14 @@
 						selectedLangs.push(this.languages[i]);
 					}
 				}
-				this.assignment.Endpoints = this.endpoints;
-				this.task.Assignment = this.assignment;
 				this.task.SkillWeights = skillWeights;
 				this.task.Languages = selectedLangs;
 				this.task.Tasker = parseInt(this.task.Tasker, 10);
-				this.$.postTaskAjax.url = util.build('/tasks');
-				this.$.postTaskAjax.body = this.task;
-				this.$.postTaskAjax.generateRequest();
+
+				this.$.taskService.save(this.task);
 			},
-			onResponse: function(res){
-				page.redirect('/tasks/' + res.detail.response.Key);
-			},
-			onError: function(e){
-				util.error(e);
+			_savedTaskChanged: function(task){
+				page.redirect('/tasks/' + task.Key);
 			}
 		});
 	</script>

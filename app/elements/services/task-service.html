@@ -8,12 +8,31 @@
 	</style>
 	<template>
 		<iron-ajax
-			id="getTaskById"
+			id="postTask"
+			method="POST"
 			handle-as="json"
+			content-type="application/json"
 			last-response="{{task}}"
-			on-error="_onError"
+			with-credentials="true"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getSingleTask"
 			method="GET"
-			with-credentials="true">
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{task}}"
+			with-credentials="true"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getMultiTasks"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{tasks}}"
+			with-credentials="true"
+			on-error="_onError">
 		</iron-ajax>
 	</template>
 	<script>
@@ -24,11 +43,25 @@
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				tasks: {
+					type: Array,
+					notify: true,
+					reflectToAttribute: true
 				}
 			},
+			save: function(task){
+				this.$.postTask.body = task;
+				this.$.postTask.url = util.build('/tasks');
+				this.$.postTask.generateRequest();
+			},
 			getById: function(key){
-				this.$.getTaskById = util.build('/tasks/' + key);
-				this.$.getTaskById.generateRequest();
+				this.$.getSingleTask.url = util.build('/tasks/' + key);
+				this.$.getSingleTask.generateRequest();
+			},
+			getAll: function(){
+				this.$.getMultiTasks.url = util.build('/tasks');
+				this.$.getMultiTasks.generateRequest();
 			},
 			_onError: function(err){
 				util.error(err);

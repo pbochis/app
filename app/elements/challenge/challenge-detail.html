@@ -1,7 +1,10 @@
-<link rel="import" href="/bower_components/paper-material/paper-material.html">
-<link rel="import" href="/elements/task/task-card.html">
-<link rel="import" href="/elements/skill/skill-polygon.html">
 <link rel="import" href="/elements/candidates/invite-candidates.html">
+<link rel="import" href="/elements/services/challenge-service.html">
+<link rel="import" href="/elements/services/task-service.html">
+<link rel="import" href="/elements/skill/skill-polygon.html">
+<link rel="import" href="/elements/task/task-card.html">
+
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
 
 <dom-module id="challenge-detail">
 	<style>
@@ -33,25 +36,8 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="challengeDetailAjax"
-			loading="{{challengeLoading}}"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			method="GET"
-			with-credentials="true">
-		</iron-ajax>
-
-		<iron-ajax
-			id="taskDetailAjax"
-			loading="{{taskLoading}}"
-			handle-as="json"
-			on-response="onTaskResponse"
-			on-error="onError"
-			method="GET"
-			with-credentials="true">
-		</iron-ajax>
+		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<task-service id="taskService" task="{{task}}"></task-service>
 
 		<invite-candidates id="inviteCandidatesModal" challenges="{{challengeAsList}}"></invite-candidates>
 		<div class="grid vertical layout mainContent">
@@ -105,7 +91,8 @@
 			properties: {
 				challenge: {
 					type: Object,
-					notify: true
+					notify: true,
+					observer: '_challengeChanged'
 				},
 				mockedSkills: {
 					type: Object,
@@ -116,6 +103,11 @@
 						'Efficiency': 0.3,
 						'Coding Speed': 0.7
 					}
+				},
+				task: {
+					type: Object,
+					notify: true,
+					observer: '_taskChanged'
 				},
 				tasks: {
 					type: Array,
@@ -133,37 +125,28 @@
 					type: String,
 					computed: 'computeDuration(challenge)'
 				},
-				challengeLoading: {
-					type: Boolean,
-					notify: true
-				},
-				taskLoading: {
-					type: Boolean,
-					notify: true
-				},
 				challengeAsList: {
 					type: Array,
 					notify: true,
 					computed: '_challengeAsList(challenge)'
 				}
 			},
-			observers: [
-				'checkProgress(challengeLoading, taskLoading)'
-			],
-			loadData: function (challengeKey) {
-				if (this.challengeKey === challengeKey) {
-					app.hideProgress();
-				} else {
-					this.challengeKey = challengeKey;
-					this.$.challengeDetailAjax.url = util.build('/challenges/' + this.challengeKey);
-					this.$.challengeDetailAjax.generateRequest();
+			_challengeChanged: function(){
+				this.$.skillPolygon.buildChart();
+				this.tasks = [];
+				for (var i = 0; i < this.challenge.Tasks.length; i++) {
+					this.$.taskService.getById(this.challenge.Tasks[i]);
 				}
 			},
-			checkProgress: function (challengeLoading, taskLoading) {
-				if (challengeLoading === false && taskLoading === false) {
-					app.hideProgress();
-					this.$.skillPolygon.buildChart();
+			_taskChanged: function(){
+				this.push('tasks', this.task);
+			},
+			loadData: function (challengeKey) {
+				if (this.challengeKey === challengeKey) {
+					return;
 				}
+				this.challengeKey = challengeKey;
+				this.$.challengeService.getById(challengeKey);
 			},
 			computeDuration: function (challenge) {
 				return util.computeDuration(challenge.Duration);
@@ -173,20 +156,6 @@
 			},
 			_inviteCandidates: function () {
 				this.$.inviteCandidatesModal.toggle();
-			},
-			onResponse: function (res) {
-				this.challenge = res.detail.response;
-				this.tasks = [];
-				for (var i = 0; i < this.challenge.Tasks.length; i++) {
-					this.$.taskDetailAjax.url = util.build('/tasks/' + this.challenge.Tasks[i]);
-					this.$.taskDetailAjax.generateRequest();
-				}
-			},
-			onTaskResponse: function (res) {
-				this.push('tasks', res.detail.response);
-			},
-			onError: function (error) {
-				util.error(error);
 			},
 			_challengeAsList: function (challenge) {
 				return [challenge];

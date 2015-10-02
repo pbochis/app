@@ -1,7 +1,11 @@
-<link rel="import" href="/bower_components/paper-material/paper-material.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/elements/skill/skill-polygon.html">
 <link rel="import" href="challenge/user-challenge-detail.html">
+<link rel="import" href="/elements/services/user-service.html">
+<link rel="import" href="/elements/services/challenge-service.html">
+<link rel="import" href="/elements/services/profile-service.html">
+<link rel="import" href="/elements/skill/skill-polygon.html">
+
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
 
 <dom-module id="user-detail">
 	<style>
@@ -55,33 +59,19 @@
 	</style>
 
 	<template>
-		<iron-ajax
-			id="getUserRequest"
-			loading="{{userLoading}}"
-			handle-as="json"
-			on-response="onGetUserResponse"
-			on-error="onUserError"
-			method="GET"
-			with-credentials="true">
-		</iron-ajax>
+		<user-service id="userService" user="{{user}}"></user-service>
+		<challenge-service id="challengeService" challenges="{{challenges}}"></challenge-service>
+		<profile-service id="profileService" profile="{{profile}}"></profile-service>
+
 		<iron-ajax
 			id="getProfileRequest"
-			loading="{{profileLoading}}"
 			handle-as="json"
 			on-response="onGetProfileResponse"
 			on-error="onError"
 			with-credentials="true"
 			method="GET">
 		</iron-ajax>
-		<iron-ajax
-			id="getLatestChallenges"
-			loading="{{lastChallengesLoading}}"
-			handle-as="json"
-			on-response="onLastChallengesResponse"
-			on-error="onError"
-			method="GET"
-			with-credentials="true">
-		</iron-ajax>
+
 		<div class="vertical layout fullHeight">
 			<paper-material id="top" elevation="1">
 				<div class="horizontal layout">
@@ -106,7 +96,7 @@
 						<p>{{lastChallenge.Name}}</p>
 						<span class="flex"></span>
 						<div>
-							<paper-button style="float: right;" class="secondary" raised on-click="loadChallenge">Load more</paper-button>
+							<paper-button style="float: right;" class="secondary" raised on-click="_loadChallenge">Load more</paper-button>
 						</div>
 					</paper-material>
 					<template is="dom-if" if="{{displayPreviousChallenges}}">
@@ -128,6 +118,14 @@
 				user:{
 					type: Object,
 					notify: true
+				},
+				challenges: {
+					type: Array,
+					observer: '_challengesChanged'
+				},
+				profile: {
+					type: Object,
+					observer: '_profileChanged'
 				},
 				lastChallenge: {
 					type: Object
@@ -155,27 +153,6 @@
 					type: Boolean,
 					value: false,
 					notify: true
-				},
-				userLoading: {
-					type: Boolean,
-					notify: true
-				},
-				profileLoading: {
-					type: Boolean,
-					notify: true
-				},
-				lastChallengesLoading: {
-					type: Boolean,
-					notify: true
-				}
-			},
-			observers: [
-				'checkProgress(userLoading, profileLoading, lastChallengesLoading)'
-			],
-			checkProgress: function(userLoading, profileLoading, lastChallengesLoading){
-				if(!(userLoading || profileLoading || lastChallengesLoading)){
-					app.hideProgress();
-					this.chart.buildChart();
 				}
 			},
 			refresh: function(){
@@ -187,29 +164,18 @@
 			},
 			getData: function(key){
 				this.refresh();
-				this.$.getUserRequest.url = util.build('/users/' + key);
-				this.$.getUserRequest.generateRequest();
-				this.$.getProfileRequest.url = util.build('/users/' + key + '/profile');
-				this.$.getProfileRequest.generateRequest();
+				this.$.userService.getById(key);
+				this.$.profileService.getByUserId(key);
 			},
-			onGetUserResponse: function(r){
-				this.user = r.detail.response;
+			getInitialLetter: function(user) {
+				return (user.Name || user.Address).charAt(0).toUpperCase();
 			},
-			onGetProfileResponse: function(r){
-				this.getLatestChallenges(r.detail.response.Key);
-			},
-			onLastChallengesResponse: function(r){
-				var challenges = r.detail.response;
+			_challengesChanged: function(challenges){
 				if(challenges === undefined || challenges.length===0){
 					return;
 				}
 				this.hasCompletedChallenges = true;
 				this.lastChallenge = challenges[0];
-
-				this.chart = document.createElement('skill-polygon');
-				this.chart.skills = this.mockedSkills;
-				this.chart.id='skillPolygon';
-				this.$.skillPolygonWrapper.appendChild(this.chart);
 
 				if(challenges.length===1){
 					return;
@@ -217,25 +183,19 @@
 				this.displayPreviousChallenges = true;
 				this.previousChallenges = challenges.slice(1, challenges.length);
 			},
-			getLatestChallenges: function(profileKey){
-				this.$.getLatestChallenges = util.build('/profiles/' + profileKey + '/challenges?finished=true&limit=10&order=-Finished');
-				this.$.getLatestChallenges.generateRequest();
-			},
-			getInitialLetter: function(user) {
-				return (user.Name || user.Address).charAt(0).toUpperCase();
-			},
-			loadChallenge: function(){
+			_loadChallenge: function(){
 				// TODO(victorbalan): create routing module that passes the objects with the
 				// redirect so we don`t load everything twice.
 				page.redirect('/user/' + this.user.Key + '/challenge/' + this.lastChallenge.Key);
 			},
-			onUserError: function(err){
-				util.error(err);
-			},
-			onError: function(err, ironRequest){
-				if(ironRequest.request.status !== 404){
-					util.error(err);
-				}
+			_profileChanged: function(profile){
+				this.$.challengeService.getLatestChallengesByProfileId(profile.Key);
+
+				this.chart = document.createElement('skill-polygon');
+				this.chart.skills = this.mockedSkills;
+				this.chart.id='skillPolygon';
+				this.$.skillPolygonWrapper.appendChild(this.chart);
+				this.chart.buildChart();
 			}
 		});
 	</script>

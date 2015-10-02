@@ -1,8 +1,10 @@
+<link rel="import" href="invite-candidate-input.html">
+<link rel="import" href="/elements/services/user-service.html">
+
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="invite-candidate-input.html">
 
 <dom-module id="invite-candidates">
 	<style>
@@ -22,15 +24,7 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="inviteCandidate"
-			handle-as="json"
-			on-response="onResponse"
-			on-error="onError"
-			with-credentials="true"
-			method="POST"
-			content-type="application/json">
-		</iron-ajax>
+		<user-service id="userService"></user-service>
 
 		<paper-dialog id="dialog" modal style="background: white;">
 			<h2>Invite candidates</h2>
@@ -69,7 +63,8 @@
 				}
 			},
 			listeners: {
-				'removeCandidate': '_removeCandidate'
+				'candidate-removed': '_removeCandidate',
+				'user-invited': '_userInvited'
 			},
 			toggle: function () {
 				this._clearDialog();
@@ -82,11 +77,11 @@
 					if (candidate.Address === '' || candidate.Challenge === undefined) {
 						return;
 					}
-					this.$.inviteCandidate.body = {
+					var toInvite = {
 						'Address': candidate.Address,
 						'Challenge': candidate.Challenge
 					};
-					this.$.inviteCandidate.generateRequest();
+					this.userService.invite(toInvite);
 				}
 			},
 			_addCandidate: function () {
@@ -107,10 +102,7 @@
 				}
 				this.candidates = [];
 			},
-			onError: function(err){
-				util.error(err);
-			},
-			onResponse: function(){
+			_userInvited: function(){
 				this.$.toast.show();
 				page.redirect('/candidates');
 			}
