@@ -1,29 +1,19 @@
 {
-  "name": "polymer-starter-kit",
+  "name": "app",
   "private": true,
   "dependencies": {
-    "iron-elements": "PolymerElements/iron-elements#1.0.0",
-    "paper-elements": "PolymerElements/paper-elements#1.0.1",
-    "platinum-elements": "PolymerElements/platinum-elements#1.0.1",
-    "neon-elements": "PolymerElements/neon-elements#1.0.0",
+    "iron-elements": "PolymerElements/iron-elements#~1.0",
+    "paper-elements": "PolymerElements/paper-elements#~1.0",
+    "platinum-elements": "PolymerElements/platinum-elements#~1.0",
+    "neon-elements": "PolymerElements/neon-elements#~1.0",
     "page": "visionmedia/page.js#~1.6.3",
     "ace-min-noconflict": "~1.1.9",
-    "iron-icon": "PolymerElements/iron-icon#~1.0.2",
-    "paper-dialog": "PolymerElements/paper-dialog#~1.0.1",
-    "paper-fab": "PolymerElements/paper-fab#~1.0.3",
-    "paper-tabs": "PolymerElements/paper-tabs#~1.0.1",
-    "paper-menu-button": "PolymerElements/paper-menu-button#~1.0.2",
     "Chart.js": "~1.0.2",
     "marked": "~0.3.5",
-    "highlightjs": "~8.8.0",
-    "iron-ajax": "PolymerElements/iron-ajax#~1.0.4",
-    "paper-progress": "PolymerElements/paper-progress#~1.0.2"
+    "highlightjs": "~8.8.0"
   },
   "devDependencies": {
     "web-component-tester": "*",
     "test-fixture": "PolymerElements/test-fixture#^1.0.0"
-  },
-  "resolutions": {
-    "iron-ajax": "^1.0.0"
   }
 }

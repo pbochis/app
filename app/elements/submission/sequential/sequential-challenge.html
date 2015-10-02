@@ -185,7 +185,7 @@
 				if(this.challenge.Tasks.length>1){
 					this.taskNavTitle = 'Task ' + (this.taskIndex+1) +' of ' + (this.challenge.Tasks.length);
 				}
-				this.$.loadTaskRequest = util.build('/tasks/' + key + '?result=' + localStorage.getItem('result'));
+				this.$.loadTaskRequest.url = util.build('/tasks/' + key + '?result=' + localStorage.getItem('result'));
 				this.$.loadTaskRequest.generateRequest();
 			},
 			onTaskResponse: function(r){

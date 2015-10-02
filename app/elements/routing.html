@@ -14,14 +14,17 @@ window.addEventListener('WebComponentsReady', function() {
 		var decodedToken = atob(token).split(':');
 
 		var xhr = new XMLHttpRequest();
+		xhr.onload = function() {
+			// TODO(flowlo): Request /user to set localStorage.user, but
+			// this is currently not needed.
+			app.login();
+		};
+		xhr.withCredentials = true;
 		xhr.open('PUT', util.build('/cookie'));
 		xhr.setRequestHeader('Authorization', 'Token '+ decodedToken[1]);
 		xhr.send();
 
 		localStorage.setItem('challenge', decodedToken[0]);
-		// TODO(flowlo): Request /user to set localStorage.user, but
-		// this is currently not needed.
-		app.login();
 	});
 
 	page('/register', function() {

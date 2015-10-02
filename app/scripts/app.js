@@ -134,6 +134,7 @@
 	app.startChallenge = function() {
 		var challengeKey = localStorage.getItem('challenge');
 		if (challengeKey !== '' && challengeKey !== null) {
+			app.$.resultRequest.url = util.build('/results');
 			app.$.resultRequest.body = { ChallengeKey: challengeKey };
 			app.$.resultRequest.generateRequest();
 		}
