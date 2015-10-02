@@ -26,7 +26,10 @@
 			id="inviteCandidate"
 			handle-as="json"
 			on-response="onResponse"
-			on-error="onError">
+			on-error="onError"
+			with-credentials="true"
+			method="POST"
+			content-type="application/json">
 		</iron-ajax>
 
 		<paper-dialog id="dialog" modal style="background: white;">
@@ -76,12 +79,14 @@
 			inviteCandidates: function () {
 				for (var i = 0; i < this.candidates.length; i++) {
 					var candidate = this.candidates[i];
-					if (candidate.Address !== '' && candidate.Challenge !== undefined) {
-						util.post(this.$.inviteCandidate, '/invitations', {
-							'Address': candidate.Address,
-							'Challenge': candidate.Challenge
-						});
+					if (candidate.Address === '' || candidate.Challenge === undefined) {
+						return;
 					}
+					this.$.inviteCandidate.body = {
+						'Address': candidate.Address,
+						'Challenge': candidate.Challenge
+					};
+					this.$.inviteCandidate.generateRequest();
 				}
 			},
 			_addCandidate: function () {

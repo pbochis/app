@@ -21,7 +21,8 @@
 		},
 		isLoggedIn: {
 			type: Boolean,
-			notify: true
+			notify: true,
+			value: true
 		},
 		selected: {
 			type: String,
@@ -57,10 +58,7 @@
 	};
 
 	app.login = function() {
-		app.refreshMenu();
-		if (!localStorage.accessToken) {
-			return page.redirect('/unauthorized');
-		}
+		app.refreshMenu(true);
 		if (localStorage.company) {
 			return page.redirect('/candidates');
 		}
@@ -69,14 +67,14 @@
 
 	app.logout = function() {
 		localStorage.clear();
-		app.refreshMenu();
+		app.refreshMenu(false);
 		page.redirect('/login');
 	};
 
-	app.refreshMenu = function() {
+	app.refreshMenu = function(loggedIn) {
 		app.isCompany = !!localStorage.company;
 		app.isCoder = !app.isCompany;
-		app.isLoggedIn = localStorage.accessToken;
+		app.isLoggedIn = loggedIn;
 	};
 
 	app.displayInstalledToast = function() {
@@ -86,7 +84,7 @@
 	// Listen for template bound event to know when bindings
 	// have resolved and content has been stamped to the page
 	app.addEventListener('dom-change', function() {
-		app.refreshMenu();
+		app.refreshMenu(true);
 		if(window.location.hash!==''){
 			// TODO(victorbalan): Find a way to set the correct selected tab instead
 			// of deselecting everything.
@@ -110,7 +108,8 @@
 	app.startChallenge = function() {
 		var challengeKey = localStorage.getItem('challenge');
 		if (challengeKey !== '' && challengeKey !== null) {
-			util.post(app.$.resultRequest, '/results', {'ChallengeKey': challengeKey});
+			app.$.resultRequest.body = { ChallengeKey: challengeKey };
+			app.$.resultRequest.generateRequest();
 		}
 	};
 
@@ -123,7 +122,8 @@
 		var result = r.detail.response;
 		localStorage.setItem('result', result.Key);
 		app.result = result;
-		util.get(app.$.challengeRequest, '/challenges/' + localStorage.getItem('challenge'));
+		app.$.challengeRequest.url = util.build('/challenges/' + localStorage.getItem('challenge'));
+		app.$.challengeRequest.generateRequest();
 	};
 
 	app.createChallenge = function() {

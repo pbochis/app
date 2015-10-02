@@ -16,7 +16,9 @@
 			id="getChallengesAjax"
 			handle-as="json"
 			on-response="onGetChallengesResponse"
-			on-error="onError">
+			on-error="onError"
+			with-credentials="true"
+			method="GET">
 		</iron-ajax>
 
 		<paper-fab id="createActionButton" on-click="_toggleDialog" icon="create"></paper-fab>
@@ -34,7 +36,8 @@
 				}
 			},
 			getChallenges: function () {
-				util.get(this.$.getChallengesAjax, '/companies/' + util.company().Key + '/challenges');
+				this.$.getChallengesAjax.url = util.build('/companies/' + util.company().Key + '/challenges');
+				this.$.getChallengesAjax.generateRequest();
 			},
 			getCandidates: function () {
 				this.$.candidateList.getCandidates();

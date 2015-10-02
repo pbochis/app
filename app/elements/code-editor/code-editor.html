@@ -41,7 +41,7 @@
 				var body = new FormData();
 				// TODO(flowlo): Set correct MIME type.
 				body.append('files', new Blob([this.getText()], { type: 'text/plain'}), this._getFile(lang));
-				// NOTE(flowlo): This does not use util.post because
+				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
 				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
 				var xhr = new XMLHttpRequest();
@@ -51,7 +51,6 @@
 				};
 				xhr.withCredentials = true;
 				xhr.open('POST', url, true);
-				xhr.setRequestHeader('Authorization', 'Token ' + util.accessToken().Value);
 				xhr.send(body);
 			},
 			getText: function() {

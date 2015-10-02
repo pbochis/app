@@ -78,6 +78,8 @@
 			handle-as="json"
 			on-response="onTemplateResponse"
 			on-error="onTemplateError"
+			method="GET"
+			with-credentials="true"
 			>
 		</iron-ajax>
 		<div id="componentWrapper" class="horizontal layout">
@@ -152,7 +154,8 @@
 				}, 500);
 			},
 			_afterPropertiesSet: function(){
-				util.get(this.$.getTemplateAjax,'/tasks/' + this.task.Key + '/templates?language=json');
+				this.$.getTemplateAjax.url = util.build('/tasks/' + this.task.Key + '/templates?language=json');
+				this.$.getTemplateAjax.generateRequest();
 			},
 			attached: function(){
 				var element = this;
@@ -313,11 +316,12 @@
 				this.counter++;
 			},
 			onTemplateResponse: function(r){
+				var data = r.detail.response;
 				// TODO(victorbalan): Create template loading service.
-				if(r.detail.response.length === 0) {
+				if(data.length === 0) {
 					return;
 				}
-				this.$.getCodeRequest.url = r.detail.response[0];
+				this.$.getCodeRequest.url = data[0];
 				this.$.getCodeRequest.generateRequest();
 			},
 			onGetCodeResponse: function(r){

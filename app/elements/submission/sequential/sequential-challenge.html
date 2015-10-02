@@ -77,7 +77,8 @@
 			handle-as="json"
 			on-response="onResultResponse"
 			on-error="onResultError"
-			content-type="application/json"
+			method="GET"
+			with-credentials="true"
 			>
 		</iron-ajax>
 		<iron-ajax
@@ -85,7 +86,8 @@
 			handle-as="json"
 			on-response="onTaskResponse"
 			debounce-duration="1000"
-			content-type="application/json"
+			method="GET"
+			with-credentials="true"
 			>
 		</iron-ajax>
 		<iron-ajax
@@ -95,6 +97,8 @@
 			content-type="application/json"
 			on-response="onFinishTaskResponse"
 			on-error="onFinishTaskError"
+			method="POST"
+			with-credentials="true"
 			>
 		</iron-ajax>
 	</template>
@@ -184,7 +188,8 @@
 				if(this.challenge.Tasks.length>1){
 					this.taskNavTitle = 'Task ' + (this.taskIndex+1) +' of ' + (this.challenge.Tasks.length);
 				}
-				util.get(this.$.loadTaskRequest, '/tasks/' + key + '?result=' + localStorage.getItem('result'));
+				this.$.loadTaskRequest = util.build('/tasks/' + key + '?result=' + localStorage.getItem('result'));
+				this.$.loadTaskRequest.generateRequest();
 			},
 			onTaskResponse: function(r){
 				var task = r.detail.response;
@@ -220,17 +225,21 @@
 				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 			},
 			finishTask: function(){
-				util.post(this.$.finishTaskRequest,
+				this.$.finishTaskRequest.url = util.build(
 					'/results/'+ localStorage.getItem('result') +
 					'/finalSubmissions/' + this.taskIndex +
-					'?submissionKey' + localStorage.getItem('lastSubmission'), {});
+					'?submissionKey' + localStorage.getItem('lastSubmission')
+				);
+				this.$.finishTaskRequest.body = {};
+				this.$.finishTaskRequest.generateRequest();
 			},
 			onFinishTaskResponse: function(){
 				this.taskIndex++;
 				if(this.taskIndex < this.challenge.Tasks.length){
 					this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				}else{
-					util.get(this.$.getResultRequest, '/results/' + localStorage.getItem('result'));
+					this.$.getResultRequest.url = util.build('/results/' + localStorage.getItem('result'));
+					this.$.getResultRequest.generateRequest();
 					var finished = document.createElement('challenge-finished');
 					this.$.content.innerHTML = '';
 					this.$.content.appendChild(finished);

@@ -71,6 +71,8 @@
 			handle-as="text"
 			on-response="onTemplatesResponse"
 			on-error="onTemplatesError"
+			method="GET"
+			with-credentials="true"
 			>
 		</iron-ajax>
 		<div id="componentWrapper" class="horizontal layout">
@@ -156,7 +158,6 @@
 				}
 				this.$.codeEditor.setMode(this.languages[0].tag);
 				this.getTemplate(this.languages[0].tag);
-
 			},
 			languageChanged: function(){
 				var languageTag = this.$.languageSelector.getSelectedLanguage().tag;
@@ -164,10 +165,11 @@
 				this.getTemplate(languageTag);
 			},
 			getTemplate: function(language){
-				util.get(this.$.getTemplatesAjax,'/tasks/' + this.task.Key + '/templates?language=' + language);
+				this.$.getTemplatesAjax.url = util.build('/tasks/' + this.task.Key + '/templates?language=' + language);
+				this.$.getTemplatesAjax.generateRequest();
 			},
-			onTemplatesResponse: function(request){
-				var urls = JSON.parse(request.detail.response);
+			onTemplatesResponse: function(){
+				var urls = this.$.getTemplateAjax.lastResponse;
 				if (!urls || urls.length === 0) {
 					// No template available.
 					return;
@@ -185,9 +187,8 @@
 				xhr.open('GET', url);
 				xhr.send();
 			},
-			onTemplatesError: function(){
-				// Do nothing. Just serve no code template
-				this.$.codeEditor.setText('');
+			onTemplatesError: function(e) {
+				util.handleError(e);
 			},
 			runCode: function(){
 				var lang = this.$.languageSelector.getSelectedLanguage().tag;

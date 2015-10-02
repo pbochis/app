@@ -11,7 +11,10 @@
 		<iron-ajax
 			id="candidateRequest"
 			on-response="onResponse"
-			on-error="onError">
+			on-error="onError"
+			with-credentials="true"
+			content-type="application/json"
+			method="GET">
 		</iron-ajax>
 		<div class="horizontal layout center-center wrap">
 			<template is="dom-repeat" items="{{items}}">
@@ -31,7 +34,8 @@
 				}
 			},
 			getCandidates: function () {
-				util.get(this.$.candidateRequest, '/users');
+				this.$.candidateRequest.url = util.build('/users');
+				this.$.candidateRequest.generateRequest();
 			},
 			onResponse: function (r) {
 				this.items = r.detail.response;

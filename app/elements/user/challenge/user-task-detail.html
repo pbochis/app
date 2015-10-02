@@ -122,7 +122,8 @@
 				this.$.codeSpinner.active = true;
 				this.$.testResultsSpinner.active = true;
 				this.$.submissionService.getById(submissionKey);
-				util.get(this.$.getTestResultsRequest, '/submissions/' + submissionKey + '/testresults');
+				this.$.getTestResultsRequest = util.build('/submissions/' + submissionKey + '/testresults');
+				this.$.getTestResultsRequest.generateRequest();
 			},
 			onGetCodeResponse: function(r){
 				this.code = r.detail.response;

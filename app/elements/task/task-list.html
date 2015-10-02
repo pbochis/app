@@ -41,7 +41,8 @@
 			handle-as="json"
 			on-response="onResponse"
 			on-error="onError"
-			style="display: none;">
+			with-credentials="true"
+			method="GET">
 		</iron-ajax>
 
 		<template is="dom-if" if="{{displayHeader}}">
@@ -93,7 +94,8 @@
 				this.$.challengeModal.toggle();
 			},
 			getTasks: function () {
-				util.get(this.$.getTasksAjax, '/tasks');
+				this.$.getTasksAjax.url = util.build('/tasks');
+				this.$.getTasksAjax.generateRequest();
 			},
 			onResponse: function (res) {
 				this.tasks = res.detail.response;

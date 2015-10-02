@@ -2,7 +2,6 @@
 <script>
 window.addEventListener('WebComponentsReady', function() {
 	page('/', function() {
-		checkAuthorization();
 		if (util.company()) {
 			page('/candidates');
 		} else {
@@ -14,8 +13,12 @@ window.addEventListener('WebComponentsReady', function() {
 		app.showProgress();
 		var token = context.params.token;
 		var decodedToken = atob(token).split(':');
-		var accessToken = { Value: decodedToken[1] };
-		localStorage.accessToken = JSON.stringify(accessToken);
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('PUT', util.build('/cookie'));
+		xhr.setRequestHeader('Authorization', 'Token '+ decodedToken[1]);
+		xhr.send();
+
 		localStorage.setItem('challenge', decodedToken[0]);
 		// TODO(flowlo): Request /user to set localStorage.user, but
 		// this is currently not needed.
@@ -28,7 +31,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/challenge', function() {
-		checkAuthorization();
 		app.route = 'challenge';
 		Polymer.Base.importHref('/elements/submission/challenge-page.html', function(){
 			app.startChallenge();
@@ -36,7 +38,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/challenges', function () {
-		checkAuthorization();
 		app.route = 'challenges';
 		Polymer.Base.importHref('/elements/challenge/challenge-list.html', function(){
 			app.$.challengeList.getChallenges();
@@ -44,7 +45,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/challenges/:challengeKey', function(data){
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'challenge-detail';
 		Polymer.Base.importHref('/elements/challenge/challenge-detail.html', function(){
@@ -57,14 +57,12 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/coders/:id', function(data) {
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'coder-info';
 		app.params = data.params;
 	});
 
 	page('/candidates', function() {
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'candidate';
 		Polymer.Base.importHref('/elements/candidates/candidate-page.html', function(){
@@ -74,7 +72,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/tasks', function() {
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'tasks';
 		Polymer.Base.importHref('/elements/task/task-list.html', function(){
@@ -83,7 +80,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/tasks/:taskKey', function(data) {
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'task-detail';
 		Polymer.Base.importHref('/elements/task/task-detail.html', function() {
@@ -92,14 +88,12 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/task/create', function(){
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'task-create';
 		Polymer.Base.importHref('/elements/task/task-form.html');
 	});
 
 	page('/user/:userKey', function(context){
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'user';
 		Polymer.Base.importHref('/elements/user/user-detail.html', function(){
@@ -108,7 +102,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/user/:userKey/challenge/:challengeKey', function(context){
-		checkAuthorization();
 		checkIsCompany();
 		app.route = 'userChallenge';
 		Polymer.Base.importHref('/elements/user/challenge/user-challenge-detail.html', function(){
@@ -117,27 +110,19 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/login', function(ctx) {
-		if (hasAuthorization()) {
-			if (localStorage.company) {
-				page('/candidates');
-			} else {
-				page('/challenge');
+		app.route = 'login';
+		Polymer.Base.importHref('/elements/login-wizard/login-wizard.html', function(){
+			if(!ctx.querystring){
+				return;
 			}
-		} else {
-			app.route = 'login';
-			Polymer.Base.importHref('/elements/login-wizard/login-wizard.html', function(){
-				if(!ctx.querystring){
+			var qs = ctx.querystring.split('&');
+			for(var i=0;i<qs.length;i++) {
+				if(qs[i].indexOf('address=')===0) {
+					app.$.loginWizard.setEmail(qs[i].split('=')[1]);
 					return;
 				}
-				var qs = ctx.querystring.split('&');
-				for(var i=0;i<qs.length;i++) {
-					if(qs[i].indexOf('address=')===0) {
-						app.$.loginWizard.setEmail(qs[i].split('=')[1]);
-						return;
-					}
-				}
-			});
-		}
+			}
+		});
 	});
 
 	page('/logout', function() {
@@ -153,16 +138,8 @@ window.addEventListener('WebComponentsReady', function() {
 		hashbang: true
 	});
 
-	function checkAuthorization() {
-		return !!localStorage.accessToken || page.redirect('/login');
-	}
-
-	function hasAuthorization() {
-		return !!localStorage.accessToken;
-	}
-
 	function checkIsCompany() {
-		return (!!localStorage.accessToken && !!localStorage.company) || page.redirect('/login');
+		return !!localStorage.company || page.redirect('/login');
 	}
 });
 </script>

@@ -38,7 +38,9 @@
 			loading="{{challengeLoading}}"
 			handle-as="json"
 			on-response="onResponse"
-			on-error="onError">
+			on-error="onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 
 		<iron-ajax
@@ -46,7 +48,9 @@
 			loading="{{taskLoading}}"
 			handle-as="json"
 			on-response="onTaskResponse"
-			on-error="onError">
+			on-error="onError"
+			method="GET"
+			with-credentials="true">
 		</iron-ajax>
 
 		<invite-candidates id="inviteCandidatesModal" challenges="{{challengeAsList}}"></invite-candidates>
@@ -151,7 +155,8 @@
 					app.hideProgress();
 				} else {
 					this.challengeKey = challengeKey;
-					util.get(this.$.challengeDetailAjax, '/challenges/' + this.challengeKey);
+					this.$.challengeDetailAjax.url = util.build('/challenges/' + this.challengeKey);
+					this.$.challengeDetailAjax.generateRequest();
 				}
 			},
 			checkProgress: function (challengeLoading, taskLoading) {
@@ -173,7 +178,8 @@
 				this.challenge = res.detail.response;
 				this.tasks = [];
 				for (var i = 0; i < this.challenge.Tasks.length; i++) {
-					util.get(this.$.taskDetailAjax, '/tasks/' + this.challenge.Tasks[i]);
+					this.$.taskDetailAjax.url = util.build('/tasks/' + this.challenge.Tasks[i]);
+					this.$.taskDetailAjax.generateRequest();
 				}
 			},
 			onTaskResponse: function (res) {

@@ -4,7 +4,10 @@
 			id="sendErrorAjax"
 			handle-as="json"
 			on-response="onResponse"
-			on-error="onError">
+			on-error="onError"
+			with-credentials="true"
+			content-type="application/json"
+			method="PUT">
 		</iron-ajax>
 		<paper-material elevation="1">
 			<h1> Something went wrong. Please offer us more details about your experience</h1>
@@ -36,11 +39,13 @@
 				this.ticketId = res.detail.response;
 			},
 			sendFeedback: function(){
-				util.put(this.$.sendErrorAjax,'/error', {
+				this.$.sendErrorAjax.url = util.build('/error');
+				this.$.sendErrorAjax.body = {
 					Key:      this.ticketKey,
 					Error:    this.initialError,
 					Feedback: this.feedback
-				});
+				};
+				this.$.sendErrorAjax.generateRequest();
 			}
 		});
 	</script>

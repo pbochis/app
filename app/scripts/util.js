@@ -19,11 +19,6 @@ var util = {
 
 		return prefix + suffix;
 	},
-	accessToken: function() {
-		if (localStorage.accessToken) {
-			return JSON.parse(localStorage.accessToken);
-		}
-	},
 	company: function() {
 		if (localStorage.company) {
 			return JSON.parse(localStorage.company);
@@ -33,28 +28,6 @@ var util = {
 		if (localStorage.user) {
 			return JSON.parse(localStorage.user);
 		}
-	},
-	get: function(ajaxRequest, route, authorization) {
-		ajaxRequest.url = this.build(route);
-		ajaxRequest.method = 'GET';
-		ajaxRequest.headers = {'Authorization': (authorization || 'Token ' + this.accessToken().Value)};
-		ajaxRequest.generateRequest();
-	},
-	post: function(ajaxRequest, route, body) {
-		ajaxRequest.url = this.build(route);
-		ajaxRequest.method = 'POST';
-		if(!!this.accessToken()){
-			ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken().Value};
-		}
-		ajaxRequest.body = JSON.stringify(body);
-		ajaxRequest.generateRequest();
-	},
-	put: function(ajaxRequest, route, body) {
-		ajaxRequest.url = this.build(route);
-		ajaxRequest.method = 'PUT';
-		ajaxRequest.headers = {'Authorization': 'Token ' + this.accessToken()};
-		ajaxRequest.body = JSON.stringify(body);
-		ajaxRequest.generateRequest();
 	},
 	computeDuration: function(duration) {
 		var seconds = duration / 1e9;
