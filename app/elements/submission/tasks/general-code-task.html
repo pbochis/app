@@ -66,15 +66,7 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
-			id="getTemplatesAjax"
-			handle-as="text"
-			on-response="onTemplatesResponse"
-			on-error="onTemplatesError"
-			method="GET"
-			with-credentials="true"
-			>
-		</iron-ajax>
+		<template-service id="templateService" task="{{task}}"></template-service>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
@@ -156,39 +148,14 @@
 					}
 					this.push('languages', lang);
 				}
-				this.$.codeEditor.setMode(this.languages[0].tag);
 				this.getTemplate(this.languages[0].tag);
 			},
 			languageChanged: function(){
 				var languageTag = this.$.languageSelector.getSelectedLanguage().tag;
-				this.$.codeEditor.setMode(languageTag);
 				this.getTemplate(languageTag);
 			},
 			getTemplate: function(language){
-				this.$.getTemplatesAjax.url = util.build('/tasks/' + this.task.Key + '/templates?language=' + language);
-				this.$.getTemplatesAjax.generateRequest();
-			},
-			onTemplatesResponse: function(){
-				var urls = this.$.getTemplateAjax.lastResponse;
-				if (!urls || urls.length === 0) {
-					// No template available.
-					return;
-				}
-				var url = urls[0];
-				if (urls.length > 1) {
-					console.log('Cannot handle multiple template files.');
-				}
-
-				var that = this;
-				var xhr = new XMLHttpRequest();
-				xhr.onload = function() {
-					that.$.codeEditor.setText(xhr.responseText);
-				};
-				xhr.open('GET', url);
-				xhr.send();
-			},
-			onTemplatesError: function(e) {
-				util.handleError(e);
+				this.$.templateService.getTemplates(language);
 			},
 			runCode: function(){
 				var lang = this.$.languageSelector.getSelectedLanguage().tag;

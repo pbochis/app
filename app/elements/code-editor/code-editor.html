@@ -26,7 +26,9 @@
 				wsUrl: {
 					type: String,
 					notify: true
-				}
+				},
+				filename: String,
+				mimeType: String,
 			},
 			ready: function(){
 				this.wsUrl = util.getWSUrl('/?result=' + localStorage.getItem('result'));
@@ -39,8 +41,7 @@
 			},
 			runCode: function(lang, taskKey) {
 				var body = new FormData();
-				// TODO(flowlo): Set correct MIME type.
-				body.append('files', new Blob([this.getText()], { type: 'text/plain'}), this._getFile(lang));
+				body.append('files', new Blob([this.getText()], { type: this.mimeType }), this.filename);
 				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
 				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
@@ -59,41 +60,38 @@
 			setText: function(text){
 				this.$.editor.getSession().setValue(text);
 			},
+			setFilename: function(filename){
+				if (filename !== null){
+					this.filename = filename;
+				}
+			},
 			setMode: function(lang){
+				//Set default filename in case there is no tempalte or template has no filename.
 				var mode = 'ace/mode/java';
+				this.filename = 'Application.java';
 				switch (lang) {
 					case 'py':
 						mode = 'ace/mode/python';
+						this.filename = 'app.py';
 						break;
 					case 'c':
 						mode = 'ace/mode/c_cpp';
+						this.filename = 'app.c';
 						break;
 					case 'cpp':
 						mode = 'ace/mode/c_cpp';
+						this.filename = 'app.cpp';
+
 						break;
 					case 'robot':
 						mode = 'ace/mode/c_cpp';
+						this.filename = 'robot.json';
 						break;
 				}
 				this.$.editor.getSession().setMode({
 					path: mode,
 					v: Date.now()
 				});
-			},
-			_getFile: function(lang){
-				switch (lang) {
-					case 'java':
-						return 'Application.java';
-					case 'py':
-						return 'app.py';
-					case 'c':
-						return 'app.c';
-					case 'cpp':
-						return 'app.cpp';
-					case 'robot':
-						return 'robot.json';
-				}
-				return 'default';
 			}
 		});
 	</script>
