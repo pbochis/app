@@ -132,12 +132,13 @@
 	};
 
 	app.startChallenge = function() {
+		// TODO(@flowlo): This deliberately does not check whether
+		// challengeKey is meaningful or even present, because if
+		// it is not, the XHR will fail and redirect to login.
 		var challengeKey = localStorage.getItem('challenge');
-		if (challengeKey !== '' && challengeKey !== null) {
-			app.$.resultRequest.url = util.build('/results');
-			app.$.resultRequest.body = { ChallengeKey: challengeKey };
-			app.$.resultRequest.generateRequest();
-		}
+		app.$.resultRequest.url = util.build('/results');
+		app.$.resultRequest.body = { ChallengeKey: challengeKey };
+		app.$.resultRequest.generateRequest();
 	};
 
 	app.onChallengeResponse = function(r) {
@@ -155,6 +156,10 @@
 
 	app.createChallenge = function() {
 		app.$.taskList.createChallenge();
+	};
+
+	app.onResultError = function(e) {
+		util.error(e);
 	};
 
 })(document);
