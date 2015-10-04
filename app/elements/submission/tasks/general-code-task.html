@@ -3,6 +3,7 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/elements/code-editor/code-editor.html">
 <link rel="import" href="/elements/code-editor/language-selector.html">
+<link rel="import" href="/elements/services/template-service.html">
 <link rel="import" href="task-display.html">
 
 <dom-module id="code-task">
@@ -66,7 +67,7 @@
 		}
 	</style>
 	<template>
-		<template-service id="templateService" task="{{task}}"></template-service>
+		<template-service id="templateService" task="{{task}}" on-templates="onTemplates"></template-service>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
@@ -164,6 +165,12 @@
 			},
 			finishTask: function(){
 				this.fire('task-finished');
+			},
+			onTemplates: function(e) {
+				if (!e.detail || e.detail.length === 0) {
+					console.log('Received no code template.');
+				}
+				this.$.codeEditor.setFile(e.detail[0], this.$.languageSelector.getSelectedLanguage().tag);
 			}
 		});
 	</script>

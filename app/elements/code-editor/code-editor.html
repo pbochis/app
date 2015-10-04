@@ -41,7 +41,8 @@
 			},
 			runCode: function(lang, taskKey) {
 				var body = new FormData();
-				body.append('files', new Blob([this.getText()], { type: this.mimeType }), this.filename);
+				var f = this.getFile();
+				body.append('files', f, f.name);
 				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
 				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
@@ -54,44 +55,40 @@
 				xhr.open('POST', url, true);
 				xhr.send(body);
 			},
-			getText: function() {
-				return this.$.editor.getValue();
+			getFile: function() {
+				var blob = new Blob([this.$.editor.getValue()], {type: this.mimeType });
+				blob.name = this.filename;
+				return blob;
 			},
-			setText: function(text){
-				this.$.editor.getSession().setValue(text);
-			},
-			setFilename: function(filename){
-				if (filename !== null){
-					this.filename = filename;
-				}
+			setFile: function(f, l) {
+				var that = this;
+				var fr = new FileReader();
+				fr.onload = function(e) {
+					that.$.editor.getSession().setValue(e.target.result);
+				};
+				fr.readAsText(f);
+				this.setMode(l);
+				this.mimeType = f.type;
+				this.filename = f.name;
 			},
 			setMode: function(lang){
-				//Set default filename in case there is no tempalte or template has no filename.
-				var mode = 'ace/mode/java';
-				this.filename = 'Application.java';
+				var mode;
 				switch (lang) {
+					case 'java':
+						mode = 'java';
+						break;
 					case 'py':
-						mode = 'ace/mode/python';
-						this.filename = 'app.py';
+						mode = 'python';
 						break;
 					case 'c':
-						mode = 'ace/mode/c_cpp';
-						this.filename = 'app.c';
-						break;
 					case 'cpp':
-						mode = 'ace/mode/c_cpp';
-						this.filename = 'app.cpp';
-
+						mode = 'c_cpp';
 						break;
-					case 'robot':
-						mode = 'ace/mode/c_cpp';
-						this.filename = 'robot.json';
+					default:
+						mode = 'text';
 						break;
 				}
-				this.$.editor.getSession().setMode({
-					path: mode,
-					v: Date.now()
-				});
+				this.$.editor.getSession().setMode('ace/mode/' + mode);
 			}
 		});
 	</script>

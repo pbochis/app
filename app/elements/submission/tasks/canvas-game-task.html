@@ -3,6 +3,7 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/elements/code-editor/code-editor.html">
 <link rel="import" href="/elements/code-editor/language-selector.html">
+<link rel="import" href="/elements/services/template-service.html">
 <link rel="import" href="task-display.html">
 
 <dom-module id="canvas-game-task">
@@ -68,19 +69,11 @@
 		}
 	</style>
 	<template>
+		<template-service id="templateService" task="{{task}}" on-templates="onTemplates"></template-service>
 		<iron-ajax
 			id="getCodeRequest"
 			handle-as="json"
 			on-response="onGetCodeResponse">
-		</iron-ajax>
-		<iron-ajax
-			id="getTemplateAjax"
-			handle-as="json"
-			on-response="onTemplateResponse"
-			on-error="onTemplateError"
-			method="GET"
-			with-credentials="true"
-			>
 		</iron-ajax>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
@@ -154,8 +147,7 @@
 				}, 500);
 			},
 			_afterPropertiesSet: function(){
-				this.$.getTemplateAjax.url = util.build('/tasks/' + this.task.Key + '/templates?language=json');
-				this.$.getTemplateAjax.generateRequest();
+				this.$.templateService.getTemplates('json');
 			},
 			attached: function(){
 				var element = this;
@@ -315,25 +307,32 @@
 				this.drawRobot(move.X, move.Y);
 				this.counter++;
 			},
-			onTemplateResponse: function(r){
-				var data = r.detail.response;
-				// TODO(victorbalan): Create template loading service.
-				if(data.length === 0) {
-					return;
+			onTemplates: function(e){
+				if (!e.detail || e.detail.length === 0) {
+					console.log('Received no code template.');
 				}
-				this.$.getCodeRequest.url = data[0];
-				this.$.getCodeRequest.generateRequest();
-			},
-			onGetCodeResponse: function(r){
-				var data = r.detail.response;
-				this.oldPosition = data.Start;
-				this.startPosition = data.Start;
-				this.finishPosition = data.Finish;
-				this.maxPosition = data.Max;
-				this.coins = data.Coins;
-				this.obstacles = data.Obstacles;
-				this.initCanvas();
-				this.loadTemplate();
+
+				// NOTE(flowlo): This is a terrible hack by victorbalan.
+				// The template is used as rendering information for the
+				// canvas. We therefore have to first parse the file as
+				// JSON, then remove its contents (preserving the name)
+				// and pass it on to the editor empty.
+
+				var that = this;
+				var fr = new FileReader();
+				fr.onload = function (x) {
+					var data = JSON.parse(x.target.result);
+					that.oldPosition = data.Start;
+					that.startPosition = data.Start;
+					that.finishPosition = data.Finish;
+					that.maxPosition = data.Max;
+					that.coins = data.Coins;
+					that.obstacles = data.Obstacles;
+					that.initCanvas();
+					that.loadTemplate();
+					that.$.codeEditor.setFile(e.detail[0].slice(0, 0), '');
+				};
+				fr.readAsText(e.detail[0]);
 			},
 			onTemplateError: function(err){
 				util.error(err);

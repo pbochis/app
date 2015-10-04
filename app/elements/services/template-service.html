@@ -19,7 +19,6 @@
 			id="getTemplate"
 			method="GET"
 			handle-as="blob"
-			with-credentials="true"
 			on-response="_onTemplate"
 			on-error="_onError">
 		</iron-ajax>
@@ -30,35 +29,58 @@
 			properties: {
 				templates: {
 					type: Array,
-					notify: true,
-					reflectToAttribute: true
+					value: []
 				},
 				task: {
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
+				},
+				templateCount: {
+					type: Number
 				}
 			},
 			getTemplates: function(language) {
-				this.$.getTemplateList.url = util.build('/companies/' + companyKey + '/challenges');
-				this.$.getTemplateList.generateRequest('/tasks/' + this.task.Key + (language ? '?language=' + language : ''));
-			}
+				app.startLoading();
+				this.$.getTemplateList.url = util.build('/tasks/' + this.task.Key + '/templates' + (language ? '?language=' + language : ''));
+				this.$.getTemplateList.generateRequest();
+			},
 			_onList: function(e) {
 				var urls = e.detail.response;
 				if (!urls || urls.length === 0) {
 					// No template available.
+					app.stopLoading();
 					return;
 				}
+				this.templateCount = urls.length;
 				for (var i = 0; i < urls.length; i++) {
 					this.$.getTemplate.url = urls[i];
 					this.$.getTemplate.generateRequest();
 				}
 			},
 			_onTemplate: function(e, req) {
-				var fnre = /filename\s*=\s*(")?([\w\.\/]+)(?(1)\1|)/
-				var match = req.xhr.getResponseHeader('Content-Disposition').exec(fnre)
-
-				console.log(e.detail.response, match);
+				// NOTE(flowlo): This matches a sensible subset of
+				// Content-Disposition filename parameters. It diverges
+				// from the spec as it does not allow omitting quotes if
+				// the filename contains no space (because there is no
+				// support for lookbehinds in JS RegExes), and also is a
+				// bit more strict with path names (only allows '/') and
+				// special chars (only allows '.'). So a colon in a
+				// filename won't match for example.
+				var match = /filename\s*=\s*"([\w\.\/]+)"/.exec(
+					req.xhr.getResponseHeader('Content-Disposition')
+				);
+				if (!match) {
+					console.log('Got malformed Content-Disposition!');
+					this.templateCount--;
+					return;
+				}
+				e.detail.response.name = match[1];
+				this.templates.push(e.detail.response);
+				if (this.templateCount <= this.templates.length) {
+					app.stopLoading();
+					this.fire('templates', this.templates);
+				}
 			},
 			_onError: function(err) {
 				app.stopLoading();
