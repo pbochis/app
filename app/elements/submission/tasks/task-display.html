@@ -1,3 +1,4 @@
+<link rel="import" href="/elements/markdown/render-markdown.html">
 <dom-module id="task-display">
 	<style>
 		:host{
@@ -9,9 +10,9 @@
 		<div>
 			<h2>{{task.Assignment.Name}}</h2>
 			<h4>Description</h4>
-			<p>{{task.Assignment.Description}}</p>
+			<render-markdown markdown="{{task.Assignment.Description}}"></render-markdown>
 			<h4>Instructions</h4>
-			<p>{{task.Assignment.Instructions}}</p>
+			<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
 		</div>
 	</template>
 	<script>
