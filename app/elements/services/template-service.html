@@ -1,0 +1,91 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="template-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getTemplateList"
+			method="GET"
+			handle-as="json"
+			with-credentials="true"
+			on-response="_onList"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getTemplate"
+			method="GET"
+			handle-as="blob"
+			on-response="_onTemplate"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'template-service',
+			properties: {
+				templates: {
+					type: Array,
+					value: []
+				},
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				templateCount: {
+					type: Number
+				}
+			},
+			getTemplates: function(language) {
+				app.startLoading();
+				this.$.getTemplateList.url = util.build('/tasks/' + this.task.Key + '/templates' + (language ? '?language=' + language : ''));
+				this.$.getTemplateList.generateRequest();
+			},
+			_onList: function(e) {
+				var urls = e.detail.response;
+				if (!urls || urls.length === 0) {
+					// No template available.
+					app.stopLoading();
+					return;
+				}
+				this.templateCount = urls.length;
+				for (var i = 0; i < urls.length; i++) {
+					this.$.getTemplate.url = urls[i];
+					this.$.getTemplate.generateRequest();
+				}
+			},
+			_onTemplate: function(e, req) {
+				// NOTE(flowlo): This matches a sensible subset of
+				// Content-Disposition filename parameters. It diverges
+				// from the spec as it does not allow omitting quotes if
+				// the filename contains no space (because there is no
+				// support for lookbehinds in JS RegExes), and also is a
+				// bit more strict with path names (only allows '/') and
+				// special chars (only allows '.'). So a colon in a
+				// filename won't match for example.
+				var match = /filename\s*=\s*"([\w\.\/]+)"/.exec(
+					req.xhr.getResponseHeader('Content-Disposition')
+				);
+				if (!match) {
+					console.log('Got malformed Content-Disposition!');
+					this.templateCount--;
+					return;
+				}
+				e.detail.response.name = match[1];
+				this.templates.push(e.detail.response);
+				if (this.templateCount <= this.templates.length) {
+					app.stopLoading();
+					this.fire('templates', this.templates);
+				}
+			},
+			_onError: function(err) {
+				app.stopLoading();
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>
