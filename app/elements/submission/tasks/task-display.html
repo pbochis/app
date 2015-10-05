@@ -1,9 +1,15 @@
 <link rel="import" href="/elements/markdown/render-markdown.html">
 <dom-module id="task-display">
 	<style>
-		:host{
+		:host {
 			display: block;
 			padding: 16px;
+			height: calc(100% - 32px);
+		}
+
+		div {
+			overflow-y: auto;
+			height: 100%;
 		}
 	</style>
 	<template>
