@@ -343,6 +343,10 @@
 				this.$.codeEditor.setMode('robot');
 			},
 			finishTask: function(){
+				var msg = 'Are you sure to finish this task? You will not able to come back again.';
+				if (!window.confirm(msg)) {
+					return;
+				}
 				this.fire('task-finished');
 			}
 		});
