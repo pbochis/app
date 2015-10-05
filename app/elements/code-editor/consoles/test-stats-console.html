@@ -5,6 +5,7 @@
 		:host{
 			display: block;
 			height: 100%;
+			overflow-x: auto;
 		}
 		p{
 			font-family: "Lucida Console", Monaco, monospace;
@@ -14,18 +15,18 @@
 		}
 	</style>
 	<template>
-	<iron-ajax
-		id="getTestsRequest"
-		handle-as="json"
-		on-response="onTestsResponse"
-		on-error="onTestsError"
-		method="GET"
-		with-credentials="true"
-		>
-	</iron-ajax>
+		<iron-ajax
+			id="getTestsRequest"
+			handle-as="json"
+			on-response="onTestsResponse"
+			on-error="onTestsError"
+			method="GET"
+			with-credentials="true"
+			>
+		</iron-ajax>
 		<div id="consoleWrapper">
 			<p>{{stderr}}</p>
-			<div id="data" class="horizontal layout" style$="{{dataStyle}}">
+			<div id="data" class="horizontal layout wrap" style$="{{dataStyle}}">
 			</div>
 		</div>
 	</template>
@@ -36,6 +37,9 @@
 				counter: {
 					type: Number,
 					value: 1
+				},
+				stderr:{
+					type: String
 				},
 				task: {
 					type: Object,
@@ -61,41 +65,46 @@
 				this.$.getTestsRequest.url = util.build('/tasks/' + this.task.Key + '/tests');
 				this.$.getTestsRequest.generateRequest();
 			},
-			setOutput: function(data){
-				console.log(data);
-				if(!!data.Stderr){
+			setOutput: function(result){
+				if (!!result.Stderr) {
+					this.stderr = result.Stderr;
 					this.dataStyle = 'display: none';
 				}else{
-					this.dataStyle = '';
+					this.appendTestStats(result);
 				}
-				this.stderr = data.Stderr;
-				this.appendTestStats(data);
-				this.stopLoading();
+			},
+			allGreen: function(){
+				if (!!this.stderr){
+					return false;
+				}
+				for(var i=0;i<this.tests.length;i++){
+					if (this.$$('#' + this.tests[i].Key).failed){
+						return false;
+					}
+				}
+				return true;
+
 			},
 			loading: function(){
 				this.dataStyle = '';
 				this.stderr = '';
 				for(var i=0;i<this.tests.length;i++){
-					this.$$('#' + this.tests[i].Key).loading = true;
-				}
-			},
-			stopLoading: function(){
-				for(var i=0;i<this.tests.length;i++){
-					this.$$('#' + this.tests[i].Key).loading = false;
+					this.$$('#' + this.tests[i].Key).startLoading();
 				}
 			},
 			error: function(err){
 				console.log(err);
 			},
-			appendTestStats: function(data){
-				var element = this.$$('#' + data.Test);
+			appendTestStats: function(result){
+				var element = this.$$('#' + result.Test);
 				if(!!element){
-					element.test = data;
+					element.setFailed(result.Failed);
+					element.stopLoading();
 				}
 			},
-			initTestElements: function(data){
+			initTestElement: function(testKey){
 				var element = document.createElement('test-stats-element');
-				element.id = data.Test;
+				element.id = testKey;
 				element.counter = this.counter;
 				this.$.data.appendChild(element);
 				this.counter ++;
@@ -104,7 +113,7 @@
 				var data = r.detail.response;
 				this.tests = data;
 				for(var i=0;i<data.length;i++){
-					this.initTestElements({Test: data[i].Key});
+					this.initTestElement(data[i].Key);
 				}
 			},
 			onTestsError: function(err){
