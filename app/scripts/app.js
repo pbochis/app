@@ -116,6 +116,15 @@
 			// of deselecting everything.
 			app.selected='-1';
 		}
+
+		app.$.cookieService.addEventListener('cookie-user-changed', function (e) {
+			localStorage.user = JSON.stringify(e.detail);
+			app.login();
+		});
+
+		app.$.cookieService.addEventListener('cookie-error', function (e) {
+			util.error(e.detail);
+		});
 	});
 
 	// See https://github.com/Polymer/polymer/issues/1381
@@ -159,6 +168,10 @@
 	};
 
 	app.onResultError = function(e) {
+		if(e.detail.request.xhr.status === 403){
+			page.redirect('/user/' + JSON.parse(localStorage.getItem('user')).Key + '/challenge/' + localStorage.getItem('challenge'));
+			return;
+		}
 		util.error(e);
 	};
 

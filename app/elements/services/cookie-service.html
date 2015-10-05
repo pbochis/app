@@ -1,0 +1,49 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="user-service.html">
+
+<dom-module id="cookie-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<user-service id="userService" user="{{user}}"></user-service>
+		<iron-ajax
+			id="getCookie"
+			method="PUT"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{profile}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'cookie-service',
+			properties: {
+				user: {
+					type: Object,
+					notify: true,
+					observer: '_userChanged'
+				}
+			},
+			_userChanged: function(){
+				this.fire('cookie-user-changed', this.user);
+			},
+			getCookie: function(authorization){
+				this.$.getCookie.url = util.build('/cookie');
+				this.$.getCookie.headers = { 'Authorization': authorization};
+				this.$.getCookie.generateRequest();
+			},
+			_onResponse: function(){
+				this.$.userService.whoAmI();
+			},
+			_onError: function(err){
+				this.fire('cookie-error', err);
+			}
+		});
+	</script>
+</dom-module>
