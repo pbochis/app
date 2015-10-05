@@ -35,7 +35,6 @@
 					this.timeout();
 					return;
 				}
-
 				if (!this.tickInterval) {
 					var component = this;
 					this.tickInterval = window.setInterval(function(){
@@ -47,16 +46,17 @@
 				this.duration -= (Date.now() - offset) * 1e6;
 				this.start();
 			},
+			stop: function(){
+				clearInterval(this.tickInterval);
+			},
 			tick: function() {
 				if (this.duration <= 0) {
-					clearInterval(this.tickInterval);
 					this.timeout();
 				}
 				this.duration -= 1e9;
 				this._formatDuration();
 			},
 			timeout: function() {
-				localStorage.removeItem('timer');
 				this.fire('timeout');
 				return;
 			}

@@ -1,0 +1,150 @@
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/elements/submission/countdown-timer.html">
+
+<dom-module id="challenge-nav">
+	<style>
+		:host{
+			display: block;
+		}
+		.timer{
+			margin: 0;
+			padding-top: 10px;
+			width: 50px;
+		}
+		#taskNavHeader{
+			height: 40px;
+			background: white;
+			margin: 0;
+			padding: 0;
+		}
+		#backArrowWrapper{
+			padding-left: 10px;
+			width: 30px;
+		}
+		#frontArrowWrapper{
+			width: 30px;
+			padding-right: 16px;
+		}
+		#taskNavTitle{
+			padding: 0;
+			margin: 0;
+			padding-top: 10px;
+		}
+	</style>
+	<template>
+		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout" style$="{{taskNavHeaderStyle}}">
+			<div id="backArrowWrapper">
+				<template is="dom-if" if="{{showBackArrow}}">
+					<paper-icon-button icon="arrow-back" on-click="_previousTask"></paper-icon-button>
+				</template>
+			</div>
+			<countdown-timer id="taskTimer" class="timer" duration="{{taskDuration}}" timeout="{{timeout}}"></countdown-timer>
+			<span class="flex"></span>
+			<p id="taskNavTitle">{{taskNavTitle}}</p>
+			<span class="flex"></span>
+			<countdown-timer id="challengeTimer" class="timer" duration="{{challengeDuration}}" timeout="{{timeout}}"></countdown-timer>
+			<div id="frontArrowWrapper">
+				<template is="dom-if" if="{{showForwardArrow}}" >
+					<paper-icon-button icon="arrow-forward" on-click="_nextTask"></paper-icon-button>
+				</template>
+			</div>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			// TODO(victorbalan): Refactor component and split logic and refactor requests.
+			is: 'challenge-nav',
+			properties: {
+				taskDuration: {
+					type: Number,
+					notify: true,
+					reflectToAttribute: true
+				},
+				challengeDuration: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				totalTasks: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				taskIndex: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				type: {
+					type: String,
+					reflectToAttribute: true
+				},
+				taskNavHeaderStyle: {
+					type: String,
+					value: 'display: none'
+				}
+			},
+			observers: [
+				'_taskDataChanged(taskIndex, totalTasks)'
+			],
+			start: function(){
+				this._show();
+				var challengeTimer = localStorage.getItem('challengeTimer');
+				if(challengeTimer !== null){
+					this.$.challengeTimer.startWithOffset(Number(challengeTimer));
+				}else{
+					this.$.challengeTimer.start();
+				}
+				this._displayArrows();
+
+				var element = this;
+				this.$.taskTimer.addEventListener('timeout', function(){
+					localStorage.removeItem('taskTimer');
+					element.fire('task-timeout');
+				});
+
+				this.$.challengeTimer.addEventListener('timeout', function(){
+					element._hide();
+					localStorage.removeItem('challengeTimer');
+					element.$.challengeTimer.stop();
+					element.fire('challenge-timeout');
+				});
+			},
+			stop: function(){
+				this._hide();
+				this.$.challengeTimer.stop();
+				this.$.taskTimer.stop();
+			},
+			refreshTaskTimer: function(){
+				var taskTimer = localStorage.getItem('taskTimer');
+				if(taskTimer !== null){
+					this.$.taskTimer.startWithOffset(Number(taskTimer));
+				}else{
+					this.$.taskTimer.start();
+				}
+			},
+			_taskDataChanged: function(){
+				this.taskNavTitle = 'Task ' + (this.taskIndex+1) +' of ' + (this.totalTasks);
+			},
+			_displayArrows: function(){
+				this.showBackArrow = this.taskIndex > 0;
+				this.showForwardArrow = this.taskIndex < this.totalTasks;
+				// TODO(victorbalan): enable arrows when needed. hint: switch(this.type)
+				this.showForwardArrow = false;
+				this.showBackArrow = false;
+			},
+			_nextTask: function(){
+				this.fire('next-task');
+			},
+			_previousTask: function(){
+				this.fire('previous-task');
+			},
+			_show: function(){
+				this.taskNavHeaderStyle = '';
+			},
+			_hide: function(){
+				this.taskNavHeaderStyle = 'display: none';
+			}
+		});
+
+	</script>
+</dom-module>

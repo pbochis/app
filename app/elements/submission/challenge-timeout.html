@@ -1,0 +1,27 @@
+<dom-module id="challenge-timeout">
+	<style>
+		:host{
+			display: block;
+		}
+		paper-material {
+			background: white;
+			width: 35%;
+			margin: 16px;
+			span: 16px;
+		}
+	</style>
+	<template>
+		<div class="horizontal layout">
+			<span class="flex"></span>
+			<paper-material elevation="1">
+				<h2>Time`s up!</h2>
+			</paper-material>
+			<span class="flex"></span>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-timeout'
+		});
+	</script>
+</dom-module>
