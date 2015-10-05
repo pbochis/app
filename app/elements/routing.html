@@ -22,6 +22,7 @@ window.addEventListener('WebComponentsReady', function() {
 		xhr.withCredentials = true;
 		xhr.open('PUT', util.build('/cookie'));
 		xhr.setRequestHeader('Authorization', 'Token '+ decodedToken[1]);
+		xhr.withCredentials = true;
 		xhr.send();
 
 		localStorage.setItem('challenge', decodedToken[0]);
