@@ -14,11 +14,12 @@
 		}
 		h3 {
 			word-wrap: break-word;
+			white-space: pre-wrap;
 		}
 	</style>
 	<template>
 		<paper-material elevation="1">
-			<h3>{{message}}</h3>
+			<h3 id="msg">{{message}}</h3>
 		</paper-material>
 	</template>
 	<script>
@@ -39,11 +40,22 @@
 			],
 			_afterPropertiesSet: function(){
 				var response = this.error.detail.request.xhr.response;
-				if(!!response && !!response.Message){
-					this.message = response.Message;
-				}else {
+				if(!response) {
 					this.message = 'Something went wrong. We are sorry for this experience. You can report it on https://github.com/coduno/api/issues';
+					return;
 				}
+				var message = 'Sorry, Coduno encountered an error: ' + response.StatusText + '\n\n';
+				message += 'If you think this is a bug, please consider filling it at https://github.com/coduno/api/issues\n\n';
+				if(response.RequestID) {
+					message += 'Your request id is ' + response.RequestID + ' (important to track down what went wrong)\n\n';
+				}
+				if(response.Reason) {
+					message += 'Reason: ' + response.Reason + '\n\n';
+				}
+				if(response.Trace) {
+					message += 'Trace: ' + response.Trace;
+				}
+				this.message = message;
 			}
 		});
 	</script>
