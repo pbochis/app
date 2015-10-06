@@ -1,6 +1,7 @@
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/elements/code-editor/code-editor.html">
 <link rel="import" href="/elements/code-editor/language-selector.html">
 <link rel="import" href="/elements/services/template-service.html">
@@ -99,6 +100,7 @@
 				</paper-material>
 			</div>
 		</div>
+		<paper-toast id="toast"></paper-toast>
 	</template>
 	<script>
 		Polymer({
@@ -138,8 +140,14 @@
 			onWsError: function(err){
 				console.log(err);
 			},
-			onWsMessage: function(data){
-				this.moves = JSON.parse(data.detail);
+			onWsMessage: function(response){
+				var data = JSON.parse(response.detail);
+				if(data.Error){
+					this.$.toast.text = data.Error;
+					this.$.toast.show();
+					return;
+				}
+				this.moves = data;
 				console.log(this.moves);
 				var element = this;
 				window.setInterval(function(){
