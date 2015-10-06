@@ -8,7 +8,7 @@
 	</style>
 	<template>
 		<iron-ajax
-			id="getSubmissionsByResultAndTaskId"
+			id="getMultiSubmissions"
 			method="GET"
 			handle-as="json"
 			last-response="{{submissions}}"
@@ -17,7 +17,7 @@
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
-			id="getSubmissionById"
+			id="getSingleSubmission"
 			method="GET"
 			handle-as="json"
 			last-response="{{submission}}"
@@ -43,13 +43,13 @@
 			},
 			getById: function(key){
 				app.startLoading();
-				this.$.getSubmissionById = util.build('/submissions/' + key);
-				this.$.getSubmissionById.generateRequest();
+				this.$.getSingleSubmission.url = util.build('/submissions/' + key);
+				this.$.getSingleSubmission.generateRequest();
 			},
 			getByResultAndTaskId: function(resultKey, taskKey){
 				app.startLoading();
-				this.$.getSubmissionsByResultAndTaskId = util.build('/results/' + resultKey + '/task/' + taskKey +'/submissions');
-				this.$.getSubmissionsByResultAndTaskId.generateRequest();
+				this.$.getMultiSubmissions.url = util.build('/results/' + resultKey + '/task/' + taskKey +'/submissions');
+				this.$.getMultiSubmissions.generateRequest();
 			},
 			_onResponse: function(){
 				app.stopLoading();

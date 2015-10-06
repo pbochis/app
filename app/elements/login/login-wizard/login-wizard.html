@@ -6,26 +6,17 @@
 <link rel="import" href="/elements/login/login-page-password/login-page-password.html">
 <link rel="import" href="/elements/login/login-page-u2f/login-page-u2f.html">
 <link rel="import" href="/elements/services/user-service.html">
+<link rel="import" href="/elements/services/cookie-service.html">
 
 <dom-module id="login-wizard">
 	<template>
-		<user-service id="userService" user="{{user}}"></user-service>
+		<cookie-service id="cookieService" user="{{user}}"></cookie-service>
 		<neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 			<login-page-email email="{{email}}" on-next="next"></login-page-email>
 			<login-page-password email="{{email}}" password="{{password}}" on-next="next" on-prev="prev"></login-page-password>
 			<login-page-u2f on-next="next"></login-page-u2f>
 		</neon-animated-pages>
 		<paper-toast id="toastCredentials" text="Invalid username/e-mail and password combination, please try again."></paper-toast>
-		<iron-ajax id="tokenRequest"
-			handle-as="json"
-			on-response="onCookie"
-			on-error="onCookieError"
-			debounce-duration="1000"
-			with-credentials="true"
-			url$="{{getCookieUrl()}}"
-			method="PUT"
-		>
-		</iron-ajax>
 		<iron-ajax id="companyRequest"
 			handle-as="json"
 			on-response="onCompany"
@@ -50,10 +41,6 @@ Polymer({
 		Polymer.NeonAnimatableBehavior
 	],
 	properties: {
-		user: {
-			type: Object,
-			observer: '_userChanged'
-		},
 		selected: {
 			type: Number,
 			value: 0
@@ -74,10 +61,12 @@ Polymer({
 		}
 	},
 	listeners: {
-		'neon-animation-finish': '_afterNeon'
+		'neon-animation-finish': '_afterNeon',
+		'cookie-user-changed': '_cookieUserChanged',
+		'cookie-error': '_cookieError',
 	},
-	_userChanged: function(){
-		localStorage.user = JSON.stringify(this.user);
+	_cookieUserChanged: function(user){
+		localStorage.user = JSON.stringify(user);
 		this.$.companyRequest.generateRequest();
 	},
 	setEmail: function(email){
@@ -112,13 +101,9 @@ Polymer({
 		this.selected++;
 	},
 	requestToken: function() {
-		this.$.tokenRequest.headers = { 'Authorization': 'Basic ' + btoa(this.email + ':' + this.password)};
-		this.$.tokenRequest.generateRequest();
+		this.$.cookieService.getCookie('Basic ' + btoa(this.email + ':' + this.password));
 	},
-	onCookie: function() {
-		this.$.userService.whoAmI();
-	},
-	onCookieError: function(err) {
+	_cookieError: function(err) {
 		if (err.detail.request.xhr.status !== 401) {
 			util.error(err);
 			return;
