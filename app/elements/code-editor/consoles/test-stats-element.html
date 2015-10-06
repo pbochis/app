@@ -10,11 +10,11 @@
 			margin-top: 10px;
 		}
 		.circle {
-			width: 150px;
-			height: 150px;
-			-moz-border-radius: 100px;
-			-webkit-border-radius: 100px;
-			border-radius: 100px;
+			width: 75px;
+			height: 75px;
+			-moz-border-radius: 50px;
+			-webkit-border-radius: 50px;
+			border-radius: 50px;
 		}
 		.empty{
 			line-height:160px;
@@ -37,9 +37,9 @@
 		<div class="wrapper">
 			<div class$="{{divClass}}">
 				<span class="empty"></span>
-				<paper-spinner id="spinner" alt="Loading contacts list"></paper-spinner>
+				<paper-spinner id="spinner" alt="Loading results"></paper-spinner>
 			</div>
-			<h3 class="text">Test <span>{{counter}}</span></h3>
+			<h4 class="text">Test <span>{{counter}}</span></h4>
 		</div>
 	</template>
 	<script>
@@ -51,35 +51,23 @@
 				 notify: true,
 				 reflectAsAttribute: true
 			 },
-			 test: {
-				 type: Object,
-				 notify: true,
-				 reflectAsAttribute: true
-			 },
+			 failed: Boolean,
 			 divClass: {
 				 type: String,
 				 notify: true,
 				 value: 'circle gray'
-			 },
-			 loading: {
-				 type: Boolean,
-				 notify: true,
-				 reflectToAttribute: true
 			 }
 		 },
-		 observers: [
-			 '_afterPropertiesSet(test)',
-			 '_loadingObs(loading)'
-		 ],
-		 _afterPropertiesSet: function(){
-			 this.$.spinner.active = false;
-			 this.divClass = this.test.Failed ? 'circle red': 'circle green';
+		 setFailed: function(failed){
+			 this.failed = failed;
+			 this.divClass = this.failed ? 'circle red': 'circle green';
 		 },
-		 _loadingObs: function(){
-			 if(this.loading){
-				 this.$.spinner.active = true;
-				 this.divClass = 'circle';
-			 }
+		 stopLoading: function(){
+	 		this.$.spinner.active = false;
+		 },
+		 startLoading: function(){
+			 this.divClass = 'circle gray';
+			 this.$.spinner.active = true;
 		 }
 	 });
  </script>
