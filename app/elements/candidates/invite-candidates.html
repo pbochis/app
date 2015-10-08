@@ -100,7 +100,7 @@
 				while ((el = document.querySelector('invite-candidate-input')) !== null) {
 					el.remove();
 				}
-				this.candidates = [];
+				this.splice('candidates', this.candidates.length);
 			},
 			_userInvited: function(){
 				this.$.toast.show();

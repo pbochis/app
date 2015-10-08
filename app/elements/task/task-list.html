@@ -41,6 +41,7 @@
 
 		<template is="dom-if" if="{{displayHeader}}">
 			<div id="header" class="horizontal layout">
+				<paper-icon-button class="self-center" icon="clear" on-click="_resetSelected"></paper-icon-button>
 				<p id="headerText">{{header}}</p>
 				<div class="flex"></div>
 				<paper-icon-button class="self-center" icon="done" on-click="createChallenge"></paper-icon-button>
@@ -80,8 +81,7 @@
 				}
 			},
 			listeners: {
-				// TODO: please no camel case for events :(
-				'challengeCreated': '_resetSelected',
+				'challenge-created': '_resetSelected',
 				'taskDetail': '_taskDetail',
 				'task-removed': '_removeTask',
 				'task-added': '_addTask'
@@ -106,8 +106,9 @@
 			},
 			// listeners for external events
 			_resetSelected: function () {
-				this.selectedTasks = [];
-				this.showAllButtons = false;
+				this.splice('selectedTasks', 0, this.selectedTasks.length);
+				this.set('showAllButtons', false);
+				this.set('displayHeader', false);
 			},
 			_taskSelectionLogic: function(){
 				if(this.selectedTasks.length > 0){

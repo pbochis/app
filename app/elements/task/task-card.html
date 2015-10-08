@@ -150,6 +150,11 @@
 				if(this.showSelect && !this.selected){
 					this.selectorIcon = 'radio-button-unchecked';
 				}
+				if(!this.showSelect && this.selected){
+					this.selected = false;
+					this.selectorIcon = 'check-circle';
+					this.addButtonStyle = 'color: gray';
+				}
 			},
 			_viewTaskDetail: function(){
 				if(!this.selectionView){
