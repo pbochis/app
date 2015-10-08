@@ -48,7 +48,6 @@
 			properties: {
 				task: {
 					type: Object,
-					observer: '_taskSet',
 					notify: true
 				},
 				duration: {
@@ -61,9 +60,6 @@
 			},
 			_computeDuration: function (task) {
 				return util.computeDuration(task.Assignment.Duration);
-			},
-			_taskSet: function() {
-				this.$.skillPolygon.buildChart();
 			}
 		});
 	</script>
