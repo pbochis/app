@@ -84,7 +84,7 @@
 				this.challengeToSave.Endpoints = {'WebInterface': 'sequential-challenge'};
 
 				this.$.challengeService.save(this.challengeToSave);
-				this.selectedTasks = [];
+				this.fire('challenge-created');
 			},
 			_computeDuration: function () {
 				var duration = 0;
