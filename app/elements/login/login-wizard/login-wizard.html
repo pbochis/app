@@ -103,7 +103,7 @@ Polymer({
 	requestToken: function() {
 		this.$.cookieService.getCookie('Basic ' + btoa(this.email + ':' + this.password));
 	},
-	_cookieError: function(err) {
+	_cookieError: function(e, err) {
 		if (err.detail.request.xhr.status !== 401) {
 			util.error(err);
 			return;
