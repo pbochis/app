@@ -14,6 +14,7 @@
 		}
 
 		#addCandidate {
+			margin-top: 10px;
 			cursor: pointer;
 		}
 
@@ -33,7 +34,7 @@
 
 			<form is="iron-form" id="form">
 				<template is="dom-repeat" items="{{candidates}}">
-					<invite-candidate-input challenges="{{challenges}}" candidate="{{item}}"></invite-candidate-input>
+					<invite-candidate-input name="inviteCandidateInput" challenges="{{challenges}}" candidate="{{item}}" required></invite-candidate-input>
 				</template>
 				<div id="addCandidate" on-click="_addCandidate">
 					<iron-icon icon="add"></iron-icon>
@@ -41,7 +42,7 @@
 				</div>
 				<div class="buttonGroup">
 					<paper-button class="primary" dialog-dismiss>Cancel</paper-button>
-					<paper-button class="primary" raised on-click="inviteCandidates" dialog-confirm>Invite
+					<paper-button class="primary" raised on-click="inviteCandidates">Invite
 					</paper-button>
 				</div>
 			</form>
@@ -72,17 +73,16 @@
 				this.$.dialog.toggle();
 			},
 			inviteCandidates: function () {
-				for (var i = 0; i < this.candidates.length; i++) {
-					var candidate = this.candidates[i];
-					if (candidate.Address === '' || candidate.Challenge === undefined) {
-						return;
-					}
-					var toInvite = {
-						'Address': candidate.Address,
-						'Challenge': candidate.Challenge
-					};
-					this.$.userService.invite(toInvite);
+				if (!this.$.form.validate()){
+					return;
 				}
+				for (var i = 0; i < this.candidates.length; i++) {
+					this.$.userService.invite({
+						'Address': this.candidates[i].Address,
+						'Challenge': this.candidates[i].Challenge
+					});
+				}
+				this.$.dialog.close();
 			},
 			_addCandidate: function () {
 				if (this.challenges.length === 1) {
