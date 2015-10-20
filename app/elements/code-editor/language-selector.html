@@ -1,10 +1,23 @@
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+
 <dom-module id="language-selector">
+	<style>
+		paper-dropdown-menu{
+			width: 200px;
+		}
+		option {
+			width: 200px;
+		}
+	</style>
 	<template>
-		<select id="language">
-			<template is="dom-repeat" items="{{languages}}">
-				<option value="{{item.tag}}">{{item.name}}</option>
-			</template>
-		</select>
+		<paper-dropdown-menu id="language" label="Language" selected-item="{{language}}">
+			<paper-menu class="dropdown-content">
+				<template is="dom-repeat" items="{{languages}}">
+					<option value="{{item.tag}}">{{item.name}}</option>
+				</template>
+			</paper-menu>
+		</paper-dropdown-menu>
 	</template>
 	<script>
 		Polymer({
@@ -14,11 +27,15 @@
 					type: Array,
 					notify: true,
 					reflectToAttribute: true
+				},
+				language: {
+					type: Object,
+					notify: true
 				}
 			},
-			getSelectedLanguage: function(){
-				if(this.$.language.selectedIndex!==-1){
-					return this.languages[this.$.language.selectedIndex];
+			getSelectedLanguageTag: function(){
+				if(this.language !== undefined){
+					return this.language.value;
 				}
 			}
 		});
