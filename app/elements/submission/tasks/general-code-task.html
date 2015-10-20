@@ -82,10 +82,10 @@
 				</paper-material>
 				<paper-material id="botRightCard" elevation="1">
 					<div id="buttons" class="horizontal layout">
-						<paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
-						<language-selector id="languageSelector" languages="{{languages}}" on-change="languageChanged"></language-selector>
+						<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
+						<language-selector class="self-center" id="languageSelector" languages="{{languages}}" on-change="languageChanged"></language-selector>
 						<span class="flex"></span>
-						<paper-button raised noink class$="{{finishedButtonClass}}" on-click="finishTask">Finish</paper-button>
+						<paper-button class="self-center" raised noink class$="{{finishedButtonClass}}" on-click="finishTask">Finish</paper-button>
 					</div>
 					<div id="consoleWrapper">
 						<content></content>
@@ -152,14 +152,14 @@
 				this.getTemplate(this.languages[0].tag);
 			},
 			languageChanged: function(){
-				var languageTag = this.$.languageSelector.getSelectedLanguage().tag;
+				var languageTag = this.$.languageSelector.getSelectedLanguageTag();
 				this.getTemplate(languageTag);
 			},
 			getTemplate: function(language){
 				this.$.templateService.getTemplates(language);
 			},
 			runCode: function(){
-				var lang = this.$.languageSelector.getSelectedLanguage().tag;
+				var lang = this.$.languageSelector.getSelectedLanguageTag();
 				this.$.codeEditor.runCode(lang, this.task.Key);
 				this.control.loading();
 			},
@@ -174,7 +174,7 @@
 				if (!e.detail || e.detail.length === 0) {
 					console.log('Received no code template.');
 				}
-				this.$.codeEditor.setFile(e.detail[0], this.$.languageSelector.getSelectedLanguage().tag);
+				this.$.codeEditor.setFile(e.detail[0], this.$.languageSelector.getSelectedLanguageTag());
 			}
 		});
 	</script>
