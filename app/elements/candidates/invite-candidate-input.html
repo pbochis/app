@@ -88,7 +88,7 @@
 				}
 			},
 			validate: function(){
-				return this.$.address.validate() && this.$$('#challenges').validate();
+				return this.$.address.validate() && (this.isSingleChallenge || this.$$('#challenges').validate());
 			},
 			_isSingleChallenge: function(challenges){
 				return challenges.length === 1;
