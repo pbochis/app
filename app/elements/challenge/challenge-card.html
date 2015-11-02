@@ -1,6 +1,7 @@
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/elements/behaviors/card-behavior.html">
 
 <dom-module id="challenge-card">
 	<style>
@@ -48,13 +49,7 @@
 		}
 	</style>
 	<template>
-		<paper-material
-			id="challenge"
-			elevation="{{elevation}}"
-			class="card"
-			on-mouseover="_onHovered"
-			on-mouseout="_onUnhovered"
-			>
+		<paper-material	animated id="challenge" elevation="{{elevation}}" class="card">
 			<div id="content" on-click="_viewChallengeDetail">
 				<h2>{{challenge.Name}}</h2>
 
@@ -69,6 +64,9 @@
 	<script>
 		Polymer({
 			is: 'challenge-card',
+			behaviors: [
+				Behaviors.CardBehavior
+			],
 			properties: {
 				challenge: {
 					type: Object
@@ -76,10 +74,6 @@
 				duration: {
 					type: String,
 					computed: 'computeDuration(challenge)'
-				},
-				elevation: {
-					type: Number,
-					value: 1
 				}
 			},
 			ready: function () {
@@ -87,12 +81,6 @@
 			},
 			computeDuration: function (challenge) {
 				return util.computeDuration(challenge.Duration);
-			},
-			_onHovered: function () {
-				this.elevation = 5;
-			},
-			_onUnhovered: function () {
-				this.elevation = 1;
 			},
 			_viewChallengeDetail: function () {
 				page.redirect('/challenges/' + this.challenge.Key);

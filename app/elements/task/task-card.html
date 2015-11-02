@@ -4,6 +4,7 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/elements/skill/skill-list.html">
+<link rel="import" href="/elements/behaviors/card-behavior.html">
 
 <dom-module id="task-card">
 	<style>
@@ -50,10 +51,7 @@
 			id="task"
 			animated
 			elevation="{{elevation}}"
-			class="card"
-			on-mouseover="onHovered"
-			on-mouseout="onUnhovered"
-	  	>
+			class="card">
 			<template is="dom-if" if="{{showSelect}}">
 				<paper-icon-button id="taskSelector" class="task-selector"
 				icon="{{selectorIcon}}" on-click="_toggleSelectTask" style$="{{addButtonStyle}}"></paper-icon-button>
@@ -71,6 +69,9 @@
 	<script>
 		Polymer({
 			is: 'task-card',
+			behaviors: [
+				Behaviors.CardBehavior
+			],
 			properties: {
 				noSelect: {
 					type: Boolean,
@@ -94,11 +95,6 @@
 					notify: true,
 					observer: '_selectionViewObserver'
 				},
-				elevation: {
-					type: Number,
-					notify: true,
-					value: 1
-				},
 				addButtonStyle: {
 					type: String,
 					notify: true,
@@ -117,11 +113,11 @@
 			ready: function(){
 				this.goTo = '/tasks/' + this.task.Key;
 			},
-			onHovered: function () {
+			_onHovered: function () {
 				this.showSelect = !this.noSelect && true;
 				this.elevation = 5;
 			},
-			onUnhovered: function () {
+			_onUnhovered: function () {
 				this.showSelect = this.selectionView || false;
 				this.elevation = this.selectionView && this.selected ? 5 : 1;
 			},
