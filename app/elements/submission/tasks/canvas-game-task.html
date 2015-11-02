@@ -5,6 +5,7 @@
 <link rel="import" href="/elements/code-editor/code-editor.html">
 <link rel="import" href="/elements/code-editor/language-selector.html">
 <link rel="import" href="/elements/services/template-service.html">
+<link rel="import" href="/elements/behaviors/wsreader-behavior.html">
 <link rel="import" href="task-display.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
@@ -107,6 +108,9 @@
 		Polymer({
 			// TODO: Extract canvas into own component
 			is: 'canvas-game-task',
+			behaviors: [
+				Behaviors.WSReaderBehavior
+			],
 			properties: {
 				obstacles: Array,
 				coins: Array,
@@ -130,18 +134,7 @@
 			observers: [
 				'_afterPropertiesSet(task)'
 			],
-			listeners: {
-				'ws-onerror': 'onWsError',
-				'ws-onmessage': 'onWsMessage',
-				'ws-onopen': 'onWsOpen'
-			},
-			onWsOpen: function(){
-				console.log('WS OPENED');
-			},
-			onWsError: function(err){
-				console.log(err);
-			},
-			onWsMessage: function(response){
+			_onWsMessage: function(response){
 				var data = JSON.parse(response.detail);
 				if(data.Error){
 					this.$.toast.text = data.Error;

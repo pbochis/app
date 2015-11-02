@@ -1,5 +1,6 @@
 <link rel="import" href="general-code-task.html">
 <link rel="import" href="/elements/code-editor/consoles/simple-console.html">
+<link rel="import" href="/elements/behaviors/wsreader-behavior.html">
 
 <dom-module id="simple-code-task">
 	<style>
@@ -16,6 +17,9 @@
 	<script>
 		Polymer({
 			is: 'simple-code-task',
+			behaviors: [
+				Behaviors.WSReaderBehavior
+			],
 			properties: {
 				task: {
 					reflectToAttribute: true
@@ -28,20 +32,6 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
-			listeners: {
-				'ws-onerror': 'onWsError',
-				'ws-onmessage': 'onWsMessage',
-				'ws-onopen': 'onWsOpen'
-			},
-			onWsOpen: function(){
-				console.log('WS OPENED');
-			},
-			onWsError: function(err){
-				console.log(err);
-			},
-			onWsMessage: function(data){
-				this.$.console.setOutput(JSON.parse(data.detail));
-			},
 			afterPropertiesSet: function(){
 				this.control = {};
 				var component = this;

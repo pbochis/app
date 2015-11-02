@@ -32,8 +32,9 @@
 	<template>
 		<task-service id="taskService" task="{{task}}"></task-service>
 		<challenge-nav id="coolNav" task-index="{{taskIndex}}" total-tasks="{{totalTasks}}"
-		task-duration="{{taskDuration}}" challenge-duration="{{challenge.Duration}}"
-		task-start-time="{{taskStartTime}}" challenge-start-time="{{challengeStartTime}}"></challenge-nav>
+			task-duration="{{taskDuration}}" challenge-duration="{{challenge.Duration}}"
+			task-start-time="{{taskStartTime}}" challenge-start-time="{{challengeStartTime}}">
+		</challenge-nav>
 
 		<div id="content" style$="{{contentStyle}}">
 			<paper-material id="startChallengeCard" elevation="1" class="card">

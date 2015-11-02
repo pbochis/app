@@ -1,0 +1,21 @@
+<script>
+	var Behaviors = Behaviors || {};
+
+	Behaviors.WSReaderBehavior = {
+		listeners: {
+			'ws-onerror': '_onWsError',
+			'ws-onmessage': '_onWsMessage',
+			'ws-onopen': '_onWsOpen'
+		},
+		_onWsOpen: function(){
+			console.log('WS OPENED');
+		},
+		_onWsError: function(err){
+			console.log(err);
+		},
+		_onWsMessage: function(data){
+			//default implementation
+			this.$.console.setOutput(JSON.parse(data.detail));
+		}
+	};
+</script>

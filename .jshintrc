@@ -69,12 +69,13 @@
 	"wsh"           : false,
 	"yui"           : false,
 	"globals"       : {
-		"app"     : false,
-		"alert"   : false,
-		"console" : false,
-		"page"    : false,
-		"Polymer" : false,
-		"util"    : true,
-		"Chart"   : true
+		"app"     	: false,
+		"alert"   	: false,
+		"console" 	: false,
+		"page"    	: false,
+		"Polymer" 	: false,
+		"util"    	: true,
+		"Chart"   	: true,
+	  	"Behaviors"	: true
 	}
 }
