@@ -1,4 +1,6 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/behaviors/service-behavior.html">
+
 
 <dom-module id="submission-service">
 	<style>
@@ -29,6 +31,9 @@
 	<script>
 		Polymer({
 			is: 'submission-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
 			properties: {
 				submissions: {
 					type: Array,
@@ -40,9 +45,6 @@
 					notify: true,
 					reflectToAttribute: true
 				}
-			},
-			ready: function(){
-				this.app = document.querySelector('app-element');
 			},
 			getById: function(key){
 				this.app.startLoading();
@@ -56,10 +58,6 @@
 			},
 			_onResponse: function(){
 				this.app.stopLoading();
-			},
-			_onError: function(err){
-				this.app.stopLoading();
-				util.error(err);
 			}
 		});
 	</script>

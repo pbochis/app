@@ -1,4 +1,6 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/behaviors/service-behavior.html">
+
 
 <dom-module id="task-service">
 	<style>
@@ -49,6 +51,9 @@
 	<script>
 		Polymer({
 			is: 'task-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
 			properties: {
 				task: {
 					type: Object,
@@ -60,9 +65,6 @@
 					notify: true,
 					reflectToAttribute: true
 				}
-			},
-			ready: function(){
-				this.app = document.querySelector('app-element');
 			},
 			save: function(task){
 				this.app.startLoading();
@@ -105,10 +107,6 @@
 			_onResponse: function(){
 				this.app.stopLoading();
 			},
-			_onError: function(err){
-				this.app.stopLoading();
-				util.error(err);
-			}
 		});
 	</script>
 </dom-module>

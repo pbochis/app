@@ -21,15 +21,15 @@
 	<script>
 		Polymer({
 			is: 'profile-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
 			properties: {
 				profile: {
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
 				}
-			},
-			ready: function(){
-				this.app = document.querySelector('app-element');
 			},
 			getByUserId: function(key){
 				this.app.startLoading();
@@ -38,10 +38,6 @@
 			},
 			_onResponse: function(){
 				this.app.stopLoading();
-			},
-			_onError: function(err){
-				this.app.stopLoading();
-				util.error(err);
 			}
 		});
 	</script>
