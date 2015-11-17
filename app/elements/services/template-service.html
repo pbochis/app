@@ -1,6 +1,4 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/elements/behaviors/service-behavior.html">
-
 
 <dom-module id="template-service">
 	<style>
@@ -25,6 +23,7 @@
 			on-error="_onError">
 		</iron-ajax>
 	</template>
+	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'template-service',

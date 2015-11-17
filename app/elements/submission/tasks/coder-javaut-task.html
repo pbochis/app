@@ -1,6 +1,5 @@
 <link rel="import" href="general-code-task.html">
 <link rel="import" href="/elements/code-editor/consoles/test-stats-console.html">
-<link rel="import" href="/elements/behaviors/wsreader-behavior.html">
 
 <dom-module id="coder-javaut-task">
 	<style>
@@ -14,6 +13,7 @@
 			<test-stats-console task="{{task}}" id="console"></test-stats-console>
 		</code-task>
 	</template>
+	<script type="application/javascript" src="/elements/behaviors/wsreader-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'coder-javaut-task',
