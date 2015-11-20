@@ -13,9 +13,13 @@
 			<javaut-console id="console"></javaut-console>
 		</code-task>
 	</template>
+	<script type="application/javascript" src="/elements/behaviors/wsreader-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'javaut-task',
+			behaviors: [
+				Behaviors.WSReaderBehavior
+			],
 			properties: {
 				task: {
 					type: Object,
@@ -34,18 +38,7 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
-			listeners: {
-				'ws-onerror': 'onWsError',
-				'ws-onmessage': 'onWsMessage',
-				'ws-onopen': 'onWsOpen'
-			},
-			onWsOpen: function(){
-				console.log('WS OPENED');
-			},
-			onWsError: function(err){
-				console.log(err);
-			},
-			onWsMessage: function(data){
+			_onWsMessage: function(data){
 				var response = JSON.parse(data.detail);
 				if(response.Results === undefined || response.Results.length === 0 || response.Stderr !== ''){
 					this.finishButtonClass = 'error';

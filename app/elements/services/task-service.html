@@ -46,9 +46,13 @@
 			>
 		</iron-ajax>
 	</template>
+	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'task-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
 			properties: {
 				task: {
 					type: Object,
@@ -60,9 +64,6 @@
 					notify: true,
 					reflectToAttribute: true
 				}
-			},
-			ready: function(){
-				this.app = document.querySelector('app-element');
 			},
 			save: function(task){
 				this.app.startLoading();
@@ -104,10 +105,6 @@
 			},
 			_onResponse: function(){
 				this.app.stopLoading();
-			},
-			_onError: function(err){
-				this.app.stopLoading();
-				util.error(err);
 			}
 		});
 	</script>

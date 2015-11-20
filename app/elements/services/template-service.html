@@ -23,9 +23,13 @@
 			on-error="_onError">
 		</iron-ajax>
 	</template>
+	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'template-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
 			properties: {
 				templates: {
 					type: Array,
@@ -39,9 +43,6 @@
 				templateCount: {
 					type: Number
 				}
-			},
-			ready: function(){
-				this.app = document.querySelector('app-element');
 			},
 			getTemplates: function(language) {
 				this.app.startLoading();
@@ -85,10 +86,6 @@
 					this.app.stopLoading();
 					this.fire('templates', this.templates);
 				}
-			},
-			_onError: function(err) {
-				this.app.stopLoading();
-				util.error(err);
 			}
 		});
 	</script>

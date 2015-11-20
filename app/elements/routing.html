@@ -1,6 +1,10 @@
 <script src="../bower_components/page/page.js"></script>
 <script>
 window.addEventListener('WebComponentsReady', function() {
+	function checkIsCompany() {
+		return !!localStorage.company || page.redirect('/login');
+	}
+	
 	page('/', function() {
 		if (util.company()) {
 			page('/candidates');
@@ -132,9 +136,5 @@ window.addEventListener('WebComponentsReady', function() {
 	page({
 		hashbang: true
 	});
-
-	function checkIsCompany() {
-		return !!localStorage.company || page.redirect('/login');
-	}
 });
 </script>
