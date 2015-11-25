@@ -31,7 +31,7 @@
 				}
 			},
 			getChallenges: function () {
-				this.$.challengeService.getByCompanyId(util.company().Key);
+				this.$.challengeService.getByOrganizationId(util.organization().id);
 			},
 			challengeInfo: function (e) {
 				page.redirect('/challenges/' + e.model.challenge.Key);

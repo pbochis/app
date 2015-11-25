@@ -5,6 +5,7 @@
 <link rel="import" href="/elements/code-editor/code-editor.html">
 <link rel="import" href="/elements/code-editor/language-selector.html">
 <link rel="import" href="/elements/services/template-service.html">
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 <link rel="import" href="task-display.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
@@ -72,11 +73,10 @@
 	</style>
 	<template>
 		<template-service id="templateService" task="{{task}}" on-templates="onTemplates"></template-service>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="getCodeRequest"
-			handle-as="json"
 			on-response="onGetCodeResponse">
-		</iron-ajax>
+		</coduno-iron-ajax>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">

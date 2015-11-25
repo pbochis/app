@@ -1,6 +1,7 @@
 <link rel="import" href="/elements/services/submission-service.html">
 <link rel="import" href="/elements/services/task-service.html">
 <link rel="import" href="/elements/user/challenge/test-results/diff-result.html">
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 
 <link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
@@ -16,16 +17,15 @@
 	<template>
 		<task-service id="taskService" task="{{task}}"></task-service>
 		<submission-service id="submissionService" submission="{{submission}}" submissions="{{submissions}}"></submission-service>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="getTestResultsRequest"
-			handle-as="json"
 			on-response="onGetTestResultsResponse">
-		</iron-ajax>
-		<iron-ajax
+		</coduno-iron-ajax>
+		<coduno-iron-ajax
 			id="getCodeRequest"
 			handle-as="text"
 			on-response="onGetCodeResponse">
-		</iron-ajax>
+		</coduno-iron-ajax>
 		<paper-material class="userTaskDetail vertical layout" elevation="1">
 			<div class="horizontal layout">
 				<p>{{task.Assignment.Name}}</p>

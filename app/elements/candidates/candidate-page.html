@@ -29,7 +29,7 @@
 				}
 			},
 			getChallenges: function () {
-				this.$.challengeService.getByCompanyId(util.company().Key);
+				this.$.challengeService.getByOrganizationId(util.organization().id);
 			},
 			getCandidates: function () {
 				this.$.candidateList.getCandidates();

@@ -7,21 +7,18 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="getTemplateList"
 			method="GET"
-			handle-as="json"
-			with-credentials="true"
 			on-response="_onList"
 			on-error="_onError">
-		</iron-ajax>
-		<iron-ajax
+		</coduno-iron-ajax>
+		<coduno-iron-ajax
 			id="getTemplate"
 			method="GET"
-			handle-as="blob"
 			on-response="_onTemplate"
 			on-error="_onError">
-		</iron-ajax>
+		</coduno-iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
@@ -47,7 +44,7 @@
 			getTemplates: function(language) {
 				this.app.startLoading();
 				this.templates = [];
-				this.$.getTemplateList.url = util.build('/tasks/' + this.task.Key + '/templates' + (language ? '?language=' + language : ''));
+				this.$.getTemplateList.url = util.build('/tasks/' + this.task.id + '/templates' + (language ? '?language=' + language : ''));
 				this.$.getTemplateList.generateRequest();
 			},
 			_onList: function(e) {

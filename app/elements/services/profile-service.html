@@ -1,4 +1,4 @@
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 
 <dom-module id="profile-service">
 	<style>
@@ -7,16 +7,14 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="getSingleProfile"
 			method="GET"
-			handle-as="json"
-			content-type="application/json"
 			last-response="{{profile}}"
 			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</iron-ajax>
+		</coduno-iron-ajax>
 	</template>
 	<script>
 		Polymer({
@@ -31,9 +29,9 @@
 					reflectToAttribute: true
 				}
 			},
-			getByUserId: function(key){
+			getByUserId: function(id){
 				this.app.startLoading();
-				this.$.getSingleProfile.url = util.build('/users/' + key + '/profile');
+				this.$.getSingleProfile.url = util.build('/users/' + id + '/profile');
 				this.$.getSingleProfile.generateRequest();
 			},
 			_onResponse: function(){
