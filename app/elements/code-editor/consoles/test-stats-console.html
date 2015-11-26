@@ -62,7 +62,7 @@
 				'_afterPropertiesSet(task)'
 			],
 			_afterPropertiesSet: function(){
-				this.$.getTestsRequest.url = util.build('/tasks/' + this.task.Key + '/tests');
+				this.$.getTestsRequest.url = util.build('/tasks/' + this.task.id + '/tests');
 				this.$.getTestsRequest.generateRequest();
 			},
 			setOutput: function(result){
