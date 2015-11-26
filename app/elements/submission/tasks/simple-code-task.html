@@ -13,13 +13,9 @@
 			<simple-console id="console"></simple-console>
 		</code-task>
 	</template>
-	<script type="application/javascript" src="/elements/behaviors/wsreader-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'simple-code-task',
-			behaviors: [
-				Behaviors.WSReaderBehavior
-			],
 			properties: {
 				task: {
 					reflectToAttribute: true
@@ -32,6 +28,19 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
+			listeners: {
+				'ws-onerror': '_onWsError',
+				'ws-onmessage': '_onWsMessage',
+				'ws-onopen': '_onWsOpen'
+			},
+			_onWsOpen: function(){
+				// default action
+				console.log('WS OPENED');
+			},
+			_onWsError: function(err){
+				//default action
+				console.log(err);
+			},
 			_onWsMessage: function(data){
 				this.$.console.setOutput(JSON.parse(data.detail));
 			},
