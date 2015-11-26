@@ -4,7 +4,7 @@ window.addEventListener('WebComponentsReady', function() {
 	function checkIsCompany() {
 		return !!localStorage.company || page.redirect('/login');
 	}
-	
+
 	page('/', function() {
 		if (util.company()) {
 			page('/candidates');
@@ -78,11 +78,11 @@ window.addEventListener('WebComponentsReady', function() {
 		});
 	});
 
-	page('/tasks/:taskKey', function(data) {
+	page('/tasks/:id', function(data) {
 		checkIsCompany();
 		app.route = 'task-detail';
 		Polymer.Base.importHref('/elements/task/task-detail.html', function() {
-			app.$.taskDetail.getTask(data.params.taskKey);
+			app.$.taskDetail.getTask(data.params.id);
 		});
 	});
 
