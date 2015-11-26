@@ -18,7 +18,8 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/token/:token', function(context) {
 		var token = context.params.token;
 		var decodedToken = atob(token).split(':');
-		localStorage.setItem('authorization', 'Token '+ decodedToken[1]);
+		console.log(decodedToken)
+		localStorage.setItem('authorization', 'Basic '+ decodedToken[1]);
 		localStorage.setItem('challenge', decodedToken[0]);
 		page('/challenge');
 	});

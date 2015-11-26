@@ -104,16 +104,18 @@
 			},
 			afterPropertiesSet: function(){
 				var currentTask = '';
-				this.totalTasks = this.challenge.Tasks.length;
-				for(var i=0; i<this.result.StartTimes.length; i++){
-					if(new Date(this.result.StartTimes[i]).getTime()>0){
-						this.taskIndex = i;
-						currentTask = this.challenge.Tasks[i];
+				this.totalTasks = this.challenge.tasks.length;
+				if(this.result.startTimes){
+					for(var i=0; i<this.result.startTimes.length; i++){
+						if(new Date(this.result.startTimes[i]).getTime()>0){
+							this.taskIndex = i;
+							currentTask = this.challenge.Tasks[i];
+						}
 					}
 				}
 				if(currentTask !== '' && this.taskIndex >= 0){
-					this.challengeStartTime = new Date(this.result.StartTimes[0]).getTime();
-					this.taskStartTime = new Date(this.result.StartTimes[this.taskIndex]).getTime();
+					this.challengeStartTime = new Date(this.result.startTimes[0]).getTime();
+					this.taskStartTime = new Date(this.result.startTimes[this.taskIndex]).getTime();
 
 					this.loadTaskById(currentTask);
 					this.$.coolNav.start();
@@ -122,7 +124,8 @@
 				}
 			},
 			startChallenge: function() {
-				this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
+				this.task = this.challenge.tasks[this.taskIndex];
+				// this.loadTaskById(this.challenge.Tasks[this.taskIndex]);
 				this.$.coolNav.start();
 			},
 			loadTaskById: function(key){
@@ -134,10 +137,10 @@
 			_taskChanged: function(){
 				// TODO(victorbalan): Replace this taskDuration with task.Assignment.Duration
 				// after investigating why Assignment has 2 fields: Duration and Duration} wich is NaN
-				this.taskDuration = this.task.Assignment.Duration;
+				this.taskDuration = this.task.duration;
 				this.$.coolNav.refreshTaskTimer();
-				this.importHref('/elements/submission/tasks/' + this.task.Assignment.Endpoints.WebInterface + '.html', function(){
-					var webInterface = document.createElement(this.task.Assignment.Endpoints.WebInterface);
+				this.importHref('/elements/submission/tasks/' + this.task.endpoint.component + '.html', function(){
+					var webInterface = document.createElement(this.task.endpoint.component);
 					webInterface.task = this.task;
 
 					var element = this;

@@ -10,15 +10,19 @@
 		  last-response="{{lastResponse}}"
 		  headers="{{headers}}"
 		  url="{{url}}"
-		  debounce-duration="{{debounceDuration}}"
-		  on-response="_onResponse"
-		  on-error="_onError">
+			body="{{body}}"
+		  debounce-duration="{{debounceDuration}}">
 		</iron-ajax>
 	</template>
 	<script>
 		Polymer({
 			is: 'coduno-iron-ajax',
 			properties: {
+				body: {
+					type: Object,
+					notify: true,
+					reflectToAttrbute: true
+				},
 				method: {
 					type: String,
 					notify: true,
@@ -59,12 +63,6 @@
 					this.headers.Authorization = localStorage.authorization;
 				}
 				this.$.ajaxRequest.generateRequest();
-			},
-			_onResponse: function(req){
-				this.fire('response', req, {bubbles: false});
-			},
-			_onError: function(err){
-				this.fire('error', err, {bubbles: false});
 			}
 		});
 	</script>

@@ -17,7 +17,6 @@
 			method="POST"
 			on-response="onResultResponse"
 			debounce-duration="1000"
-			with-credentials="true"
 			on-error="onResultError"
 			>
 		</coduno-iron-ajax>
@@ -238,9 +237,8 @@
 				// TODO(@flowlo): This deliberately does not check whether
 				// challengeKey is meaningful or even present, because if
 				// it is not, the XHR will fail and redirect to login.
-				var challengeKey = localStorage.getItem('challenge');
 				this.$.resultRequest.url = util.build('/results');
-				this.$.resultRequest.body = { ChallengeKey: challengeKey };
+				this.$.resultRequest.body = localStorage.getItem('challenge');
 				this.$.resultRequest.generateRequest();
 			},
 			onChallengeResponse: function(r) {
@@ -249,7 +247,7 @@
 			},
 			onResultResponse: function(r) {
 				var result = r.detail.response;
-				localStorage.setItem('result', result.Key);
+				localStorage.setItem('result', result.id);
 				this.result = result;
 				this.$.challengeRequest.url = util.build('/challenges/' + localStorage.getItem('challenge'));
 				this.$.challengeRequest.generateRequest();
