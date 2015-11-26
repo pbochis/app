@@ -1,4 +1,4 @@
-<link rel="import" href="/elements/coduno-iron-ajax.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="user-service">
 	<style>
@@ -7,33 +7,45 @@
 		}
 	</style>
 	<template>
-		<coduno-iron-ajax
+		<iron-ajax
 			id="postUser"
 			method="POST"
+			handle-as="json"
+			content-type="application/json"
 			last-response="{{user}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="getSingleUser"
 			method="GET"
+			handle-as="json"
+			content-type="application/json"
 			last-response="{{user}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="getMultiUsers"
 			method="GET"
+			handle-as="json"
+			content-type="application/json"
 			last-response="{{users}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="inviteUser"
 			method="POST"
+			handle-as="json"
+			content-type="application/json"
+			with-credentials="true"
 			on-response="_userInvited"
 			on-error="_onError">
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
@@ -65,9 +77,9 @@
 				this.$.getSingleUser.url = util.build('/user');
 				this.$.getSingleUser.generateRequest();
 			},
-			getById: function(id){
+			getById: function(key){
 				this.app.startLoading();
-				this.$.getSingleUser.url = util.build('/users/' + id);
+				this.$.getSingleUser.url = util.build('/users/' + key);
 				this.$.getSingleUser.generateRequest();
 			},
 			getAll: function(){

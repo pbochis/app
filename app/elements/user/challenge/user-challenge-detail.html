@@ -3,7 +3,6 @@
 <link rel="import" href="/elements/services/result-service.html">
 <link rel="import" href="/elements/services/user-service.html">
 <link rel="import" href="/elements/skill/skill-polygon.html">
-<link rel="import" href="/elements/coduno-iron-ajax.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 
 <dom-module id="user-challenge-detail">
@@ -45,17 +44,21 @@
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
 		<result-service id="resultService" result="{{result}}"></result-service>
 		<user-service id="userService" user="{{user}}"></user-service>
-		<coduno-iron-ajax
+		<iron-ajax
 			id="getUserRequest"
+			handle-as="json"
 			on-response="onGetUserResponse"
 			on-error="onGetUserError"
+			with-credentials="true"
 			method="GET">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="getResultRequest"
+			handle-as="json"
 			on-response="onGetResultResponse"
+			with-credentials="true"
 			method="GET">
-		</coduno-iron-ajax>
+		</iron-ajax>
 		<div class="vertical layout">
 			<paper-material id="challengeWrapper" elevation="1">
 				<h3><span>{{user.Name}}</span> assesment for challenge <span>{{challenge.Name}}</span></h3>
