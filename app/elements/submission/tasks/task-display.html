@@ -14,11 +14,11 @@
 	</style>
 	<template>
 		<div>
-			<h2>{{task.Assignment.Name}}</h2>
+			<h2>{{task.name}}</h2>
 			<h4>Description</h4>
-			<render-markdown markdown="{{task.Assignment.Description}}"></render-markdown>
+			<render-markdown markdown="{{task.description}}"></render-markdown>
 			<h4>Instructions</h4>
-			<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
+			<render-markdown markdown="{{task.instructions}}"></render-markdown>
 		</div>
 	</template>
 	<script>

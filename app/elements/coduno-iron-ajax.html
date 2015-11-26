@@ -1,0 +1,69 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="coduno-iron-ajax">
+	<template>
+		<iron-ajax
+		  id="ajaxRequest"
+		  method="{{method}}"
+		  content-type="{{contentType}}"
+		  handle-as="{{handleAs}}"
+		  last-response="{{lastResponse}}"
+		  headers="{{headers}}"
+		  url="{{url}}"
+			body="{{body}}"
+		  debounce-duration="{{debounceDuration}}">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'coduno-iron-ajax',
+			properties: {
+				body: {
+					type: Object,
+					notify: true,
+					reflectToAttrbute: true
+				},
+				method: {
+					type: String,
+					notify: true,
+					reflectToAttrbute: true
+				},
+				lastResponse: {
+					type: Object,
+					notify: true,
+					reflectToAttrbute: true
+				},
+				contentType: {
+					type: String,
+					notify: true,
+					value: 'application/json'
+				},
+				handleAs:{
+					type: String,
+					notify: true,
+					value: 'json'
+				},
+				headers: {
+					type: Object,
+					notify: true,
+					value: {}
+				},
+				url: {
+					type: String,
+					notify: true
+				},
+				debounceDuration: {
+					type: Number,
+					notify: true,
+					value: 0
+				}
+			},
+			generateRequest: function(){
+				if (localStorage.authorization){
+					this.headers.Authorization = localStorage.authorization;
+				}
+				this.$.ajaxRequest.generateRequest();
+			}
+		});
+	</script>
+</dom-module>

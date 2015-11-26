@@ -33,11 +33,11 @@
 				'afterPropertiesSet(challenge, result)'
 			],
 			afterPropertiesSet: function(){
-				if (this.challenge.Endpoints.WebInterface !== 'sequential-challenge'){
+				if (this.challenge.endpoint.component !== 'sequential-challenge'){
 					alert('This type of challenge is not yet available.');
 					return;
 				}
-				var webInterface = document.createElement(this.challenge.Endpoints.WebInterface);
+				var webInterface = document.createElement(this.challenge.endpoint.component);
 				webInterface.challenge = this.challenge;
 				webInterface.result = this.result;
 				this.$.challenge.innerHTML = '';
