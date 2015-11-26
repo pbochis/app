@@ -55,14 +55,12 @@
 				}
 			},
 			generateRequest: function(){
-				console.log(this.url);
 				if (localStorage.authorization){
 					this.headers.Authorization = localStorage.authorization;
 				}
 				this.$.ajaxRequest.generateRequest();
 			},
 			_onResponse: function(req){
-				console.log(req.detail.response);
 				this.fire('response', req, {bubbles: false});
 			},
 			_onError: function(err){
