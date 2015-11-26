@@ -103,15 +103,10 @@
 		</div>
 		<paper-toast id="toast"></paper-toast>
 	</template>
-
-	<script type="application/javascript" src="/elements/behaviors/wsreader-behavior.js"></script>
 	<script>
 		Polymer({
 			// TODO: Extract canvas into own component
 			is: 'canvas-game-task',
-			behaviors: [
-				Behaviors.WSReaderBehavior
-			],
 			properties: {
 				obstacles: Array,
 				coins: Array,
@@ -132,9 +127,22 @@
 					reflectToAttribute: true
 				}
 			},
+			listeners: {
+				'ws-onerror': '_onWsError',
+				'ws-onmessage': '_onWsMessage',
+				'ws-onopen': '_onWsOpen'
+			},
 			observers: [
 				'_afterPropertiesSet(task)'
 			],
+			_onWsOpen: function(){
+				// default action
+				console.log('WS OPENED');
+			},
+			_onWsError: function(err){
+				//default action
+				console.log(err);
+			},
 			_onWsMessage: function(response){
 				var data = JSON.parse(response.detail);
 				if(data.Error){
