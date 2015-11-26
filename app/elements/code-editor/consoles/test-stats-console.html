@@ -1,5 +1,6 @@
 <link rel="import" href="test-stats-element.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 
 <dom-module id="test-stats-console">
 	<style>
@@ -16,15 +17,13 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="getTestsRequest"
-			handle-as="json"
 			on-response="onTestsResponse"
 			on-error="onTestsError"
 			method="GET"
-			with-credentials="true"
 			>
-		</iron-ajax>
+		</coduno-iron-ajax>
 		<div id="consoleWrapper">
 			<p>{{stderr}}</p>
 			<div id="data" class="horizontal layout wrap" style$="{{dataStyle}}">

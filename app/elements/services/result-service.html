@@ -1,4 +1,4 @@
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 
 <dom-module id="result-service">
 	<style>
@@ -7,26 +7,20 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="getSingleResult"
 			method="GET"
-			handle-as="json"
-			content-type="application/json"
 			last-response="{{result}}"
-			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</iron-ajax>
-			<iron-ajax
-				id="getMultiResults"
-				method="GET"
-				handle-as="json"
-				content-type="application/json"
-				last-response="{{results}}"
-				with-credentials="true"
-				on-response="_onResponse"
-				on-error="_onError">
-			</iron-ajax>
+		</coduno-iron-ajax>
+		<coduno-iron-ajax
+			id="getMultiResults"
+			method="GET"
+			last-response="{{results}}"
+			on-response="_onResponse"
+			on-error="_onError">
+		</coduno-iron-ajax>
 	</template>
 	<script>
 		Polymer({
@@ -46,14 +40,14 @@
 					reflectToAttribute: true
 				}
 			},
-			getByUserAndChallengeId: function(userKey, challengeKey){
+			getByUserAndChallengeId: function(userId, challengeId){
 				this.app.startLoading();
-				this.$.getSingleResult.url = util.build('/results/user/' + userKey + '/challenge/' + challengeKey);
+				this.$.getSingleResult.url = util.build('/results/user/' + userId + '/challenge/' + challengeId);
 				this.$.getSingleResult.generateRequest();
 			},
-			getByChallengeId: function(challengeKey){
+			getByChallengeId: function(challengeId){
 				this.app.startLoading();
-				this.$.getMultiResults.url = util.build('/challenges/' + challengeKey + '/results');
+				this.$.getMultiResults.url = util.build('/challenges/' + challengeId + '/results');
 				this.$.getMultiResults.generateRequest();
 			},
 			_onResponse: function(){

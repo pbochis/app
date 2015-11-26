@@ -1,0 +1,71 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="coduno-iron-ajax">
+	<template>
+		<iron-ajax
+		  id="ajaxRequest"
+		  method="{{method}}"
+		  content-type="{{contentType}}"
+		  handle-as="{{handleAs}}"
+		  last-response="{{lastResponse}}"
+		  headers="{{headers}}"
+		  url="{{url}}"
+		  debounce-duration="{{debounceDuration}}"
+		  on-response="_onResponse"
+		  on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+		Polymer({
+			is: 'coduno-iron-ajax',
+			properties: {
+				method: {
+					type: String,
+					notify: true,
+					reflectToAttrbute: true
+				},
+				lastResponse: {
+					type: Object,
+					notify: true,
+					reflectToAttrbute: true
+				},
+				contentType: {
+					type: String,
+					notify: true,
+					value: 'application/json'
+				},
+				handleAs:{
+					type: String,
+					notify: true,
+					value: 'json'
+				},
+				headers: {
+					type: Object,
+					notify: true,
+					value: {}
+				},
+				url: {
+					type: String,
+					notify: true
+				},
+				debounceDuration: {
+					type: Number,
+					notify: true,
+					value: 0
+				}
+			},
+			generateRequest: function(){
+				if (localStorage.authorization){
+					this.headers.Authorization = localStorage.authorization;
+				}
+				this.$.ajaxRequest.generateRequest();
+			},
+			_onResponse: function(req){
+				this.fire('response', req, {bubbles: false});
+			},
+			_onError: function(err){
+				this.fire('error', err, {bubbles: false});
+			}
+		});
+	</script>
+</dom-module>

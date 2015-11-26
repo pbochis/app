@@ -1,4 +1,5 @@
 <link rel="import" href="/elements/elements.html">
+<link rel="import" href="coduno-iron-ajax.html">
 
 <dom-module id="app-element">
 	<style>
@@ -11,27 +12,22 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="resultRequest"
 			method="POST"
-			handle-as="json"
 			on-response="onResultResponse"
 			debounce-duration="1000"
-			content-type="application/json"
 			with-credentials="true"
 			on-error="onResultError"
 			>
-		</iron-ajax>
+		</coduno-iron-ajax>
 
-		<iron-ajax
+		<coduno-iron-ajax
 			id="challengeRequest"
-			handle-as="json"
 			on-response="onChallengeResponse"
 			debounce-duration="1000"
-			content-type="application/json"
-			with-credentials="true"
 			>
-		</iron-ajax>
+		</coduno-iron-ajax>
 
 		<cookie-service id="cookieService"></cookie-service>
 
@@ -43,7 +39,7 @@
 					<div class="flex">
 						<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
 							<span class="flex-5"></span>
-							<template is="dom-if" if="{{isCompany}}">
+							<template is="dom-if" if="{{isOrganization}}">
 								<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
 								<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
 								<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
@@ -142,7 +138,7 @@
 					type: Object,
 					notify: true
 				},
-				isCompany: {
+				isOrganization: {
 					type: Boolean,
 					notify: true
 				},
@@ -220,7 +216,7 @@
 			},
 			login: function() {
 				this.refreshMenu(true);
-				if (localStorage.company) {
+				if (localStorage.organization) {
 					return page.redirect('/candidates');
 				}
 				page.redirect('/challenge');
@@ -231,8 +227,8 @@
 				page.redirect('/login');
 			},
 			refreshMenu: function(loggedIn) {
-				this.isCompany = !!localStorage.company;
-				this.isCoder = !this.isCompany;
+				this.isOrganization = !!localStorage.organization;
+				this.isCoder = !this.isOrganization;
 				this.isLoggedIn = loggedIn;
 			},
 			displayInstalledToast: function() {
