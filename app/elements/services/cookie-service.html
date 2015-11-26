@@ -1,7 +1,6 @@
-<link rel="import" href="/elements/coduno-iron-ajax.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="user-service.html">
 
-<!--Since we don't use cookie authentication anymore, this should be renamed to something appropriate-->
 <dom-module id="cookie-service">
 	<style>
 		:host {
@@ -10,13 +9,15 @@
 	</style>
 	<template>
 		<user-service id="userService" user="{{user}}"></user-service>
-		<coduno-iron-ajax
+		<iron-ajax
 			id="getCookie"
 			method="PUT"
+			content-type="application/json"
 			last-response="{{profile}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 	<script>
 		Polymer({
@@ -30,6 +31,11 @@
 			},
 			_userChanged: function(){
 				this.fire('cookie-user-changed', this.user);
+			},
+			getCookie: function(authorization){
+				this.$.getCookie.url = util.build('/cookie');
+				this.$.getCookie.headers = { 'Authorization': authorization};
+				this.$.getCookie.generateRequest();
 			},
 			_onResponse: function(){
 				this.$.userService.whoAmI();

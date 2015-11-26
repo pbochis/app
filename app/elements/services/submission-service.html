@@ -1,4 +1,4 @@
-<link rel="import" href="/elements/coduno-iron-ajax.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="submission-service">
 	<style>
@@ -7,19 +7,24 @@
 		}
 	</style>
 	<template>
-		<coduno-iron-ajax
+		<iron-ajax
 			id="getMultiSubmissions"
 			method="GET"
+			handle-as="json"
+			last-response="{{submissions}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="getSingleSubmission"
 			method="GET"
+			handle-as="json"
 			last-response="{{submission}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
@@ -40,14 +45,14 @@
 					reflectToAttribute: true
 				}
 			},
-			getById: function(id){
+			getById: function(key){
 				this.app.startLoading();
-				this.$.getSingleSubmission.url = util.build('/submissions/' + id);
+				this.$.getSingleSubmission.url = util.build('/submissions/' + key);
 				this.$.getSingleSubmission.generateRequest();
 			},
-			getByResultAndTaskId: function(resultId, taskId){
+			getByResultAndTaskId: function(resultKey, taskKey){
 				this.app.startLoading();
-				this.$.getMultiSubmissions.url = util.build('/results/' + resultId + '/task/' + taskId +'/submissions');
+				this.$.getMultiSubmissions.url = util.build('/results/' + resultKey + '/task/' + taskKey +'/submissions');
 				this.$.getMultiSubmissions.generateRequest();
 			},
 			_onResponse: function(){

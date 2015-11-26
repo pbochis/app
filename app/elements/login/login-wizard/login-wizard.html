@@ -1,33 +1,31 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/elements/coduno-iron-ajax.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/elements/login/login-page-email/login-page-email.html">
 <link rel="import" href="/elements/login/login-page-password/login-page-password.html">
 <link rel="import" href="/elements/login/login-page-u2f/login-page-u2f.html">
+<link rel="import" href="/elements/services/user-service.html">
+<link rel="import" href="/elements/services/cookie-service.html">
 
 <dom-module id="login-wizard">
 	<template>
+		<cookie-service id="cookieService" user="{{user}}"></cookie-service>
 		<neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 			<login-page-email email="{{email}}" on-next="next"></login-page-email>
 			<login-page-password email="{{email}}" password="{{password}}" on-next="next" on-prev="prev"></login-page-password>
 			<login-page-u2f on-next="next"></login-page-u2f>
 		</neon-animated-pages>
 		<paper-toast id="toastCredentials" text="Invalid username/e-mail and password combination, please try again."></paper-toast>
-		<iron-ajax id="userRequest"
-		  	handle-as="json"
-		  	on-response="_onUser"
-		  	on-error="_onUserError"
-		    method="GET">
-		</iron-ajax>
-		<coduno-iron-ajax
-		  	id="organizationRequest"
-			on-response="onOrganization"
-			on-error="onOrganizationError"
+		<iron-ajax id="companyRequest"
+			handle-as="json"
+			on-response="onCompany"
+			on-error="onCompanyError"
+			with-credentials="true"
+			url$="{{getCompanyUrl()}}"
 			method="GET"
 		>
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 </dom-module>
 <script>
@@ -63,7 +61,13 @@ Polymer({
 		}
 	},
 	listeners: {
-		'neon-animation-finish': '_afterNeon'
+		'neon-animation-finish': '_afterNeon',
+		'cookie-user-changed': '_cookieUserChanged',
+		'cookie-error': '_cookieError',
+	},
+	_cookieUserChanged: function(user){
+		localStorage.user = JSON.stringify(user);
+		this.$.companyRequest.generateRequest();
 	},
 	setEmail: function(email){
 		this.email = email;
@@ -85,7 +89,7 @@ Polymer({
 	},
 	next: function() {
 		if (this.selected === pagePassword && !u2fRequired) {
-			this.login();
+			this.requestToken();
 			return;
 		}
 		// Can not get further than U2F.
@@ -96,14 +100,11 @@ Polymer({
 		this.exitAnimation = 'slide-left-animation';
 		this.selected++;
 	},
-	login: function() {
-		this.$.userRequest.headers = JSON.parse('{ "Authorization" : "Basic ' + btoa(this.email + ':' + this.password) + '"}');
-		this.$.userRequest.url = util.build('/user');
-		this.$.userRequest.generateRequest();
+	requestToken: function() {
+		this.$.cookieService.getCookie('Basic ' + btoa(this.email + ':' + this.password));
 	},
-	_onUserError: function(err) {
+	_cookieError: function(e, err) {
 		if (err.detail.request.xhr.status !== 401) {
-			console.log('401');
 			util.error(err);
 			return;
 		}
@@ -118,19 +119,18 @@ Polymer({
 		this.exitAnimation = 'slide-right-animation';
 		this.selected = pageEmail;
 	},
-	_onUser: function(r){
-		// A successful response means the user has successfully authenticated
-		localStorage.authorization = 'Basic ' + btoa(this.email + ':' + this.password);
-		localStorage.user = JSON.stringify(r.detail.response);
-		this.$.organizationRequest.url = util.build('/user/organization');
-		this.$.organizationRequest.generateRequest();
-	},
-	onOrganization: function() {
-		localStorage.organization = JSON.stringify(this.$.organizationRequest.lastResponse);
+	onCompany: function() {
+		localStorage.company = JSON.stringify(this.$.companyRequest.lastResponse);
 		app.login();
 	},
-	onOrganizationError: function() {
+	onCompanyError: function() {
 		app.login();
+	},
+	getCookieUrl: function() {
+		return util.build('/cookie');
+	},
+	getCompanyUrl: function() {
+		return util.build('/user/company');
 	}
 });
 </script>

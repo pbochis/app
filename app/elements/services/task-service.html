@@ -1,4 +1,4 @@
-<link rel="import" href="/elements/coduno-iron-ajax.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="task-service">
 	<style>
@@ -7,33 +7,44 @@
 		}
 	</style>
 	<template>
-		<coduno-iron-ajax
+		<iron-ajax
 			id="postTask"
 			method="POST"
+			handle-as="json"
+			content-type="application/json"
 			last-response="{{task}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="getSingleTask"
 			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			with-credentials="true"
 			on-response="_onTaskResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="getMultiTasks"
 			method="GET"
+			handle-as="json"
+			content-type="application/json"
 			last-response="{{tasks}}"
+			with-credentials="true"
 			on-response="_onResponse"
 			on-error="_onError">
-		</coduno-iron-ajax>
-		<coduno-iron-ajax
+		</iron-ajax>
+		<iron-ajax
 			id="finishTaskRequest"
 			method="POST"
+			content-type="application/json"
+			with-credentials="true"
 			on-response="_onFinishTaskResponse"
 			on-error="_onError"
 			>
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
@@ -60,15 +71,15 @@
 				this.$.postTask.url = util.build('/tasks');
 				this.$.postTask.generateRequest();
 			},
-			getById: function(id){
+			getById: function(key){
 				this.app.startLoading();
-				this.$.getSingleTask.url = util.build('/tasks/' + id);
+				this.$.getSingleTask.url = util.build('/tasks/' + key);
 				this.$.getSingleTask.generateRequest();
 			},
-			getByIdAndUpdateResult: function(id, resultId){
+			getByIdAndUpdateResult: function(key, resultKey){
 				// TODO(victorbalan): Refactor the use of query params
 				this.app.startLoading();
-				this.$.getSingleTask.url = util.build('/tasks/' + id + '?result=' + resultId);
+				this.$.getSingleTask.url = util.build('/tasks/' + key + '?result=' + resultKey);
 				this.$.getSingleTask.generateRequest();
 			},
 			getAll: function(){
@@ -76,9 +87,9 @@
 				this.$.getMultiTasks.url = util.build('/tasks');
 				this.$.getMultiTasks.generateRequest();
 			},
-			finishTask: function(resultId, taskIndex, lastSubmissionKey){
+			finishTask: function(resultKey, taskIndex, lastSubmissionKey){
 				this.$.finishTaskRequest.url = util.build(
-					'/results/'+ resultId +
+					'/results/'+ resultKey +
 					'/finalSubmissions/' + taskIndex +
 					'?submissionKey' + lastSubmissionKey
 				);

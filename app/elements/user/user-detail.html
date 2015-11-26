@@ -3,7 +3,6 @@
 <link rel="import" href="/elements/services/challenge-service.html">
 <link rel="import" href="/elements/services/profile-service.html">
 <link rel="import" href="/elements/skill/skill-polygon.html">
-<link rel="import" href="/elements/coduno-iron-ajax.html">
 
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
@@ -65,12 +64,14 @@
 		<challenge-service id="challengeService" challenges="{{challenges}}"></challenge-service>
 		<profile-service id="profileService" profile="{{profile}}"></profile-service>
 
-		<coduno-iron-ajax
+		<iron-ajax
 			id="getProfileRequest"
+			handle-as="json"
 			on-response="onGetProfileResponse"
 			on-error="onError"
+			with-credentials="true"
 			method="GET">
-		</coduno-iron-ajax>
+		</iron-ajax>
 
 		<div class="vertical layout fullHeight">
 			<paper-material id="top" elevation="1">

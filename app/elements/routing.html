@@ -1,14 +1,12 @@
 <script src="../bower_components/page/page.js"></script>
 <script>
 window.addEventListener('WebComponentsReady', function() {
-	function checkIsOrganization() {
-		return !!localStorage.organization || page.redirect('/login');
+	function checkIsCompany() {
+		return !!localStorage.company || page.redirect('/login');
 	}
 	
 	page('/', function() {
-		if (!localStorage.authorization){
-			page('/login');
-		}else if (util.organization()) {
+		if (util.company()) {
 			page('/candidates');
 		} else {
 			page('/challenge');
@@ -18,9 +16,12 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/token/:token', function(context) {
 		var token = context.params.token;
 		var decodedToken = atob(token).split(':');
-		localStorage.setItem('authorization', 'Token '+ decodedToken[1]);
+
+		Polymer.Base.importHref('/elements/services/cookie-service.html', function(){
+			app.$.cookieService.getCookie('Token '+ decodedToken[1]);
+		});
+
 		localStorage.setItem('challenge', decodedToken[0]);
-		page('/challenge');
 	});
 
 	page('/register', function() {
@@ -43,7 +44,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/challenges/:challengeKey', function(data){
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'challenge-detail';
 		Polymer.Base.importHref('/elements/challenge/challenge-detail.html', function(){
 			app.$.challengeDetail.loadData(data.params.challengeKey);
@@ -55,13 +56,13 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/coders/:id', function(data) {
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'coder-info';
 		app.params = data.params;
 	});
 
 	page('/candidates', function() {
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'candidate';
 		Polymer.Base.importHref('/elements/candidates/candidate-page.html', function(){
 			app.$.candidatePage.getChallenges();
@@ -70,7 +71,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/tasks', function() {
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'tasks';
 		Polymer.Base.importHref('/elements/task/task-list.html', function(){
 			app.$.taskList.getTasks();
@@ -78,7 +79,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/tasks/:taskKey', function(data) {
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'task-detail';
 		Polymer.Base.importHref('/elements/task/task-detail.html', function() {
 			app.$.taskDetail.getTask(data.params.taskKey);
@@ -86,13 +87,13 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/task/create', function(){
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'task-create';
 		Polymer.Base.importHref('/elements/task/task-form.html');
 	});
 
 	page('/user/:userKey', function(context){
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'user';
 		Polymer.Base.importHref('/elements/user/user-detail.html', function(){
 			app.$.userDetail.getData(context.params.userKey);
@@ -100,7 +101,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/user/:userKey/challenge/:challengeKey', function(context){
-		checkIsOrganization();
+		checkIsCompany();
 		app.route = 'userChallenge';
 		Polymer.Base.importHref('/elements/user/challenge/user-challenge-detail.html', function(){
 			app.$.userChallengeDetail.getData(context.params.userKey, context.params.challengeKey);

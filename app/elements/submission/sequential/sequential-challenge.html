@@ -1,4 +1,4 @@
-<link rel="import" href="/elements/coduno-iron-ajax.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
@@ -44,11 +44,13 @@
 				</div>
 			</paper-material>
 		</div>
-		<coduno-iron-ajax
+		<iron-ajax
 			id="getResultRequest"
+			handle-as="json"
 			method="GET"
+			with-credentials="true"
 			>
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 	<script>
 		Polymer({
