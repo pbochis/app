@@ -30,6 +30,9 @@ var util = {
 		}
 	},
 	computeDuration: function(duration) {
+		if(!duration){
+			return 0;
+		}
 		var seconds = duration / 1e9;
 		var minutes = Math.floor(seconds / 60);
 		var hours = Math.floor(minutes / 60);

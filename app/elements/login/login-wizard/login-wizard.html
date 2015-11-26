@@ -125,7 +125,7 @@ Polymer({
 		this.$.organizationRequest.url = util.build('/user/organization');
 		this.$.organizationRequest.generateRequest();
 	},
-	onOrganization: function() {
+	onOrganization: function(r) {
 		localStorage.organization = JSON.stringify(this.$.organizationRequest.lastResponse);
 		app.login();
 	},

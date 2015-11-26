@@ -50,13 +50,13 @@
 	<template>
 		<paper-material	animated id="challenge" elevation="{{elevation}}" class="card">
 			<div id="content" on-click="_viewChallengeDetail">
-				<h2>{{challenge.Name}}</h2>
+				<h2>{{challenge.name}}</h2>
 
 				<div class="duration">
 					<iron-icon icon="alarm"></iron-icon>
 					<span>{{duration}}</span>
 				</div>
-				<div>{{challenge.Description}}</div>
+				<div>{{challenge.description}}</div>
 			</div>
 		</paper-material>
 	</template>
@@ -77,13 +77,14 @@
 				}
 			},
 			ready: function () {
-				this.goTo = '/challenges/' + this.challenge.Key;
+				console.log(this.challenge);
+				this.goTo = '/challenges/' + this.challenge.id;
 			},
 			computeDuration: function (challenge) {
-				return util.computeDuration(challenge.Duration);
+				return util.computeDuration(challenge.duration);
 			},
 			_viewChallengeDetail: function () {
-				page.redirect('/challenges/' + this.challenge.Key);
+				page.redirect('/challenges/' + this.challenge.id);
 			}
 		});
 	</script>

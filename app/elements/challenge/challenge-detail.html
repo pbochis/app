@@ -44,14 +44,14 @@
 		<div class="grid vertical layout mainContent">
 			<div class="horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
-					<h1>{{challenge.Name}}</h1>
+					<h1>{{challenge.name}}</h1>
 					<dl class="dl-horizontal">
 						<dt>Duration</dt>
 						<dd>{{duration}}</dd>
 						<dt>Description</dt>
-						<dd>{{challenge.Description}}</dd>
+						<dd>{{challenge.description}}</dd>
 						<dt>Instructions</dt>
-						<dd>{{challenge.Instructions}}</dd>
+						<dd>{{challenge.instructions}}</dd>
 					</dl>
 				</paper-material>
 
@@ -80,7 +80,7 @@
 				</table>
 			</paper-material>
 			<div class="grid-row horizontal layout wrap">
-				<template is="dom-repeat" items="{{tasks}}">
+				<template is="dom-repeat" items="{{challenge.tasks}}">
 					<task-card task="{{item}}" no-select></task-card>
 				</template>
 			</div>
@@ -110,10 +110,6 @@
 					notify: true,
 					observer: '_taskChanged'
 				},
-				tasks: {
-					type: Array,
-					notify: true
-				},
 				challengeKey: {
 					type: String
 				},
@@ -134,10 +130,6 @@
 			},
 			_challengeChanged: function(){
 				this.$.skillPolygon.buildChart();
-				this.tasks = [];
-				for (var i = 0; i < this.challenge.Tasks.length; i++) {
-					this.$.taskService.getById(this.challenge.Tasks[i]);
-				}
 			},
 			_taskChanged: function(){
 				this.push('tasks', this.task);
