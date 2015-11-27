@@ -1,5 +1,6 @@
 <link rel="import" href="/elements/markdown/render-markdown.html">
 <link rel="import" href="/elements/services/task-service.html">
+<link rel="import" href="/elements/services/endpoint-service.html">
 
 <link rel="import" href="/bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
@@ -32,40 +33,27 @@
 	</style>
 	<template>
 		<task-service id="taskService" task="{{savedTask}}"></task-service>
+		<endpoint-service id="endpointService" endpoints="{{endpoints}}"></endpoint-service>
 
 		<div class="mainContent">
 			<paper-material class="card">
 				<h2>New task</h2>
 				<form is="iron-form" id="taskForm">
-					<paper-input id="name" label="Name" value="{{task.Assignment.Name}}"></paper-input>
+					<paper-input id="name" label="Name" value="{{task.name}}" required></paper-input>
+					<iron-autogrow-textarea placeHolder="Description" id="descriptionInput" bind-value="{{task.description}}" rows="5" max-rows="5" required></iron-autogrow-textarea>
+					<render-markdown markdown="{{task.description}}"></render-markdown>
+					<paper-input id="duration" label="Duration(minutes)" value="{{task.duration}}" required pattern="^[1-9][0-9]*$" auto-validate></paper-input>
+					<iron-autogrow-textarea placeHolder="Instructions" id="instructionsInput" bind-value="{{task.instructions}}" rows="15" max-rows="15"></iron-autogrow-textarea>
+					<render-markdown markdown="{{task.instructions}}"></render-markdown>
 
-					<iron-autogrow-textarea placeHolder="Description" id="descriptionInput" bind-value="{{task.Assignment.Description}}" rows="5" max-rows="5"></iron-autogrow-textarea>
-					<render-markdown markdown="{{assignment.Description}}"></render-markdown>
-
-					<paper-input id="durationMinutes" label="Duration(minutes)" value="{{minutes}}"></paper-input>
-					<paper-input id="durationHours" label="Duration(hours)" value="{{hours}}"></paper-input>
-
-					<iron-autogrow-textarea placeHolder="Instructions" id="instructionsInput" bind-value="{{task.Assignment.Instructions}}" rows="15" max-rows="15"></iron-autogrow-textarea>
-
-					<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
-
-					<paper-input id="webInterface" label="Web Interface" value="{{task.Assignment.Endpoints.WebInterface}}"></paper-input>
-					<paper-input id="gitRepository" label="Git Repository" value="{{task.Assignment.Endpoints.GitRepository}}"></paper-input>
-
-					<paper-input id="tasker" label="Tasker" value="{{task.Tasker}}"></paper-input>
-
-					<h4>Languages</h4>
-					<div>
-						<template is="dom-repeat" items="{{languages}}" as="lang">
-							<label for="{{lang}}">{{lang}}</label><input id="{{lang}}" type="checkbox"/>
-						</template>
-					</div>
-
-					<h4>Skills</h4>
-					<template is="dom-repeat" items="{{skills}}">
-						<paper-input id="{{item}}" label="{{item}}"></paper-input>
-					</template>
-
+					<paper-dropdown-menu  class="self-center" id="endpoints" label="Endpoint" selected-item="{{selectedEndpoint}}" required>
+						<paper-menu class="dropdown-content">
+							<template is="dom-repeat" items="{{endpoints}}">
+								<option value="{{item.id}}">{{item.name}}</option><br>
+							</template>
+						</paper-menu>
+					</paper-dropdown-menu>
+					<!--TODO: skills-->
 					<paper-button class="colorful" raised on-click="_saveTask">Create</paper-button>
 				</form>
 			</paper-material>
@@ -81,50 +69,31 @@
 					type: Array,
 					value: util.skillNames
 				},
+				endpoints: {
+					type: Array,
+					notify: true
+				},
+				selectedEndpoint: {
+					type: Object
+				},
 				languages: {
 					type: Array,
 					value: util.languages
 				},
 				task: {
 					type: Object,
-					value: {
-						Assignment: {
-							Endpoints: {}
-						}
-					}
+					value: {}
 				},
 				savedTask: {
 					type: Object,
 					observer: '_savedTaskChanged'
 				}
 			},
+			ready: function(){
+				this.$.endpointService.getEndpoints();
+			},
 			_saveTask: function(){
-				var duration = 0;
-				if (this.hours > 0 ){
-					duration  += this.hours * 36 * 1e11;
-				}
-				if (this.minutes > 0){
-					duration += this.minutes * 6 * 1e10;
-				}
-				this.task.Assignment.Duration = duration;
-				var skillWeights = {};
-				var i;
-				for (i = 0; i < this.skills.length; i++){
-					var skillValue = parseFloat(document.getElementById(this.skills[i]).value);
-					if (!isNaN(skillValue) && skillValue >= 0 && skillValue <= 1){
-						skillWeights[this.skills[i]] = skillValue;
-					}
-				}
-				var selectedLangs = [];
-				for (i = 0; i < this.languages.length; i++){
-					if(document.getElementById(this.languages[i]).checked){
-						selectedLangs.push(this.languages[i]);
-					}
-				}
-				this.task.SkillWeights = skillWeights;
-				this.task.Languages = selectedLangs;
-				this.task.Tasker = parseInt(this.task.Tasker, 10);
-
+				this.task.duration = this.task.duration * 60;
 				this.$.taskService.save(this.task);
 			},
 			_savedTaskChanged: function(task){
