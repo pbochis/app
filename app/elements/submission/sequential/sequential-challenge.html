@@ -32,7 +32,7 @@
 	<template>
 		<task-service id="taskService" task="{{task}}"></task-service>
 		<challenge-nav id="coolNav" task-index="{{taskIndex}}" total-tasks="{{challenge.tasks.length}}"
-			task-duration="{{taskDuration}}" challenge-duration="{{challenge.Duration}}"
+			task-duration="{{task.duration}}" challenge-duration="{{challenge.duration}}"
 			task-start-time="{{taskStartTime}}" challenge-start-time="{{challengeStartTime}}">
 		</challenge-nav>
 
@@ -133,8 +133,6 @@
 				this._nextTask();
 			},
 			_taskChanged: function(){
-				// TODO(victorbalan): Replace this taskDuration with task.Assignment.Duration
-				// after investigating why Assignment has 2 fields: Duration and Duration} wich is NaN
 				this.taskDuration = this.task.duration;
 				this.$.coolNav.refreshTaskTimer();
 				this.importHref('/elements/submission/tasks/' + this.task.endpoint.component + '.html', function(){

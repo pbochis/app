@@ -61,15 +61,6 @@ window.addEventListener('WebComponentsReady', function() {
 		app.params = data.params;
 	});
 
-	page('/candidates', function() {
-		checkIsOrganization();
-		app.route = 'candidate';
-		Polymer.Base.importHref('/elements/candidates/candidate-page.html', function(){
-			app.$.candidatePage.getChallenges();
-			app.$.candidatePage.getCandidates();
-		});
-	});
-
 	page('/tasks', function() {
 		checkIsOrganization();
 		app.route = 'tasks';
