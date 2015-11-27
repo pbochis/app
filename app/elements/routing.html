@@ -18,7 +18,7 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/token/:token', function(context) {
 		var token = context.params.token;
 		var decodedToken = atob(token).split(':');
-		console.log(decodedToken)
+		console.log(decodedToken);
 		localStorage.setItem('authorization', 'Basic '+ decodedToken[1]);
 		localStorage.setItem('challenge', decodedToken[0]);
 		page('/challenge');
@@ -34,6 +34,14 @@ window.addEventListener('WebComponentsReady', function() {
 		Polymer.Base.importHref('/elements/submission/challenge-page.html', function(){
 			app.startChallenge();
 		});
+	});
+
+	page('/challenge/create', function() {
+		app.route = 'tasks';
+		Polymer.Base.importHref('/elements/task/task-list.html', function(){
+				app.$.taskList.getTasks();
+				app.$.taskList.startChallengeCreation();
+			});
 	});
 
 	page('/challenges', function () {

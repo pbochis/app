@@ -54,10 +54,10 @@
 						<dd>{{challenge.instructions}}</dd>
 					</dl>
 				</paper-material>
-
-				<paper-material class="card grid-element">
-					<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>
-				</paper-material>
+				<!--TODO: skills?-->
+				<!--<paper-material class="card grid-element">-->
+					<!--<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>-->
+				<!--</paper-material>-->
 			</div>
 
 			<paper-material class="card grid-row">
@@ -142,7 +142,7 @@
 				this.$.challengeService.getById(challengeKey);
 			},
 			computeDuration: function (challenge) {
-				return util.computeDuration(challenge.Duration);
+				return util.computeDuration(challenge.duration);
 			},
 			computeIndex: function (index) {
 				return index + 1;

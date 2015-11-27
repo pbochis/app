@@ -61,7 +61,8 @@
 					<iron-icon icon="alarm"></iron-icon>
 					<span>{{duration}}</span>
 				</div>
-				<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
+				<!--TODO: Is this forever removed?-->
+				<!--<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>-->
 			</div>
 		</paper-material>
 	</template>
@@ -102,16 +103,13 @@
 				},
 				selected: {
 					type: Boolean,
-					notify: true,
+					notify: true
 				},
 				selectorIcon: {
 					type: String,
 					notify: true,
 					value: 'check-circle'
 				}
-			},
-			ready: function(){
-				this.goTo = '/tasks/' + this.task.Key;
 			},
 			_onHovered: function () {
 				this.showSelect = !this.noSelect && true;

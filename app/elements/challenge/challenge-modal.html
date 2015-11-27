@@ -1,9 +1,11 @@
 <link rel="import" href="/elements/services/challenge-service.html">
-
+<link rel="import" href="/elements/services/endpoint-service.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-input/all-imports.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
 
 <dom-module id="challenge-modal">
 	<style>
@@ -25,22 +27,29 @@
 		}
 	</style>
 	<template>
-		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<challenge-service id="challengeService"></challenge-service>
+		<challenge-service id="endpointService" endpoints="{{endpoints}}"></challenge-service>
 
 		<paper-dialog id="dialog" modal>
 			<h2>These are the tasks you selected: </h2>
 			<template is="dom-repeat" items="{{selectedTasks}}" as="selectedTask">
 				<div><span>{{_computeIndex(index)}}</span> <span>{{selectedTask.Assignment.Name}}</span></div>
 			</template>
-
 			<form is="iron-form" id="form">
-				<paper-input id="name" class="margined" label="Name" value="{{challengeToSave.Name}}"></paper-input>
-				<paper-input id="description" class="margined" label="Description" value="{{challengeToSave.Description}}"></paper-input>
-				<paper-input id="instructions" class="margined" label="Instructions" value="{{challengeToSave.Instructions}}"></paper-input>
-				<paper-input id="duration" class="margined" label="Duration(minutes)" value="{{challengeDuration}}"></paper-input>
+				<paper-input id="name" class="margined" label="Name" value="{{challengeToSave.name}}" required></paper-input>
+				<paper-input id="description" class="margined" label="Description" value="{{challengeToSave.description}}" required></paper-input>
+				<paper-input id="instructions" class="margined" label="Instructions" value="{{challengeToSave.instructions}}" required></paper-input>
+				<paper-input id="duration" class="margined" label="Duration(minutes)" value="{{challengeDuration}}" required pattern="^[1-9][0-9]*$" auto-validate></paper-input>
+				<paper-dropdown-menu  class="self-center" id="endpoints" label="Endpoint" selected-item="{{selectedEndpoint}}" required>
+					<paper-menu class="dropdown-content">
+						<template is="dom-repeat" items="{{endpoints}}">
+							<option value="{{item.id}}">{{item.name}}</option><br>
+						</template>
+					</paper-menu>
+				</paper-dropdown-menu>
 				<div class="buttonGroup">
 					<paper-button dialog-dismiss>Cancel</paper-button>
-					<paper-button class="primary" dialog-confirm raised on-click="saveChallenge">Create
+					<paper-button class="primary" raised on-click="saveChallenge">Create
 					</paper-button>
 				</div>
 			</form>
@@ -54,10 +63,12 @@
 					type: Array,
 					notify: true
 				},
-				challenge: {
-					type: Object,
-					notify: true,
-					observer: '_chalengeChanged'
+				endpoints: {
+					type: Array,
+					notify: true
+				},
+				selectedEndpoint: {
+					type: Object
 				},
 				challengeDuration: Number,
 				challengeToSave: {
@@ -65,33 +76,36 @@
 					value: {}
 				}
 			},
-			_chalengeChanged: function(){
-				// TODO: rename to 'challenge-created'
-				this.fire('challengeCreated');
-				page.redirect('/challenges/' + this.challenge.Key);
-			},
 			toggle: function () {
-				this._computeDuration();
+				this._clearChallenge();
+				this._computeDefaultDuration();
+				this.$.endpointService.getEndpoints();
 				this.$.dialog.toggle();
 			},
 			saveChallenge: function () {
-				var taskKeys = [];
-				for (var i = 0; i < this.selectedTasks.length; i++) {
-					taskKeys.push(this.selectedTasks[i].Key);
+				if (!this.$.form.validate()){
+					return;
 				}
-				this.challengeToSave.Tasks = taskKeys;
-				this.challengeToSave.Duration = 6 * 1e10 * this.challengeDuration;
-				this.challengeToSave.Endpoints = {'WebInterface': 'sequential-challenge'};
-
+				var taskIds = [];
+				for (var i = 0; i < this.selectedTasks.length; i++) {
+					taskIds.push(this.selectedTasks[i].id);
+				}
+				this.challengeToSave.tasks = taskIds;
+				this.challengeToSave.duration = 60 * this.challengeDuration;
+				this.challengeToSave.endpoint = this.selectedEndpoint.value;
 				this.$.challengeService.save(this.challengeToSave);
 				this.fire('challenge-created');
+				this.$.dialog.close();
 			},
-			_computeDuration: function () {
+			_clearChallenge: function(){
+				this.challengeToSave = {};
+			},
+			_computeDefaultDuration: function () {
 				var duration = 0;
 				for (var i = 0; i < this.selectedTasks.length; i++) {
-					duration += this.selectedTasks[i].Assignment.Duration;
+					duration += this.selectedTasks[i].duration;
 				}
-				this.challengeDuration = duration / 6 / 1e10;
+				this.challengeDuration = duration / 60;
 			},
 			_computeIndex: function (index) {
 				return index + 1;
