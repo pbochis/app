@@ -30,8 +30,7 @@ var util = {
 		}
 	},
 	computeDuration: function(duration) {
-		var seconds = duration / 1e9;
-		var minutes = Math.floor(seconds / 60);
+		var minutes = Math.floor(duration / 60);
 		var hours = Math.floor(minutes / 60);
 		var days = Math.floor(hours / 24);
 		var months = Math.floor(days / 30);

@@ -1,0 +1,36 @@
+<link rel="import" href="/elements/coduno-iron-ajax.html">
+<dom-module id="endpoint-service">
+	<template>
+		<coduno-iron-ajax
+		  id="getEndpointsRequest"
+		  method="GET"
+		  last-response="{{endpoints}}"
+		  on-error="_onError"
+		  >
+
+		</coduno-iron-ajax>
+
+	</template>
+	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
+	<script>
+		Polymer({
+			is: 'endpoint-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
+			properties: {
+				endpoints: {
+					type: Array,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getEndpoints: function(){
+				this.getEndpointsRequest.generateRequest();
+			},
+			_onError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

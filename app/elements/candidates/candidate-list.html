@@ -7,6 +7,11 @@
 		:host {
 			display: block;
 		}
+		#createChallengeButton {
+			position: fixed;
+			right: 2%;
+			bottom: 5%;
+		}
 	</style>
 	<template>
 		<user-service id="userService" users="{{users}}"></user-service>
@@ -15,6 +20,7 @@
 				<candidate-card user="{{item}}"></candidate-card>
 			</template>
 		</div>
+		<paper-fab id="createChallengeButton" on-click="_createChallenge" icon="create"></paper-fab>
 	</template>
 </dom-module>
 <script>
@@ -29,6 +35,9 @@
 		// TODO(victorbalan): check what happens if we replace with ready
 		getCandidates: function(){
 			this.$.userService.getAll();
+		},
+		_createChallenge: function(){
+			page.redirect('/challenge/create');
 		}
 	});
 </script>
