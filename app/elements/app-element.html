@@ -43,7 +43,6 @@
 						<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
 							<span class="flex-5"></span>
 							<template is="dom-if" if="{{isCompany}}">
-								<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
 								<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
 								<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
 							</template>
@@ -71,10 +70,6 @@
 
 					<section data-route="register">
 						<register-page></register-page>
-					</section>
-
-					<section data-route="candidate">
-						<candidate-page id="candidatePage"></candidate-page>
 					</section>
 
 					<section data-route="challenges">
