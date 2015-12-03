@@ -42,7 +42,7 @@
 			runCode: function(lang, taskKey) {
 				var body = new FormData();
 				var f = this.getFile();
-				body.append('files', f, f.name);
+				body.append('file', f, f.name);
 				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
 				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
@@ -53,6 +53,7 @@
 				};
 				xhr.withCredentials = true;
 				xhr.open('POST', url, true);
+				xhr.setRequestHeader('Authorization', localStorage.getItem('authorization'));
 				xhr.send(body);
 			},
 			getFile: function() {
