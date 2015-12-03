@@ -1,4 +1,5 @@
 <link rel="import" href="/elements/elements.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="app-element">
 	<style>
@@ -31,6 +32,14 @@
 			with-credentials="true"
 			>
 		</iron-ajax>
+
+
+		<coduno-iron-ajax
+			id="invitationRequest"
+			on-response="onInvitationResponse"
+			debounce-duration="1000"
+			>
+		</coduno-iron-ajax>
 
 		<cookie-service id="cookieService"></cookie-service>
 
@@ -260,6 +269,14 @@
 					return;
 				}
 				util.error(e);
+			},
+			inviteByToken: function(token){
+				this.$.invitationRequest.url = util.build('/invite/auth/' + token);
+				this.$.invitationRequest.generateRequest();
+			},
+			onInvitationResponse: function(r){
+				localStorage.setItem('challenge', r.detail.response);
+				page('/challenge');
 			}
 		});
 	</script>
