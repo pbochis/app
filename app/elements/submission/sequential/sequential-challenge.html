@@ -148,7 +148,8 @@
 							return;
 						}
 						// TODO(victorbalan): Do we really need this lastSubmission param?
-						element.$.taskService.finishTask(element.result.Key, element.taskIndex, localStorage.getItem('lastSubmission'));
+						// element.$.taskService.finishTask(element.result.Key, element.taskIndex, localStorage.getItem('lastSubmission'));
+						element._nextTask();
 					});
 
 					this._replaceContent(webInterface);

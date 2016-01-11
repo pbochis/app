@@ -1,3 +1,4 @@
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 <link rel="import" href="/elements/elements.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
@@ -12,7 +13,7 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="resultRequest"
 			method="POST"
 			handle-as="json"
@@ -21,7 +22,7 @@
 			content-type="application/json"
 			on-error="onResultError"
 			>
-		</iron-ajax>
+		</coduno-iron-ajax>
 
 		<iron-ajax
 			id="challengeRequest"
@@ -234,7 +235,7 @@
 				page.redirect('/login');
 			},
 			refreshMenu: function(loggedIn) {
-				this.isCompany = !!localStorage.company;
+				this.isCompany = !!localStorage.organization;
 				this.isCoder = !this.isCompany;
 				this.isLoggedIn = loggedIn;
 			},

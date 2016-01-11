@@ -19,9 +19,9 @@ var util = {
 
 		return prefix + suffix;
 	},
-	company: function() {
-		if (localStorage.company) {
-			return JSON.parse(localStorage.company);
+	organization: function() {
+		if (localStorage.organization) {
+			return JSON.parse(localStorage.organization);
 		}
 	},
 	user: function() {
