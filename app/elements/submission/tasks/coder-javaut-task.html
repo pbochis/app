@@ -13,13 +13,9 @@
 			<test-stats-console task="{{task}}" id="console"></test-stats-console>
 		</code-task>
 	</template>
-	<script type="application/javascript" src="/elements/behaviors/wsreader-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'coder-javaut-task',
-			behaviors: [
-				Behaviors.WSReaderBehavior
-			],
 			properties: {
 				task: {
 					type: Object,
@@ -38,6 +34,19 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
+			listeners: {
+				'ws-onerror': '_onWsError',
+				'ws-onmessage': '_onWsMessage',
+				'ws-onopen': '_onWsOpen'
+			},
+			_onWsOpen: function(){
+				// default action
+				console.log('WS OPENED');
+			},
+			_onWsError: function(err){
+				//default action
+				console.log(err);
+			},
 			_onWsMessage: function(data){
 				this.$.console.setOutput(JSON.parse(data.detail));
 				this.finishButtonClass = this.$.console.allGreen() ? 'success' : 'error';

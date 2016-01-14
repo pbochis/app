@@ -22,23 +22,21 @@
 		<div class="vertical layout mainContent">
 			<div class="horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
-					<h1>{{task.Name}}</h1>
+					<h1>{{task.name}}</h1>
 					<dl class="dl-horizontal">
 						<dt>Duration</dt>
 						<dd>{{duration}}</dd>
 						<dt>Description</dt>
-						<dd>{{task.Assignment.Description}}</dd>
+						<dd>{{task.description}}</dd>
 					</dl>
 				</paper-material>
-
-				<paper-material class="card grid-element">
-					<skill-polygon id="skillPolygon" skills="{{task.SkillWeights}}"></skill-polygon>
-				</paper-material>
+				<!--<paper-material class="card grid-element">-->
+					<!--<skill-polygon id="skillPolygon" skills="{{task.SkillWeights}}"></skill-polygon>-->
+				<!--</paper-material>-->
 			</div>
-
 			<paper-material	class="card grid-row">
 				<h4>Instructions</h4>
-				<render-markdown markdown="{{task.Assignment.Instructions}}"></render-markdown>
+				<render-markdown markdown="{{task.instructions}}"></render-markdown>
 			</paper-material>
 		</div>
 		<task-service id="taskService" task="{{task}}"></task-service>
@@ -57,11 +55,11 @@
 					computed: '_computeDuration(task)'
 				}
 			},
-			getTask: function(key){
-				this.$.taskService.getById(key);
+			getTask: function(id){
+				this.$.taskService.getById(id);
 			},
 			_computeDuration: function (task) {
-				return util.computeDuration(task.Assignment.Duration);
+				return util.computeDuration(task.duration);
 			},
 			_taskSet: function() {
 				this.$.skillPolygon.buildChart();

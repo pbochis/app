@@ -28,7 +28,7 @@
 				}
 			},
 			_formatDuration: function() {
-				this.formatedDuration = util.getFormatedTime(this.duration / 1e9);
+				this.formatedDuration = util.getFormatedTime(this.duration);
 			},
 			start: function() {
 				if (this.duration <= 0) {
@@ -55,7 +55,7 @@
 				if (this.duration <= 0) {
 					this.timeout();
 				}
-				this.duration -= 1e9;
+				this.duration --;
 				this._formatDuration();
 			},
 			timeout: function() {

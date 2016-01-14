@@ -1,4 +1,6 @@
+<link rel="import" href="/elements/coduno-iron-ajax.html">
 <link rel="import" href="/elements/elements.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="app-element">
 	<style>
@@ -11,17 +13,16 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="resultRequest"
 			method="POST"
 			handle-as="json"
 			on-response="onResultResponse"
 			debounce-duration="1000"
 			content-type="application/json"
-			with-credentials="true"
 			on-error="onResultError"
 			>
-		</iron-ajax>
+		</coduno-iron-ajax>
 
 		<iron-ajax
 			id="challengeRequest"
@@ -32,6 +33,14 @@
 			with-credentials="true"
 			>
 		</iron-ajax>
+
+
+		<coduno-iron-ajax
+			id="invitationRequest"
+			on-response="onInvitationResponse"
+			debounce-duration="1000"
+			>
+		</coduno-iron-ajax>
 
 		<cookie-service id="cookieService"></cookie-service>
 
@@ -44,7 +53,6 @@
 						<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
 							<span class="flex-5"></span>
 							<template is="dom-if" if="{{isCompany}}">
-								<paper-tab link><a href="/candidates" class="center-center horizontal layout">Candidates</a></paper-tab>
 								<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
 								<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
 							</template>
@@ -72,10 +80,6 @@
 
 					<section data-route="register">
 						<register-page></register-page>
-					</section>
-
-					<section data-route="candidate">
-						<candidate-page id="candidatePage"></candidate-page>
 					</section>
 
 					<section data-route="challenges">
@@ -231,7 +235,7 @@
 				page.redirect('/login');
 			},
 			refreshMenu: function(loggedIn) {
-				this.isCompany = !!localStorage.company;
+				this.isCompany = !!localStorage.organization;
 				this.isCoder = !this.isCompany;
 				this.isLoggedIn = loggedIn;
 			},
@@ -242,9 +246,8 @@
 				// TODO(@flowlo): This deliberately does not check whether
 				// challengeKey is meaningful or even present, because if
 				// it is not, the XHR will fail and redirect to login.
-				var challengeKey = localStorage.getItem('challenge');
 				this.$.resultRequest.url = util.build('/results');
-				this.$.resultRequest.body = { ChallengeKey: challengeKey };
+				this.$.resultRequest.body = localStorage.getItem('challenge');
 				this.$.resultRequest.generateRequest();
 			},
 			onChallengeResponse: function(r) {
@@ -253,7 +256,7 @@
 			},
 			onResultResponse: function(r) {
 				var result = r.detail.response;
-				localStorage.setItem('result', result.Key);
+				localStorage.setItem('result', result.id);
 				this.result = result;
 				this.$.challengeRequest.url = util.build('/challenges/' + localStorage.getItem('challenge'));
 				this.$.challengeRequest.generateRequest();
@@ -267,6 +270,14 @@
 					return;
 				}
 				util.error(e);
+			},
+			inviteByToken: function(token){
+				this.$.invitationRequest.url = util.build('/invite/auth/' + token);
+				this.$.invitationRequest.generateRequest();
+			},
+			onInvitationResponse: function(r){
+				localStorage.setItem('challenge', r.detail.response);
+				page('/challenge');
 			}
 		});
 	</script>

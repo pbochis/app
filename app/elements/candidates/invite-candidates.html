@@ -78,15 +78,16 @@
 				}
 				for (var i = 0; i < this.candidates.length; i++) {
 					this.$.userService.invite({
-						'Address': this.candidates[i].Address,
-						'Challenge': this.candidates[i].Challenge
+						'email': this.candidates[i].email,
+						'challengeId': this.candidates[i].challengeId,
+						'organizationId': util.organization().id
 					});
 				}
 				this.$.dialog.close();
 			},
 			_addCandidate: function () {
 				if (this.challenges.length === 1) {
-					this.push('candidates', {'Challenge': this.challenges[0].Key});
+					this.push('candidates', {'challengeId': this.challenges[0].id});
 				} else {
 					this.push('candidates', {});
 				}
@@ -104,7 +105,6 @@
 			},
 			_userInvited: function(){
 				this.$.toast.show();
-				page.redirect('/candidates');
 			}
 		});
 	</script>

@@ -79,6 +79,11 @@
 				this.$.getMultiChallenges.url = util.build('/companies/' + companyKey + '/challenges');
 				this.$.getMultiChallenges.generateRequest();
 			},
+			getAll: function(){
+				this.app.startLoading();
+				this.$.getMultiChallenges.url = util.build('/challenges?organization=' + util.organization().id);
+				this.$.getMultiChallenges.generateRequest();
+			},
 			_onResponse: function(){
 				this.app.stopLoading();
 			}

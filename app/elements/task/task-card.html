@@ -56,12 +56,13 @@
 				icon="{{selectorIcon}}" on-click="_toggleSelectTask" style$="{{addButtonStyle}}"></paper-icon-button>
 			</template>
 			<div id="content" on-click="_viewTaskDetail">
-				<h2>{{task.Assignment.Name}}</h2>
+				<h2>{{task.name}}</h2>
 				<div class="taskDuration">
 					<iron-icon icon="alarm"></iron-icon>
 					<span>{{duration}}</span>
 				</div>
-				<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>
+				<!--TODO: Is this forever removed?-->
+				<!--<skill-list skill-weights="{{task.SkillWeights}}"></skill-list>-->
 			</div>
 		</paper-material>
 	</template>
@@ -102,16 +103,13 @@
 				},
 				selected: {
 					type: Boolean,
-					notify: true,
+					notify: true
 				},
 				selectorIcon: {
 					type: String,
 					notify: true,
 					value: 'check-circle'
 				}
-			},
-			ready: function(){
-				this.goTo = '/tasks/' + this.task.Key;
 			},
 			_onHovered: function () {
 				this.showSelect = !this.noSelect && true;
@@ -136,7 +134,7 @@
 				}
 			},
 			_computeDuration: function (task) {
-				return util.computeDuration(task.Assignment.Duration);
+				return util.computeDuration(task.duration);
 			},
 			_selectionViewObserver: function () {
 				this.showSelect = this.selectionView;
@@ -154,7 +152,7 @@
 			},
 			_viewTaskDetail: function(){
 				if(!this.selectionView){
-					page.redirect('/tasks/' + this.task.Key);
+					page.redirect('/tasks/' + this.task.id);
 				}else{
 					this._toggleSelectTask();
 				}

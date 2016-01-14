@@ -42,9 +42,9 @@
 			<paper-input
 				class="self-center"
 				id="address"
-				label="Firstname Lastname <person@example.com>"
-				value="{{candidate.Address}}"
-				pattern="^.*<[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$"
+				label="person@example.com"
+				value="{{candidate.email}}"
+				type="email"
 				error-message="Address should match the example above"
 				required></paper-input>
 			<template is="dom-if" if="{{isSingleChallenge}}">
@@ -96,7 +96,7 @@
 			},
 			_selectedChallengeChanged: function () {
 				if (!!this.selectedChallenge){
-					this.candidate.Challenge = this.selectedChallenge.value;
+					this.candidate.challengeId = this.selectedChallenge.value;
 				}
 			},
 			_removeItem: function () {

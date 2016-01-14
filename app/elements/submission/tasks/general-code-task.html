@@ -161,7 +161,7 @@
 			},
 			runCode: function(){
 				var lang = this.$.languageSelector.getSelectedLanguageTag();
-				this.$.codeEditor.runCode(lang, this.task.Key);
+				this.$.codeEditor.runCode(lang, this.task.id);
 				this.control.loading();
 			},
 			finishTask: function(){
