@@ -1,0 +1,138 @@
+<link rel="import" href="task-card.html">
+<link rel="import" href="/elements/company/challenge/challenge-modal.html">
+<link rel="import" href="/elements/company/task/task-detail.html">
+<link rel="import" href="/elements/common/services/task-service.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
+<dom-module id="task-list">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+
+		.task-list {
+			padding: 10px;
+		}
+
+		#createTaskButton {
+			position: fixed;
+			right: 2%;
+			bottom: 5%;
+		}
+
+		#header{
+			background-color: #7C7C7A;
+			padding: 0px 10px;
+		}
+
+		#headerText{
+			color: white;
+			padding: 0;
+		}
+
+		paper-icon-button{
+			color: white;
+		}
+	</style>
+	<template>
+		<task-service id="taskService" tasks="{{tasks}}"></task-service>
+
+		<template is="dom-if" if="{{displayHeader}}">
+			<div id="header" class="horizontal layout">
+				<paper-icon-button class="self-center" icon="clear" on-click="_resetSelected"></paper-icon-button>
+				<p id="headerText">{{header}}</p>
+				<div class="flex"></div>
+				<paper-icon-button class="self-center" icon="done" on-click="createChallenge"></paper-icon-button>
+			</div>
+		</template>
+		<template is="dom-if" if="{{!showAllButtons}}">
+			<paper-fab id="createTaskButton" on-click="_createTask" icon="create"></paper-fab>
+		</template>
+		<div class="horizontal layout wrap task-list">
+			<template is="dom-repeat" items="{{tasks}}" as="task">
+				<task-card task="{{task}}" selection-view="{{showAllButtons}}">
+				</task-card>
+			</template>
+		</div>
+		<challenge-modal id="challengeModal" selected-tasks="{{selectedTasks}}"></challenge-modal>
+	</template>
+	<script>
+		Polymer({
+			is: 'task-list',
+			properties: {
+				tasks: {
+					type: Array,
+					notify: true
+				},
+				selectedTasks: {
+					type: Array,
+					notify: true,
+					value: []
+				},
+				displayHeader: {
+					type: Boolean,
+					notify: true
+				},
+				showAllButtons: {
+					type: Boolean,
+					value: false,
+					notify: true
+				},
+				header: {
+					type: String,
+					notify: true,
+					computed: '_computeHeader(selectedTasks.length)'
+				}
+			},
+			listeners: {
+				'challenge-created': '_resetSelected',
+				'taskDetail': '_taskDetail',
+				'task-removed': '_removeTask',
+				'task-added': '_addTask'
+			},
+			createChallenge: function () {
+				this.$.challengeModal.toggle();
+			},
+			getTasks: function () {
+				this.$.taskService.getAll();
+			},
+		 	startChallengeCreation: function(){
+				this.showAllButtons = true;
+				this.displayHeader = true;
+			},
+			_computeHeader: function(length){
+					return length + ' SELECTED';
+			},
+			_addTask: function(event){
+				this.push('selectedTasks', event.detail);
+				this._taskSelectionLogic();
+			},
+			_createTask: function() {
+				page.redirect('/task/create');
+			},
+			_removeTask: function(event){
+				var index = this.selectedTasks.indexOf(event.detail);
+				this.splice('selectedTasks', index, 1);
+				this._taskSelectionLogic();
+			},
+			// listeners for external events
+			_resetSelected: function () {
+				this.splice('selectedTasks', 0, this.selectedTasks.length);
+				this.set('showAllButtons', false);
+				this.set('displayHeader', false);
+			},
+			_taskSelectionLogic: function(){
+				if(this.selectedTasks.length > 0){
+					this.showAllButtons = true;
+					this.header = this.selectedTasks.length + ' SELECTED';
+					this.displayHeader = true;
+				}else{
+					this.showAllButtons = false;
+					this.displayHeader = false;
+				}
+			}
+		});
+	</script>
+</dom-module>
