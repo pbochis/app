@@ -1,0 +1,59 @@
+<link rel="import" href="general-code-task.html">
+<link rel="import" href="/elements/coder/code-editor/consoles/test-stats-console.html">
+
+<dom-module id="output-match-task">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+	</style>
+	<template>
+		<code-task task="{{task}}" control="{{control}}" finished-button-class="{{finishButtonClass}}">
+			<test-stats-console id="console" task="{{task}}"></test-stats-console>
+		</code-task>
+	</template>
+	<script>
+		Polymer({
+			is: 'output-match-task',
+			properties: {
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				finishButtonClass:{
+					type: String,
+					notify: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(task)'
+			],
+			listeners: {
+				'ws-onerror': '_onWsError',
+				'ws-onmessage': '_onWsMessage',
+				'ws-onopen': '_onWsOpen'
+			},
+			_onWsOpen: function(){
+				// default action
+				console.log('WS OPENED');
+			},
+			_onWsError: function(err){
+				//default action
+				console.log(err);
+			},
+			_onWsMessage: function(data){
+				//default implementation
+				this.$.console.setOutput(JSON.parse(data.detail));
+			},
+			afterPropertiesSet: function(){
+				this.control = {};
+				var component = this;
+				this.control.loading = function(){
+					component.$.console.loading();
+				};
+			}
+		});
+	</script>
+</dom-module>

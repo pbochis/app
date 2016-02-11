@@ -1,0 +1,56 @@
+<link rel="import" href="general-code-task.html">
+<link rel="import" href="/elements/coder/code-editor/consoles/simple-console.html">
+
+<dom-module id="simple-code-task">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+	</style>
+	<template>
+		<code-task task="{{task}}" control="{{control}}">
+			<simple-console id="console"></simple-console>
+		</code-task>
+	</template>
+	<script>
+		Polymer({
+			is: 'simple-code-task',
+			properties: {
+				task: {
+					reflectToAttribute: true
+				},
+				control: {
+					type: Object,
+					notify: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(task)'
+			],
+			listeners: {
+				'ws-onerror': '_onWsError',
+				'ws-onmessage': '_onWsMessage',
+				'ws-onopen': '_onWsOpen'
+			},
+			_onWsOpen: function(){
+				// default action
+				console.log('WS OPENED');
+			},
+			_onWsError: function(err){
+				//default action
+				console.log(err);
+			},
+			_onWsMessage: function(data){
+				this.$.console.setOutput(JSON.parse(data.detail));
+			},
+			afterPropertiesSet: function(){
+				this.control = {};
+				var component = this;
+				this.control.loading = function(){
+					component.$.console.loading();
+				};
+			}
+		});
+	</script>
+</dom-module>

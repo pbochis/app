@@ -1,0 +1,203 @@
+<link rel="import" href="challenge/user-challenge-detail.html">
+<link rel="import" href="/elements/common/services/user-service.html">
+<link rel="import" href="/elements/common/services/challenge-service.html">
+<link rel="import" href="/elements/common/services/profile-service.html">
+<link rel="import" href="/elements/common/skill/skill-polygon.html">
+
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
+<dom-module id="user-detail">
+	<style>
+		:host {
+			display: block;
+			height: 100%;
+			width: 70%;
+			margin-left: 15%;
+			margin-right: 15%;
+		}
+		paper-material {
+			background: white;
+		}
+		#top {
+			height: calc(40% - 24px);
+			text-align: center;
+			margin: 16px 16px 8px 16px;
+			background: white;
+			overflow: auto;
+		}
+		#bottom {
+			height: 60%;
+		}
+		#midLeft {
+			margin: 8px 8px 8px 16px;
+			background: white;
+			width: calc(50% - 16px);
+			padding: 16px;
+		}
+		#midRight {
+			margin: 8px 16px 8px 8px;
+			background: white;
+			width: calc(50% - 16px);
+			padding: 16px;
+		}
+		.letter {
+			font-size: 16vh;
+			color: #4B4F62;
+		}
+		#skillPolygonWrapper {
+			height: calc(100% - 16px);
+			width: 100%;
+		}
+		#topRight {
+			height: calc(100%);
+			width: 50%;
+		}
+		#noActivity {
+			margin-top:7%;
+		}
+	</style>
+
+	<template>
+		<user-service id="userService" user="{{user}}"></user-service>
+		<challenge-service id="challengeService" challenges="{{challenges}}"></challenge-service>
+		<profile-service id="profileService" profile="{{profile}}"></profile-service>
+
+		<iron-ajax
+			id="getProfileRequest"
+			handle-as="json"
+			on-response="onGetProfileResponse"
+			on-error="onError"
+			with-credentials="true"
+			method="GET">
+		</iron-ajax>
+
+		<div class="vertical layout fullHeight">
+			<paper-material id="top" elevation="1">
+				<div class="horizontal layout">
+					<div class="flex vertical layout">
+						<text class="letter">{{getInitialLetter(user)}}</text>
+						<h3>{{user.Name}}</h3>
+						<p>{{user.Address}}</p>
+					</div>
+					<div id="topRight">
+						<div id="skillPolygonWrapper">
+						</div>
+						<template is="dom-if" if="{{!hasCompletedChallenges}}">
+							<h3 id="noActivity">User has no activity yet</h3>
+						</template>
+					</div>
+				</div>
+			</paper-material>
+			<template is="dom-if" if="{{hasCompletedChallenges}}">
+				<div id="bottom" class="horizontal layout">
+					<paper-material id="midLeft" class="vertical layout" elevation="1">
+						<h3>Last challenge</h3>
+						<p>{{lastChallenge.Name}}</p>
+						<span class="flex"></span>
+						<div>
+							<paper-button style="float: right;" class="secondary" raised on-click="_loadChallenge">Load more</paper-button>
+						</div>
+					</paper-material>
+					<template is="dom-if" if="{{displayPreviousChallenges}}">
+						<paper-material id="midRight" elevation="1">
+							<h3>Previous challenges</h3>
+							<template is="dom-repeat" items="{{previousChallenges}}">
+								<p>{{item.Name}}</p>
+							</template>
+						</paper-material>
+					</template>
+				</div>
+			</template>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'user-detail',
+			properties: {
+				user:{
+					type: Object,
+					notify: true
+				},
+				challenges: {
+					type: Array,
+					observer: '_challengesChanged'
+				},
+				profile: {
+					type: Object,
+					observer: '_profileChanged'
+				},
+				lastChallenge: {
+					type: Object
+				},
+				previousChallenges: {
+					type: Array,
+					notify: true
+				},
+				mockedSkills: {
+					type: Object,
+					value : {
+						'Algorithmics': 0.8,
+						'Readability': 0.6,
+						'Security': 0.1,
+						'Efficiency': 0.3,
+						'Coding Speed': 0.7
+					}
+				},
+				hasCompletedChallenges: {
+					type: Boolean,
+					value: false,
+					notify: true
+				},
+				displayPreviousChallenges: {
+					type: Boolean,
+					value: false,
+					notify: true
+				}
+			},
+			refresh: function(){
+				this.lastChallenge = undefined;
+				this.previousChallenges = undefined;
+				this.hasCompletedChallenges = false;
+				this.displayPreviousChallenges = false;
+				this.$.skillPolygonWrapper.innerHTML = '';
+			},
+			getData: function(key){
+				this.refresh();
+				this.$.userService.getById(key);
+				this.$.profileService.getByUserId(key);
+			},
+			getInitialLetter: function(user) {
+				return (user.Name || user.Address).charAt(0).toUpperCase();
+			},
+			_challengesChanged: function(challenges){
+				if(challenges === undefined || challenges.length===0){
+					return;
+				}
+				this.hasCompletedChallenges = true;
+				this.lastChallenge = challenges[0];
+
+				if(challenges.length===1){
+					return;
+				}
+				this.displayPreviousChallenges = true;
+				this.previousChallenges = challenges.slice(1, challenges.length);
+			},
+			_loadChallenge: function(){
+				// TODO(victorbalan): create routing module that passes the objects with the
+				// redirect so we don`t load everything twice.
+				page.redirect('/user/' + this.user.Key + '/challenge/' + this.lastChallenge.Key);
+			},
+			_profileChanged: function(profile){
+				this.$.challengeService.getLatestChallengesByProfileId(profile.Key);
+
+				this.chart = document.createElement('skill-polygon');
+				this.chart.skills = this.mockedSkills;
+				this.chart.id='skillPolygon';
+				this.$.skillPolygonWrapper.appendChild(this.chart);
+				this.chart.buildChart();
+			}
+		});
+	</script>
+</dom-module>

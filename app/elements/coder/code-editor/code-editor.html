@@ -1,0 +1,96 @@
+<link rel="import" href="/elements/coder/challenge/ws-element.html">
+
+<dom-module id="code-editor">
+	<style>
+		:host {
+			display: block;
+			height: 100%;
+		}
+
+		#editor {
+			height: 100%;
+			z-index:0;
+		}
+	</style>
+	<template>
+		<!-- <ws-element url="{{wsUrl}}"></ws-element> -->
+		<div id="editor"></div>
+	</template>
+	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
+	<script src="/bower_components/ace-min-noconflict/ext-language_tools.js" type="application/javascript"></script>
+	<script>
+		/*global ace:false */
+		Polymer({
+			is: 'code-editor',
+			properties: {
+				wsUrl: {
+					type: String,
+					notify: true
+				},
+				filename: String,
+				mimeType: String,
+			},
+			ready: function(){
+				this.wsUrl = util.getWSUrl('/?result=' + localStorage.getItem('result'));
+				ace.require('ace/ext/language_tools');
+				this.$.editor = ace.edit(this.$.editor);
+				this.$.editor.setTheme('ace/theme/chrome');
+				this.$.editor.setOptions({
+					enableBasicAutocompletion: true
+				});
+			},
+			runCode: function(lang, taskKey) {
+				var body = new FormData();
+				var f = this.getFile();
+				body.append('file', f, f.name);
+				// NOTE(flowlo): This does not use iron-ajax because
+				// we need a multipart form.
+				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
+				var xhr = new XMLHttpRequest();
+				xhr.onerror = function(e) {
+					// TODO(flowlo): Maybe pass this to util.error?
+					console.log(e);
+				};
+				xhr.withCredentials = true;
+				xhr.open('POST', url, true);
+				xhr.setRequestHeader('Authorization', localStorage.getItem('authorization'));
+				xhr.send(body);
+			},
+			getFile: function() {
+				var blob = new Blob([this.$.editor.getValue()], {type: this.mimeType });
+				blob.name = this.filename;
+				return blob;
+			},
+			setFile: function(f, l) {
+				var that = this;
+				var fr = new FileReader();
+				fr.onload = function(e) {
+					that.$.editor.getSession().setValue(e.target.result);
+				};
+				fr.readAsText(f);
+				this.setMode(l);
+				this.mimeType = f.type;
+				this.filename = f.name;
+			},
+			setMode: function(lang){
+				var mode;
+				switch (lang) {
+					case 'java':
+						mode = 'java';
+						break;
+					case 'py':
+						mode = 'python';
+						break;
+					case 'c':
+					case 'cpp':
+						mode = 'c_cpp';
+						break;
+					default:
+						mode = 'text';
+						break;
+				}
+				this.$.editor.getSession().setMode('ace/mode/' + mode);
+			}
+		});
+	</script>
+</dom-module>

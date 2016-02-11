@@ -1,0 +1,366 @@
+<link rel="import" href="/bower_components/iron-icons/av-icons.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/elements/coder/code-editor/code-editor.html">
+<link rel="import" href="/elements/coder/code-editor/language-selector.html">
+<link rel="import" href="/elements/common/services/template-service.html">
+<link rel="import" href="task-display.html">
+<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
+<dom-module id="canvas-game-task">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+		}
+		#canvas{
+			border: 1px solid black;
+			margin: 40px;
+			background: white;
+		}
+		#componentWrapper{
+			height: 100%;
+		}
+		#componentWrapper>div{
+			height: 100%;
+		}
+		paper-material{
+			width: 100%;
+			margin: auto;
+			background: white;
+		}
+		#codeEditorWrapper{
+			height: 100%;
+			width: 100%;
+		}
+		#leftCard{
+			margin: 16px 8px 16px 16px;
+			width: calc(100% - 24px);
+			height: calc(100% - 32px);
+			overflow: auto;
+		}
+		#topRightCard>h2{
+			height: 40px;
+			margin: 0;
+			padding-left: 16px;
+		}
+		#topRightCard{
+			overflow: auto;
+			margin: 16px 16px 16px 8px;
+			width: calc(100% - 24px);
+			height: calc(50% - 24px);
+		}
+		#botRightCard{
+			overflow: hidden;
+			margin: 8px 16px 16px 8px;
+			width: calc(100% - 24px);
+			height: calc(50% - 24px);
+		}
+		#buttons{
+			height: 45px;
+			margin: 16px 16px 16px 8px;
+		}
+		#consoleWrapper{
+			margin: 8px 16px 16px 16px;
+			height: calc(100% - 90px);
+		}
+		#buttons>paper-icon-button{
+			padding: 5px;
+			margin: 0;
+		}
+	</style>
+	<template>
+		<template-service id="templateService" task="{{task}}" on-templates="onTemplates"></template-service>
+		<iron-ajax
+			id="getCodeRequest"
+			handle-as="json"
+			on-response="onGetCodeResponse">
+		</iron-ajax>
+		<div id="componentWrapper" class="horizontal layout">
+			<div class="flex">
+				<paper-material id="leftCard" elevation="1">
+					<canvas id="canvas" width="{{canvasWidth}}" height="{{canvasHeight}}"></canvas>
+				</paper-material>
+			</div>
+			<div class="flex">
+				<paper-material id="topRightCard" elevation="1">
+					<div id="codeEditorWrapper">
+						<code-editor id="codeEditor"></code-editor>
+					</div>
+				</paper-material>
+				<paper-material id="botRightCard" elevation="1">
+					<div id="buttons" class="horizontal layout">
+						<paper-icon-button icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
+						<span class="flex"></span>
+						<paper-button raised noink class$="{{finishedButtonClass}}" on-click="finishTask">Finish</paper-button>
+					</div>
+					<div id="consoleWrapper">
+						 <task-display task="{{task}}"></task-display>
+					</div>
+				</paper-material>
+			</div>
+		</div>
+		<paper-toast id="toast"></paper-toast>
+	</template>
+	<script>
+		Polymer({
+			// TODO: Extract canvas into own component
+			is: 'canvas-game-task',
+			properties: {
+				obstacles: Array,
+				coins: Array,
+				moves: Array,
+				maxPosition: Object,
+				finishPosition: Object,
+				oldPosition: Object,
+				startPosition: Object,
+				xRatio: Number,
+				yRatio: Number,
+				counter: {
+					type: Number,
+					value: 0
+				},
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			listeners: {
+				'ws-onerror': '_onWsError',
+				'ws-onmessage': '_onWsMessage',
+				'ws-onopen': '_onWsOpen'
+			},
+			observers: [
+				'_afterPropertiesSet(task)'
+			],
+			_onWsOpen: function(){
+				// default action
+				console.log('WS OPENED');
+			},
+			_onWsError: function(err){
+				//default action
+				console.log(err);
+			},
+			_onWsMessage: function(response){
+				var data = JSON.parse(response.detail);
+				if(data.Error){
+					this.$.toast.text = data.Error;
+					this.$.toast.show();
+					return;
+				}
+				this.moves = data;
+				console.log(this.moves);
+				var element = this;
+				window.setInterval(function(){
+					element.moveRobot();
+				}, 500);
+			},
+			_afterPropertiesSet: function(){
+				this.$.templateService.getTemplates('json');
+			},
+			attached: function(){
+				var element = this;
+				this.async(function() {
+					element.attached = true;
+				});
+			},
+			initRobot: function(){
+				this.robot = new Image();
+				this.robot.src = '/images/robot.png';
+				var element = this;
+				this.robot.onload = function(){
+					element.drawRobot(element.startPosition.X, element.startPosition.Y);
+				};
+
+				this.wrong = new Image();
+				this.wrong.src = '/images/not-ok.png';
+
+				this.correct = new Image();
+				this.correct.src = '/images/ok.png';
+
+				this.explosion = new Image();
+				this.explosion.src = '/images/explosion.png';
+			},
+			initCoins: function(){
+				this.coin = new Image();
+				this.coin.src = '/images/coin.png';
+				var element = this;
+				this.coin.onload = function(){
+					for(var i=0;i<element.coins.length;i++){
+						element.drawCoin(element.coins[i].X, element.coins[i].Y);
+					}
+				};
+			},
+			initObstacles: function(){
+				this.obstacle = new Image();
+				this.obstacle.src = '/images/rock.png';
+				var element = this;
+				this.obstacle.onload = function(){
+					for(var i=0;i<element.obstacles.length;i++){
+						element.drawObstacle(element.obstacles[i].X, element.obstacles[i].Y);
+					}
+				};
+			},
+			initFinish: function(){
+				var finish = new Image();
+				finish.src = '/images/finish.png';
+				var element = this;
+				finish.onload = function(){
+					element.drawImage(finish, element.finishPosition.X, element.finishPosition.Y);
+				};
+			},
+			resetValues: function(){
+				this.counter = 0;
+				this.moves = [];
+			},
+			drawMatrix: function(width, height){
+				for (var x = 0; x < width; x += this.xRatio) {
+					this.ctx.moveTo(x, 0);
+					this.ctx.lineTo(x, height);
+				}
+
+				for (var y = 0; y < height; y += this.yRatio) {
+					this.ctx.moveTo(0, y);
+					this.ctx.lineTo(width, y);
+				}
+				this.ctx.stroke();
+			},
+			drawRobot: function(x, y){
+				this.drawImage(this.robot, x, y);
+			},
+			drawCoin: function(x, y){
+				this.drawImage(this.coin, x, y);
+			},
+			drawObstacle: function(x, y){
+				this.drawImage(this.obstacle, x, y);
+			},
+			drawImage: function(image, x, y){
+				this.ctx.drawImage(image, y * this.xRatio, x * this.yRatio, this.xRatio, this.yRatio);
+			},
+			initCanvas: function(){
+				while(!this.attached){
+					console.log('not yet attached');
+				}
+				this.canvasWidth = this.$.leftCard.offsetWidth - 100;
+				var height = this.canvasWidth * 1.2;
+				var fullHeight = this.$.leftCard.offsetHeight - 100;
+				if(height > fullHeight){
+					height = fullHeight;
+				}
+				this.canvasHeight = height;
+			},
+			loadTemplate: function(){
+				var canvas = this.$.canvas;
+				if(this.ctx !== undefined){
+						this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+				}
+				this.ctx = canvas.getContext('2d');
+				this.ctx.fillStyle='#FFFFFF';
+				this.ctx.strokeStyle ='#000000';
+
+				this.xRatio = canvas.width / this.maxPosition.X;
+				this.yRatio = canvas.height / this.maxPosition.Y;
+
+				this.drawMatrix(canvas.width, canvas.height);
+
+				this.initFinish();
+				this.initRobot();
+				this.initCoins();
+				this.initObstacles();
+
+				this.resetValues();
+
+				this.ctx.moveTo(this.startPosition.X * this.xRatio + this.xRatio / 2,
+				                this.startPosition.Y * this.yRatio + this.yRatio / 2);
+			},
+			moveRobot: function(){
+				if(this.counter>=this.moves.length){
+					clearInterval();
+					return;
+				}
+				var move = this.moves[this.counter];
+				var rect = {
+					x: this.oldPosition.Y * this.xRatio + 1,
+					y: this.oldPosition.X * this.yRatio + 1
+				};
+
+				var moveType = this.oldPosition.Event;
+				if(moveType === 'MOVE'){
+					this.ctx.fillRect(rect.x, rect.y, this.xRatio-2, this.yRatio-2);
+				}else if(moveType === 'WRONG_PICK'){
+					this.ctx.fillRect(rect.x, rect.y, this.xRatio-2, this.yRatio-2);
+					this.drawImage(this.wrong, this.oldPosition.X, this.oldPosition.Y);
+				}else if(moveType === 'PICKED'){
+					this.ctx.fillRect(rect.x, rect.y, this.xRatio-2, this.yRatio-2);
+					this.drawImage(this.correct, this.oldPosition.X, this.oldPosition.Y);
+				}else if(moveType === 'MISSED_COIN'){
+					this.ctx.fillRect(rect.x, rect.y, this.xRatio-2, this.yRatio-2);
+					this.drawImage(this.wrong, this.oldPosition.X, this.oldPosition.Y);
+				}
+				if(move.Event === 'HIT_OBSTACLE'){
+					var currentRect = {
+						x: move.Y * this.xRatio + 1,
+						y: move.X * this.yRatio + 1
+					};
+					this.ctx.fillRect(currentRect.x, currentRect.y, this.xRatio-2, this.yRatio-2);
+					this.drawImage(this.explosion, move.X, move.Y);
+					return;
+				}else if(move.Event === 'OUT_OF_BOUNDS'){
+					alert('Out of bounds!');
+					this.counter = this.moves.length;
+					return;
+				}
+
+				// TODO(victorbalan): Draw robot path
+
+				this.oldPosition = move;
+				this.drawRobot(move.X, move.Y);
+				this.counter++;
+			},
+			onTemplates: function(e){
+				if (!e.detail || e.detail.length === 0) {
+					console.log('Received no code template.');
+				}
+
+				// NOTE(flowlo): This is a terrible hack by victorbalan.
+				// The template is used as rendering information for the
+				// canvas. We therefore have to first parse the file as
+				// JSON, then remove its contents (preserving the name)
+				// and pass it on to the editor empty.
+
+				var that = this;
+				var fr = new FileReader();
+				fr.onload = function (x) {
+					var data = JSON.parse(x.target.result);
+					that.oldPosition = data.Start;
+					that.startPosition = data.Start;
+					that.finishPosition = data.Finish;
+					that.maxPosition = data.Max;
+					that.coins = data.Coins;
+					that.obstacles = data.Obstacles;
+					that.initCanvas();
+					that.loadTemplate();
+					that.$.codeEditor.setFile(e.detail[0].slice(0, 0), '');
+				};
+				fr.readAsText(e.detail[0]);
+			},
+			onTemplateError: function(err){
+				util.error(err);
+			},
+			runCode: function(){
+				this.loadTemplate();
+				this.$.codeEditor.runCode('robot', this.task.Key);
+				this.$.codeEditor.setMode('robot');
+			},
+			finishTask: function(){
+				var msg = 'Are you sure to finish this task? You will not able to come back again.';
+				if (!window.confirm(msg)) {
+					return;
+				}
+				this.fire('task-finished');
+			}
+		});
+	</script>
+</dom-module>
