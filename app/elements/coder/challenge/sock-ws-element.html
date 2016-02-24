@@ -1,0 +1,46 @@
+<dom-module id="sock-ws-element">
+	<template>
+	</template>
+	<script src="/bower_components/sockjs/sockjs.js"></script>
+	<script>
+		Polymer({
+			is: 'sock-ws-element',
+			socket: null,
+			properties: {
+				url: {
+					type: String
+				}
+			},
+			observers: [
+				'afterPropertiesSet(url)'
+			],
+			afterPropertiesSet: function(){
+				this.socket = new SockJS(this.url, {
+          protocols_whitelist: ['websocket']
+        });
+				this.socket.onerror = this._onError.bind(this);
+				this.socket.onopen = this._onOpen.bind(this);
+				this.socket.onmessage = this._onMessage.bind(this);
+				this.socket.onclose = this._onClose.bind(this);
+			},
+			_onError: function (error) {
+				this.fire('error', error);
+			},
+			_onOpen: function (event) {
+				this.fire('open', event);
+			},
+			_onClose: function (event) {
+				this.fire('close', event);
+			},
+			_onMessage: function (event) {
+				this.fire('message', event.data);
+			},
+			send: function (message) {
+				this.socket.send(message);
+			},
+			close: function () {
+				this.socket.close();
+			}
+		});
+	</script>
+</dom-module>

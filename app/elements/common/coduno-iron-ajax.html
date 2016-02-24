@@ -12,6 +12,8 @@
 		  url="{{url}}"
 			body="{{body}}"
 		  debounce-duration="{{debounceDuration}}"
+			on-response="_onResponse"
+			on-error="_onError"
 			with-credentials="true">
 		</iron-ajax>
 	</template>
@@ -64,6 +66,12 @@
 					this.headers.Authorization = localStorage.authorization;
 				}
 				this.$.ajaxRequest.generateRequest();
+			},
+			_onResponse: function(r){
+				this.fire('response', r);
+			},
+			_onError: function(err){
+				this.fire('error', err);
 			}
 		});
 	</script>
