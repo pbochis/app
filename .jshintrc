@@ -75,6 +75,7 @@
 		"page"		: false,
 		"Polymer"	: false,
 		"util"		: true,
+		"SockJS"	: true,
 		"Chart"		: true,
 	  	"Behaviors"	: true
 	}
