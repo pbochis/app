@@ -174,7 +174,7 @@
 			setInputView: function(){
 				this.inputView = true;
 			},
-			setFiles: function(e, detail) {
+			setFiles: function() {
 				var files = this.$$('#fileToRun').files;
 				if(files.length > 0){
 					this.$$('#codeEditor').setFile(files[0]);
@@ -182,7 +182,6 @@
 			},
 			_onMessage: function(m){
 				var detail = JSON.parse(m.detail);
-				console.log(detail);
 				if(detail.Test){
 					this.$$('#console').setOutput(detail);
 					if(detail.Failed === false){
@@ -191,14 +190,6 @@
 				}else{
 					this.normalConsoleText = detail.Stdout + '\n\n' + detail.Stderr;
 				}
-			},
-			_onWsOpen: function(){
-				// default action
-				console.log('WS OPENED');
-			},
-			_onWsError: function(err){
-				//default action
-				console.log(err);
 			},
 			afterPropertiesSet: function(){
 					this.languages = [{

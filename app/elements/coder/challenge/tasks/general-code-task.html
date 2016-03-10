@@ -128,7 +128,7 @@
 			observers: [
 				'afterPropertiesSet(task)'
 			],
-			setFiles: function(e, detail) {
+			setFiles: function() {
 				var files = this.$.fileToRun.files;
 				if(files.length > 0){
 					this.$.codeEditor.setFile(files[0]);

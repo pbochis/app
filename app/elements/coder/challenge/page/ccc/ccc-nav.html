@@ -37,9 +37,9 @@
 	</style>
 	<template>
 		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout" style$="{{taskNavHeaderStyle}}">
-      <div class="timer"></div>
+			<div class="timer"></div>
 			<span class="flex"></span>
-      <div id="tabElements" class="horizontal layout"></div>
+			<div id="tabElements" class="horizontal layout"></div>
 			<span class="flex"></span>
 			<countdown-timer id="challengeTimer" class="timer" duration="{{challengeDuration}}" timeout="{{timeout}}"></countdown-timer>
 		</paper-material>
@@ -71,21 +71,21 @@
 				}
 			},
 			observers: [
-        'afterPropertiesSet(totalTasks)',
+				'afterPropertiesSet(totalTasks)',
 				'_taskDataChanged(taskIndex)'
 			],
-      afterPropertiesSet: function(){
-        for(var i = 0; i<this.totalTasks;i++){
-  				var element = document.createElement('nav-level-element');
-  				element.id = 'nav' + i;
-          element.index = i;
-  				element.state = "default";
-          element.onclick = function(){
-            this.fire('task-switch', this.index);
-          }
-  				this.$.tabElements.appendChild(element);
-        }
-      },
+			afterPropertiesSet: function(){
+				for(var i = 0; i<this.totalTasks;i++){
+					var element = document.createElement('nav-level-element');
+					element.id = 'nav' + i;
+					element.index = i;
+					element.state = 'default';
+					element.onclick = function(){
+						this.fire('task-switch', this.index);
+					};
+					this.$.tabElements.appendChild(element);
+				}
+			},
 			start: function(){
 				this._show();
 				this.$.challengeTimer.startWithOffset(this.challengeStartTime);
@@ -103,10 +103,10 @@
 				this.$.challengeTimer.stop();
 			},
 			_taskDataChanged: function(){
-        if(this.taskIndex > 0){
-          this.$$('#nav' + (this.taskIndex-1)).setState('completed');
-        }
-        this.$$('#nav' + this.taskIndex).setState('current');
+				if(this.taskIndex > 0){
+					this.$$('#nav' + (this.taskIndex-1)).setState('completed');
+				}
+				this.$$('#nav' + this.taskIndex).setState('current');
 			},
 			_show: function(){
 				this.taskNavHeaderStyle = '';

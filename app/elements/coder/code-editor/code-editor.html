@@ -43,6 +43,7 @@
 					value: false
 				}
 			},
+			// TODO refactor component. remove duplicate code
 			ready: function(){
 				this.wsUrl = util.getSockWSUrl('/ws');
 				ace.require('ace/ext/language_tools');
@@ -57,13 +58,13 @@
 					bindKey: {
 						win: 'Ctrl-Enter',
 					},
-					exec: function(editor){
+					exec: function(){
 						self.runCode();
 						console.log('loading animation not started');
 					},
 					readOnly: true
 				});
-				this.$.editor.getSession().on('change', function(e){
+				this.$.editor.getSession().on('change', function(){
 					localStorage.cachedCode = self.$.editor.getValue();
 				});
 				if(this.loadCachedCode){
@@ -72,13 +73,13 @@
 			},
 			runCodeNormal: function() {
 				if(!this.language){
-					alert('no language selected.')
+					alert('no language selected.');
 					return;
 				}
 				var body = new FormData();
 				var f = this.getFile();
 				body.append('file', f, f.name);
-				body.append('language', this.language)
+				body.append('language', this.language);
 				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
 				var url = util.build('/tasks/' + this.taskId +'/run');
@@ -94,13 +95,13 @@
 			},
 			runCode: function() {
 				if(!this.language){
-					alert('no language selected.')
+					alert('no language selected.');
 					return;
 				}
 				var body = new FormData();
 				var f = this.getFile();
 				body.append('file', f, f.name);
-				body.append('language', this.language)
+				body.append('language', this.language);
 				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
 				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + this.taskId +'/submissions');
@@ -119,7 +120,7 @@
 				blob.name = this.filename;
 				return blob;
 			},
-			setFile: function(f, l) {
+			setFile: function(f) {
 				var that = this;
 				var fr = new FileReader();
 				fr.onload = function(e) {
