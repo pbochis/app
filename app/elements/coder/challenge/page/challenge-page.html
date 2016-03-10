@@ -1,4 +1,5 @@
 <link rel="import" href="sequential/sequential-challenge.html">
+<link rel="import" href="ccc/ccc-challenge.html">
 <!--TODO: Show something meaningful on this page if there is no active challenge for the logged in user.-->
 <dom-module id="challenge-page">
 	<style>
@@ -33,10 +34,6 @@
 				'afterPropertiesSet(challenge, result)'
 			],
 			afterPropertiesSet: function(){
-				if (this.challenge.endpoint.component !== 'sequential-challenge'){
-					alert('This type of challenge is not yet available.');
-					return;
-				}
 				var webInterface = document.createElement(this.challenge.endpoint.component);
 				webInterface.challenge = this.challenge;
 				webInterface.result = this.result;

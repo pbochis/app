@@ -24,16 +24,19 @@
 				this.socket.onclose = this._onClose.bind(this);
 			},
 			_onError: function (error) {
-				this.fire('error', error);
+				this.fire('ws-error', error);
 			},
 			_onOpen: function (event) {
-				this.fire('open', event);
+				this.fire('ws-open', event);
+				console.log('socket opened');
+				this.send(util.user().id);
 			},
 			_onClose: function (event) {
-				this.fire('close', event);
+				this.fire('ws-close', event);
+				console.log('socket closed');
 			},
 			_onMessage: function (event) {
-				this.fire('message', event.data);
+				this.fire('ws-message', event.data);
 			},
 			send: function (message) {
 				this.socket.send(message);

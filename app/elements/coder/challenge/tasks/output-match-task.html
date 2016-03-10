@@ -33,7 +33,13 @@
 			listeners: {
 				'ws-onerror': '_onWsError',
 				'ws-onmessage': '_onWsMessage',
-				'ws-onopen': '_onWsOpen'
+				'ws-onopen': '_onWsOpen',
+				'ws-message': '_onMessage'
+			},
+			_onMessage: function(m){
+				var detail = JSON.parse(m.detail);
+				console.log(detail);
+				this.$.console.setOutput(detail);
 			},
 			_onWsOpen: function(){
 				// default action

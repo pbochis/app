@@ -4,10 +4,10 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/elements/coder/challenge/page/challenge-display.html">
 <link rel="import" href="/elements/coder/challenge/countdown-timer.html">
-<link rel="import" href="/elements/coder/challenge/page/challenge-nav.html">
+<link rel="import" href="/elements/coder/challenge/page/ccc/ccc-nav.html">
 <link rel="import" href="/elements/common/services/task-service.html">
 
-<dom-module id="sequential-challenge">
+<dom-module id="ccc-challenge">
 	<style>
 		:host{
 			display: block;
@@ -31,10 +31,10 @@
 	</style>
 	<template>
 		<task-service id="taskService" task="{{task}}"></task-service>
-		<challenge-nav id="coolNav" task-index="{{taskIndex}}" total-tasks="{{challenge.tasks.length}}"
-			task-duration="{{task.duration}}" challenge-duration="{{challenge.duration}}"
-			task-start-time="{{taskStartTime}}" challenge-start-time="{{challengeStartTime}}">
-		</challenge-nav>
+		<ccc-nav id="coolNav" total-tasks="{{challenge.tasks.length}}" task-index="{{taskIndex}}"
+			challenge-duration="{{challenge.duration}}" challenge-start-time="{{challengeStartTime}}"
+			on-task-switch="_onTaskSwitch">
+		</ccc-nav>
 
 		<div id="content" style$="{{contentStyle}}">
 			<paper-material id="startChallengeCard" elevation="1" class="card">
@@ -55,7 +55,7 @@
 	<script>
 		Polymer({
 			// TODO(victorbalan): Refactor component and split logic and refactor requests.
-			is: 'sequential-challenge',
+			is: 'ccc-challenge',
 			properties: {
 				challenge: {
 					type: Object,
@@ -74,8 +74,7 @@
 				},
 				taskIndex: {
 					type: Number,
-					notify: true,
-					value: 0
+					notify: true
 				},
 				contentStyle:{
 					type: String,
@@ -85,21 +84,25 @@
 				challengeStartTime: {
 					type: Number,
 					value: 0
-				},
-				taskStartTime: {
-					type: Number,
-					value: 0
 				}
 			},
 			observers: [
 				'afterPropertiesSet(challenge, result)'
 			],
 			listeners: {
-				'task-timeout': '_taskTimeout',
 				'challenge-timeout': '_challengeTimeout',
-				'server-finished-task': '_serverFinishedTask'
+				'server-finished-task': '_serverFinishedTask',
+				'level-completed': '_levelCompleted'
+			},
+			_onTaskSwitch: function(e, taskIndex){
+				if(taskIndex < this.taskIndex){
+					alert(this.challenge.tasks[taskIndex].instructions);
+				}else if(taskIndex > this.taskIndex){
+					alert('You must finish all levels to this level');
+				}
 			},
 			afterPropertiesSet: function(){
+				this.taskIndex = 0;
 				var currentTask = '';
 				if(this.result.startTimes){
 					for(var i=0; i<this.challenge.tasks.length; i++){
@@ -111,7 +114,6 @@
 				}
 				if(currentTask.id && this.taskIndex >= 0){
 					this.challengeStartTime = new Date(this.result.startTimes[0]).getTime();
-					this.taskStartTime = new Date(this.result.startTimes[this.taskIndex]).getTime();
 
 					this.task = currentTask;
 					this.$.coolNav.start();
@@ -135,7 +137,6 @@
 				if(!this.task){
 					return;
 				}
-				this.$.coolNav.refreshTaskTimer();
 				this.importHref('/elements/coder/challenge/tasks/' + this.task.endpoint.component + '.html', function(){
 					var webInterface = document.createElement(this.task.endpoint.component);
 					webInterface.task = this.task;
@@ -155,8 +156,6 @@
 				});
 			},
 			_nextTask: function(){
-				this.taskStartTime = 0;
-
 				this.taskIndex++;
 				if(this.taskIndex < this.challenge.tasks.length){
 					this.task = this.challenge.tasks[this.taskIndex];
@@ -172,10 +171,6 @@
 
 				app.finishChallenge();
 			},
-			_taskTimeout: function(){
-				this.taskStartTime = 0;
-				this._nextTask();
-			},
 			_challengeTimeout: function(){
 				this._importAndReplaceContent('/elements/coder/challenge/info/challenge-timeout.html', 'challenge-timeout');
 			},
@@ -188,6 +183,9 @@
 				this.importHref(importPath, function(){
 					this._replaceContent(document.createElement(elementName));
 				});
+			},
+			_levelCompleted: function(){
+				this._nextTask();
 			}
 		});
 

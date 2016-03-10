@@ -1,4 +1,4 @@
-<link rel="import" href="/elements/coder/challenge/ws-element.html">
+<link rel="import" href="/elements/coder/challenge/sock-ws-element.html">
 
 <dom-module id="code-editor">
 	<style>
@@ -13,7 +13,7 @@
 		}
 	</style>
 	<template>
-		<!-- <ws-element url="{{wsUrl}}"></ws-element> -->
+		<sock-ws-element url="{{wsUrl}}"></sock-ws-element>
 		<div id="editor"></div>
 	</template>
 	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
@@ -27,25 +27,84 @@
 					type: String,
 					notify: true
 				},
+				taskId: {
+					type: String,
+					reflectToAttribute: true
+				},
+				language: {
+					type: String,
+					reflectToAttribute: true
+				},
 				filename: String,
 				mimeType: String,
+				loadCachedCode: {
+					type: Boolean,
+					reflectToAttribute: true,
+					value: false
+				}
 			},
+			// TODO refactor component. remove duplicate code
 			ready: function(){
-				this.wsUrl = util.getWSUrl('/?result=' + localStorage.getItem('result'));
+				this.wsUrl = util.getSockWSUrl('/ws');
 				ace.require('ace/ext/language_tools');
 				this.$.editor = ace.edit(this.$.editor);
 				this.$.editor.setTheme('ace/theme/chrome');
 				this.$.editor.setOptions({
 					enableBasicAutocompletion: true
 				});
+				var self = this;
+				this.$.editor.commands.addCommand({
+					name: 'run',
+					bindKey: {
+						win: 'Ctrl-Enter',
+					},
+					exec: function(){
+						self.runCode();
+						console.log('loading animation not started');
+					},
+					readOnly: true
+				});
+				this.$.editor.getSession().on('change', function(){
+					localStorage.cachedCode = self.$.editor.getValue();
+				});
+				if(this.loadCachedCode){
+					this.loadCached();
+				}
 			},
-			runCode: function(lang, taskKey) {
+			runCodeNormal: function() {
+				if(!this.language){
+					alert('no language selected.');
+					return;
+				}
 				var body = new FormData();
 				var f = this.getFile();
 				body.append('file', f, f.name);
+				body.append('language', this.language);
 				// NOTE(flowlo): This does not use iron-ajax because
 				// we need a multipart form.
-				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskKey +'/submissions');
+				var url = util.build('/tasks/' + this.taskId +'/run');
+				var xhr = new XMLHttpRequest();
+				xhr.onerror = function(e) {
+					// TODO(flowlo): Maybe pass this to util.error?
+					console.log(e);
+				};
+				xhr.withCredentials = true;
+				xhr.open('POST', url, true);
+				xhr.setRequestHeader('Authorization', localStorage.getItem('authorization'));
+				xhr.send(body);
+			},
+			runCode: function() {
+				if(!this.language){
+					alert('no language selected.');
+					return;
+				}
+				var body = new FormData();
+				var f = this.getFile();
+				body.append('file', f, f.name);
+				body.append('language', this.language);
+				// NOTE(flowlo): This does not use iron-ajax because
+				// we need a multipart form.
+				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + this.taskId +'/submissions');
 				var xhr = new XMLHttpRequest();
 				xhr.onerror = function(e) {
 					// TODO(flowlo): Maybe pass this to util.error?
@@ -61,14 +120,14 @@
 				blob.name = this.filename;
 				return blob;
 			},
-			setFile: function(f, l) {
+			setFile: function(f) {
 				var that = this;
 				var fr = new FileReader();
 				fr.onload = function(e) {
 					that.$.editor.getSession().setValue(e.target.result);
 				};
 				fr.readAsText(f);
-				this.setMode(l);
+				this.setMode(this.language);
 				this.mimeType = f.type;
 				this.filename = f.name;
 			},
@@ -82,6 +141,8 @@
 						mode = 'python';
 						break;
 					case 'c':
+						mode = 'c_cpp';
+						break;
 					case 'cpp':
 						mode = 'c_cpp';
 						break;
@@ -90,6 +151,9 @@
 						break;
 				}
 				this.$.editor.getSession().setMode('ace/mode/' + mode);
+			},
+			loadCached: function(){
+				this.$.editor.getSession().setValue(localStorage.cachedCode);
 			}
 		});
 	</script>

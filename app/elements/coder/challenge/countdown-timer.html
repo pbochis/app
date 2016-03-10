@@ -44,7 +44,7 @@
 			},
 			startWithOffset: function(offset) {
 				if(offset > 0){
-					this.duration -= (Date.now() - offset) * 1e6;
+					this.duration -= (Date.now() - offset) * 1e-3;
 				}
 				this.start();
 			},
