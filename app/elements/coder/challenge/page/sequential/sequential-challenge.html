@@ -82,10 +82,6 @@
 					notify: true,
 					value: 'display: none;'
 				},
-				taskDuration: {
-					type: Number,
-					notify: true
-				},
 				challengeStartTime: {
 					type: Number,
 					value: 0
@@ -106,18 +102,18 @@
 			afterPropertiesSet: function(){
 				var currentTask = '';
 				if(this.result.startTimes){
-					for(var i=0; i<this.result.startTimes.length; i++){
+					for(var i=0; i<this.challenge.tasks.length; i++){
 						if(new Date(this.result.startTimes[i]).getTime()>0){
 							this.taskIndex = i;
-							currentTask = this.challenge.Tasks[i];
+							currentTask = this.challenge.tasks[this.taskIndex];
 						}
 					}
 				}
-				if(currentTask !== '' && this.taskIndex >= 0){
+				if(currentTask.id && this.taskIndex >= 0){
 					this.challengeStartTime = new Date(this.result.startTimes[0]).getTime();
 					this.taskStartTime = new Date(this.result.startTimes[this.taskIndex]).getTime();
 
-					this.loadTaskById(currentTask);
+					this.task = currentTask;
 					this.$.coolNav.start();
 				}else{
 					this.contentStyle = '';
@@ -125,19 +121,22 @@
 			},
 			startChallenge: function() {
 				this.task = this.challenge.tasks[this.taskIndex];
+				this.startTask(this.task.id);
 				// TODO - update result and set starting time
 				this.$.coolNav.start();
 			},
-			loadTaskById: function(key){
-				this.$.taskService.getByIdAndUpdateResult(key, this.result.Key);
+			startTask: function(taskId){
+				this.$.taskService.startTask(localStorage.result, taskId);
 			},
 			_serverFinishedTask: function(){
 				this._nextTask();
 			},
 			_taskChanged: function(){
-				this.taskDuration = this.task.duration;
+				if(!this.task){
+					return;
+				}
 				this.$.coolNav.refreshTaskTimer();
-				this.importHref('/elements/submission/tasks/' + this.task.endpoint.component + '.html', function(){
+				this.importHref('/elements/coder/challenge/tasks/' + this.task.endpoint.component + '.html', function(){
 					var webInterface = document.createElement(this.task.endpoint.component);
 					webInterface.task = this.task;
 
@@ -161,6 +160,7 @@
 				this.taskIndex++;
 				if(this.taskIndex < this.challenge.tasks.length){
 					this.task = this.challenge.tasks[this.taskIndex];
+					this.startTask(this.task.id);
 					return;
 				}
 				this.$.coolNav.stop();
@@ -168,7 +168,7 @@
 				this.$.getResultRequest.url = util.build('/results/' + this.result.id);
 				this.$.getResultRequest.generateRequest();
 
-				this._importAndReplaceContent('/elements/submission/challenge-finished.html', 'challenge-finished');
+				this._importAndReplaceContent('/elements/coder/challenge/info/challenge-finished.html', 'challenge-finished');
 
 				app.finishChallenge();
 			},
@@ -177,7 +177,7 @@
 				this._nextTask();
 			},
 			_challengeTimeout: function(){
-				this._importAndReplaceContent('/elements/submission/challenge-timeout.html', 'challenge-timeout');
+				this._importAndReplaceContent('/elements/coder/challenge/info/challenge-timeout.html', 'challenge-timeout');
 			},
 			_replaceContent: function(element){
 				this.contentStyle = '';

@@ -10,6 +10,7 @@
 		}
 		p{
 			font-family: "Lucida Console", Monaco, monospace;
+			white-space: pre-wrap;
 		}
 		#consoleWrapper{
 			overflow: auto;
@@ -25,7 +26,7 @@
 			with-credentials="true"
 			>
 		</iron-ajax>
-		<div id="consoleWrapper">
+		<div id="consoleWrapper" style$="{{style}}">
 			<p>{{stderr}}</p>
 			<div id="data" class="horizontal layout wrap" style$="{{dataStyle}}">
 			</div>
@@ -57,21 +58,28 @@
 				},
 				dataStyle: {
 					type: String
+				},
+				style: {
+					type: String
 				}
 			},
 			observers: [
 				'_afterPropertiesSet(task)'
 			],
 			_afterPropertiesSet: function(){
-				// this.$.getTestsRequest.url = util.build('/tasks/' + this.task.id + '/tests');
-				// this.$.getTestsRequest.generateRequest();
+				this.$.getTestsRequest.url = util.build('/tasks/' + this.task.id + '/tests');
+				this.$.getTestsRequest.generateRequest();
 			},
 			setOutput: function(result){
-				if (!!result.Stderr) {
+				if(result.Test){
+					this.appendTestStats(result);
+				}else{
+					this.stderr = result.Stdout
+					this.dataStyle = 'display: none';
+				}
+				if (result.Stderr) {
 					this.stderr = result.Stderr;
 					this.dataStyle = 'display: none';
-				}else{
-					this.appendTestStats(result);
 				}
 			},
 			allGreen: function(){
@@ -93,22 +101,22 @@
 					return;
 				}
 				for(var i=0;i<this.tests.length;i++){
-					this.$$('#' + this.tests[i].Key).startLoading();
+					this.$$('#test' + this.tests[i].id).startLoading();
 				}
 			},
 			error: function(err){
 				console.log(err);
 			},
 			appendTestStats: function(result){
-				var element = this.$$('#' + result.Test);
+				var element = this.$$('#test' + result.Test);
 				if(!!element){
 					element.setFailed(result.Failed);
 					element.stopLoading();
 				}
 			},
-			initTestElement: function(testKey){
+			initTestElement: function(id){
 				var element = document.createElement('test-stats-element');
-				element.id = testKey;
+				element.id = 'test' + id;
 				element.counter = this.counter;
 				this.$.data.appendChild(element);
 				this.counter ++;
@@ -117,11 +125,17 @@
 				var data = r.detail.response;
 				this.tests = data;
 				for(var i=0;i<data.length;i++){
-					this.initTestElement(data[i].Key);
+					this.initTestElement(data[i].id);
 				}
 			},
 			onTestsError: function(err){
 				util.error(err);
+			},
+			show: function(){
+				this.style = '';
+			},
+			hide: function(){
+				this.style = 'display: none';
 			}
 		});
 	</script>

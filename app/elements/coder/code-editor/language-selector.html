@@ -14,8 +14,8 @@
 		}
 	</style>
 	<template>
-		<paper-dropdown-menu id="language" label="Language" selected-item="{{language}}">
-			<paper-menu class="dropdown-content">
+		<paper-dropdown-menu label="Language" selected-item="{{language}}">
+			<paper-menu id="languageMenu" class="dropdown-content" on-iron-select="_select">
 				<template is="dom-repeat" items="{{languages}}">
 					<option value="{{item.tag}}">{{item.name}}</option>
 				</template>
@@ -33,13 +33,20 @@
 				},
 				language: {
 					type: Object,
-					notify: true
+					notify: true,
+					reflectToAttribute: true
 				}
 			},
-			getSelectedLanguageTag: function(){
-				if(this.language !== undefined){
-					return this.language.value;
+			observers: [
+				'afterPropertiesSet(languages)'
+			],
+			afterPropertiesSet: function(languages){
+				if(languages.length > 0){
+					this.$.languageMenu.selected = 0;
 				}
+			},
+			_select: function(e){
+				this.fire('language-change', e.detail.item.value);
 			}
 		});
 

@@ -45,6 +45,15 @@
 			on-error="_onError"
 			>
 		</iron-ajax>
+		<iron-ajax
+			id="startTaskRequest"
+			method="POST"
+			content-type="application/json"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError"
+			>
+		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
@@ -71,16 +80,16 @@
 				this.$.postTask.url = util.build('/tasks');
 				this.$.postTask.generateRequest();
 			},
-			getById: function(key){
+			getById: function(id){
 				this.app.startLoading();
-				this.$.getSingleTask.url = util.build('/tasks/' + key);
+				this.$.getSingleTask.url = util.build('/tasks/' + id);
 				this.$.getSingleTask.generateRequest();
 			},
-			getByIdAndUpdateResult: function(key, resultKey){
+			startTask: function(resultId, taskId){
 				// TODO(victorbalan): Refactor the use of query params
 				this.app.startLoading();
-				this.$.getSingleTask.url = util.build('/tasks/' + key + '?result=' + resultKey);
-				this.$.getSingleTask.generateRequest();
+				this.$.startTaskRequest.url = util.build('/results/' + resultId + '/task/' + taskId);
+				this.$.startTaskRequest.generateRequest();
 			},
 			getAll: function(){
 				this.app.startLoading();
