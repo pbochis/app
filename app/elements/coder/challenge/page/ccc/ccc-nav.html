@@ -1,0 +1,120 @@
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/elements/coder/challenge/countdown-timer.html">
+<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/elements/coder/challenge/page/ccc/nav-level-element.html">
+
+<dom-module id="ccc-nav">
+	<style>
+		:host{
+			display: block;
+		}
+		.timer{
+			margin: 0;
+			padding-top: 10px;
+			width: 50px;
+		}
+		#taskNavHeader{
+			height: 40px;
+			background: white;
+			margin: 0;
+			padding: 0px 20px;
+		}
+		#backArrowWrapper{
+			padding-left: 10px;
+			width: 30px;
+		}
+		#frontArrowWrapper{
+			width: 30px;
+			padding-right: 16px;
+		}
+		#taskNavTitle{
+			padding: 0;
+			margin: 0;
+			padding-top: 10px;
+		}
+	</style>
+	<template>
+		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout" style$="{{taskNavHeaderStyle}}">
+      <div class="timer"></div>
+			<span class="flex"></span>
+      <div id="tabElements" class="horizontal layout"></div>
+			<span class="flex"></span>
+			<countdown-timer id="challengeTimer" class="timer" duration="{{challengeDuration}}" timeout="{{timeout}}"></countdown-timer>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			// TODO(victorbalan): Refactor component and split logic and refactor requests.
+			is: 'ccc-nav',
+			properties: {
+				challengeDuration: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				challengeStartTime: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				totalTasks: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				taskIndex: {
+					type: Number,
+					reflectToAttribute: true
+				},
+				taskNavHeaderStyle: {
+					type: String,
+					value: 'display: none'
+				}
+			},
+			observers: [
+        'afterPropertiesSet(totalTasks)',
+				'_taskDataChanged(taskIndex)'
+			],
+      afterPropertiesSet: function(){
+        for(var i = 0; i<this.totalTasks;i++){
+  				var element = document.createElement('nav-level-element');
+  				element.id = 'nav' + i;
+          element.index = i;
+  				element.state = "default";
+          element.onclick = function(){
+            this.fire('task-switch', this.index);
+          }
+  				this.$.tabElements.appendChild(element);
+        }
+      },
+			start: function(){
+				this._show();
+				this.$.challengeTimer.startWithOffset(this.challengeStartTime);
+
+				var element = this;
+
+				this.$.challengeTimer.addEventListener('timeout', function(){
+					element._hide();
+					element.$.challengeTimer.stop();
+					element.fire('challenge-timeout');
+				});
+			},
+			stop: function(){
+				this._hide();
+				this.$.challengeTimer.stop();
+			},
+			_taskDataChanged: function(){
+        if(this.taskIndex > 0){
+          this.$$('#nav' + (this.taskIndex-1)).setState('completed');
+        }
+        this.$$('#nav' + this.taskIndex).setState('current');
+			},
+			_show: function(){
+				this.taskNavHeaderStyle = '';
+			},
+			_hide: function(){
+				this.taskNavHeaderStyle = 'display: none';
+			}
+		});
+
+	</script>
+</dom-module>
