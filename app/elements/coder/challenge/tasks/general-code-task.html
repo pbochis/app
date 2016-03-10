@@ -6,6 +6,7 @@
 <link rel="import" href="/elements/common/services/template-service.html">
 <link rel="import" href="task-display.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-icons/av-icons.html">
 
 <dom-module id="code-task">
 	<style>
@@ -78,14 +79,16 @@
 			<div class="flex">
 				<paper-material id="topRightCard" elevation="1">
 					<div id="codeEditorWrapper">
-						<code-editor id="codeEditor"></code-editor>
+						<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language.value}}"></code-editor>
 					</div>
 				</paper-material>
 				<paper-material id="botRightCard" elevation="1">
 					<div id="buttons" class="horizontal layout">
 						<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
-						<language-selector class="self-center" id="languageSelector" languages="{{languages}}" on-change="languageChanged"></language-selector>
+						<language-selector class="self-center" id="languageSelector" languages="{{languages}}" language="{{language}}" on-language-change="languageChanged"></language-selector>
+							<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runTests">Run tests</paper-icon-button>
 						<span class="flex"></span>
+						<!-- <input type="file" name="fileToRun" id="fileToRun" on-change="setFiles"> -->
 						<paper-button class="self-center" raised noink class$="{{finishedButtonClass}}" on-click="finishTask">Finish</paper-button>
 					</div>
 					<div id="consoleWrapper">
@@ -106,7 +109,6 @@
 				},
 				control: {
 					type: Object,
-					notify: true,
 					reflectToAttribute: true
 				},
 				finishedButtonClass: {
@@ -117,15 +119,40 @@
 				languages: {
 					type: Array,
 					notify: true
+				},
+				language: {
+					type: String,
+					notify: true
 				}
 			},
 			observers: [
 				'afterPropertiesSet(task)'
 			],
+			setFiles: function(e, detail) {
+				var files = this.$.fileToRun.files;
+				if(files.length > 0){
+					this.$.codeEditor.setFile(files[0]);
+				}
+			},
 			afterPropertiesSet: function(){
-				this.languages = [];
+				this.languages = [{
+					tag: 'py',
+					name: 'Python'
+				},
+				{
+					tag: 'c',
+					name: 'C'
+				},
+				{
+					tag: 'cpp',
+					name: 'C++'
+				},
+				{
+					tag: 'java',
+					name: 'Java'
+				}];
 
-				if (!this.task.Languages) {
+				if (!this.task.languages) {
 					return;
 				}
 
@@ -152,16 +179,19 @@
 				}
 				this.getTemplate(this.languages[0].tag);
 			},
-			languageChanged: function(){
-				var languageTag = this.$.languageSelector.getSelectedLanguageTag();
-				this.getTemplate(languageTag);
+			languageChanged: function(e, languageTag){
+				// this.getTemplate(languageTag);
+				this.$.codeEditor.setMode(languageTag);
 			},
 			getTemplate: function(language){
 				this.$.templateService.getTemplates(language);
 			},
 			runCode: function(){
-				var lang = this.$.languageSelector.getSelectedLanguageTag();
-				this.$.codeEditor.runCode(lang, this.task.id);
+				this.$.codeEditor.runCodeNormal();
+				this.control.loading();
+			},
+			runTests: function(){
+				this.$.codeEditor.runCode();
 				this.control.loading();
 			},
 			finishTask: function(){
@@ -171,7 +201,7 @@
 				if (!e.detail || e.detail.length === 0) {
 					console.log('Received no code template.');
 				}
-				this.$.codeEditor.setFile(e.detail[0], this.$.languageSelector.getSelectedLanguageTag());
+				this.$.codeEditor.setFile(e.detail[0]);
 			}
 		});
 	</script>
