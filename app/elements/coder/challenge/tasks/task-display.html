@@ -15,9 +15,7 @@
 	<template>
 		<div>
 			<h2>{{task.name}}</h2>
-			<h4>Description</h4>
 			<render-markdown markdown="{{task.description}}"></render-markdown>
-			<h4>Instructions</h4>
 			<render-markdown markdown="{{task.instructions}}"></render-markdown>
 		</div>
 	</template>
@@ -27,7 +25,6 @@
 			properties: {
 				task: {
 					type: Object,
-					notify: true,
 					reflectToAttribute: true
 				}
 			}

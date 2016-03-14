@@ -63,9 +63,9 @@
 				this.$.postChallenge.body = challenge;
 				this.$.postChallenge.generateRequest();
 			},
-			getById: function(key){
+			getById: function(id){
 				this.app.startLoading();
-				this.$.getSingleChallenge.url = util.build('/challenges/' + key);
+				this.$.getSingleChallenge.url = util.build('/challenges/' + id);
 				this.$.getSingleChallenge.generateRequest();
 			},
 			getLatestChallengesByProfileId: function(profileKey){

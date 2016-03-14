@@ -19,6 +19,15 @@ var util = {
 
 		return prefix + suffix;
 	},
+	getSockWSUrl: function(suffix){
+		var prefix = 'https://api.cod.uno:8090';
+
+		if (location.origin.indexOf('localhost') !== -1) {
+			prefix = 'http://localhost:8080';
+		}
+
+		return prefix + suffix;
+	},
 	organization: function() {
 		if (localStorage.organization) {
 			return JSON.parse(localStorage.organization);

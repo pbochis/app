@@ -13,6 +13,7 @@
 		}
 	</style>
 	<template>
+		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
 		<coduno-iron-ajax
 			id="resultRequest"
 			method="POST"
@@ -23,17 +24,6 @@
 			on-error="onResultError"
 			>
 		</coduno-iron-ajax>
-
-		<iron-ajax
-			id="challengeRequest"
-			handle-as="json"
-			on-response="onChallengeResponse"
-			debounce-duration="1000"
-			content-type="application/json"
-			with-credentials="true"
-			>
-		</iron-ajax>
-
 
 		<coduno-iron-ajax
 			id="invitationRequest"
@@ -252,16 +242,11 @@
 					this.$.resultRequest.generateRequest();
 				}
 			},
-			onChallengeResponse: function(r) {
-				var challenge = r.detail.response;
-				this.challenge = challenge;
-			},
 			onResultResponse: function(r) {
-				var result = r.detail.response;
+				var result = r.detail.detail.response;
 				localStorage.setItem('result', result.id);
 				this.result = result;
-				this.$.challengeRequest.url = util.build('/challenges/' + localStorage.getItem('challenge'));
-				this.$.challengeRequest.generateRequest();
+				this.$.challengeService.getById(localStorage.getItem('challenge'));
 			},
 			createChallenge: function() {
 				this.$.taskList.createChallenge();
@@ -278,7 +263,9 @@
 				this.$.invitationRequest.generateRequest();
 			},
 			onInvitationResponse: function(r){
-				localStorage.setItem('challenge', r.detail.response);
+				var response = r.detail.detail.response;
+
+				localStorage.setItem('challenge', response);
 				page('/challenge');
 			}
 		});
