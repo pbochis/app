@@ -21,13 +21,13 @@
 			is: 'user-submission-service',
 			properties: {
 			},
-			submitOutput: function(taskId, name, value, mimeType){
+			submitOutput: function(testId, name, value, mimeType){
 				var body = new FormData();
 				var f = this.getFile(name, value, mimeType);
 				body.append('file', f, f.name);
 
 				this.$.postOutput.body = body;
-				this.$.postOutput.url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskId +'/output');
+				this.$.postOutput.url = util.build('/results/' + localStorage.getItem('result') + '/tests/' + testId +'/output');
 				this.$.postOutput.generateRequest();
 			},
 			getFile: function(name, value, mimeType) {
