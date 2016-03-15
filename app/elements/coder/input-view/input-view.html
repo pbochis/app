@@ -1,0 +1,78 @@
+<link rel="import" href="input-view-element.html">
+
+<dom-module id="input-view">
+	<style>
+		:host{
+			display: block;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getTestsRequest"
+			handle-as="json"
+			on-response="onTestsResponse"
+			on-error="onTestsError"
+			method="GET"
+			with-credentials="true"
+			>
+		</iron-ajax>
+		<p>Paste/Upload the generated output and test it.</p>
+		<div id="data"></data>
+	</template>
+	<script>
+		Polymer({
+			is: 'input-view',
+			properties: {
+				counter: {
+					type: Number,
+					value: 1
+				},
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			observers: [
+				'_afterPropertiesSet(task)'
+			],
+			listeners: {
+				'green-test': 'onGreenTest'
+			},
+			onGreenTest: function(e, data){
+				if(this.greenTests.indexOf(data) === -1){
+					this.push('greenTests', data);
+				}
+				if(this.tests.length === this.greenTests.length){
+					this.fire('level-completed');
+				}
+			},
+			_afterPropertiesSet: function(){
+				this.greenTests = [];
+				this.$.getTestsRequest.url = util.build('/tasks/' + this.task.id + '/tests');
+				this.$.getTestsRequest.generateRequest();
+			},
+			initViewElement: function(id){
+				var element = document.createElement('input-view-element');
+				element.id = 'input' + id;
+				element.counter = this.counter;
+				element.taskId = this.task.id;
+				element.testId = id;
+				this.$.data.appendChild(element);
+				this.counter ++;
+			},
+			onTestsResponse: function(r){
+				var data = r.detail.response;
+				this.tests = data;
+				for(var i=0;i<data.length;i++){
+					this.initViewElement(data[i].id);
+				}
+			},
+			onTestsError: function(err){
+				util.error(err);
+			}
+		});
+	</script>
+</dom-module>

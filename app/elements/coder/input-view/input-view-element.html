@@ -1,0 +1,80 @@
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icons/av-icons.html">
+<link rel="import" href="/elements/common/services/user-submission-service.html">
+
+<dom-module id="input-view-element">
+	<style>
+	</style>
+	<template>
+		<user-submission-service id="submissionService" on-response="_onResponse" on-error="_onError"></user-submission-service>
+		<input type="file" name="inputToTest" id="inputToTest" on-change="setInput" style="display: none;">
+		<div class="horizontal layout">
+			<p>Test <span>{{counter}}</counter></p>
+			<input id="input" type="text" class="flex self-center" style$="{{inputStyle}}"></input>
+			<paper-icon-button id="uploadButton" class="self-center" icon="file-upload" on-click="addInputFile"></paper-icon-button>
+			<paper-icon-button id="runButton" class="self-center" icon="av:play-arrow" on-click="runTest"></paper-icon-button>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'input-view-element',
+			properties: {
+				counter:{
+					type: Number,
+					reflectToAttribute: true
+				},
+				taskId:{
+					type: Number,
+					reflectToAttribute: true
+				}
+			},
+			disable: function(){
+				this.$.input.disabled = true;
+				this.$.runButton.disabled = true;
+				this.$.uploadButton.disabled = true;
+			},
+			enable: function(){
+				this.$.input.disabled = false;
+				this.$.runButton.disabled = false;
+				this.$.uploadButton.disabled = false;
+			},
+			green: function(){
+				this.fire('green-test', this.testId);
+				this.inputStyle = 'border-color: #86C67C;';
+			},
+			red: function(){
+				this.inputStyle = 'border-color: #CD4F39;';
+			},
+			runTest: function(){
+				this.inputStyle = '';
+				this.disable();
+				this.$.submissionService.submitOutput(this.taskId, 'output' + this.counter, this.$.input.value);
+			},
+			addInputFile: function(){
+				this.$$('#inputToTest').click();
+			},
+			setInput: function(){
+				var files = this.$$('#inputToTest').files;
+				if(files.length > 0){
+					var self = this;
+					var fr = new FileReader();
+					fr.onload = function(e) {
+						self.$.input.value = e.target.result;
+					};
+					fr.readAsText(files[0]);
+				}
+			},
+			_onResponse: function(e, r){
+				if(r.detail.status === 200){
+					this.green();
+				}
+			},
+			_onError: function(e, data){
+				this.enable();
+				if(data.req.request.status === 400){
+					this.red();
+				}
+			}
+		});
+	</script>
+</dom-module>
