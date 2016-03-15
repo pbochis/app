@@ -23,7 +23,7 @@
 					type: Number,
 					reflectToAttribute: true
 				},
-				taskId:{
+				testId:{
 					type: Number,
 					reflectToAttribute: true
 				}
@@ -48,7 +48,7 @@
 			runTest: function(){
 				this.inputStyle = '';
 				this.disable();
-				this.$.submissionService.submitOutput(this.taskId, 'output' + this.counter, this.$.input.value);
+				this.$.submissionService.submitOutput(this.testId, 'output' + this.counter, this.$.input.value);
 			},
 			addInputFile: function(){
 				this.$$('#inputToTest').click();
