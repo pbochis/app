@@ -13,7 +13,7 @@
 		}
 	</style>
 	<template>
-		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<challenge-template-service id="challengeService" challenge-template="{{challenge}}"></challenge-template-service>
 		<coduno-iron-ajax
 			id="resultRequest"
 			method="POST"
@@ -73,11 +73,11 @@
 					</section>
 
 					<section data-route="challenges">
-						<challenge-list id="challengeList"></challenge-list>
+						<challenge-template-list id="challengeList"></challenge-template-list>
 					</section>
 
 					<section data-route="challenge-detail">
-						<challenge-detail id="challengeDetail"></challenge-detail>
+						<challenge-template-detail id="challengeTemplateDetail"></challenge-template-detail>
 					</section>
 
 					<section data-route="challenge" class="fullHeight">
@@ -246,7 +246,7 @@
 				var result = r.detail.detail.response;
 				localStorage.setItem('result', result.id);
 				this.result = result;
-				this.$.challengeService.getById(localStorage.getItem('challenge'));
+				this.$.challengeService.getByScheduledChallengeId(localStorage.getItem('challenge'));
 			},
 			createChallenge: function() {
 				this.$.taskList.createChallenge();

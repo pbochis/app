@@ -1,5 +1,5 @@
 <link rel="import" href="user-task-detail.html">
-<link rel="import" href="/elements/common/services/challenge-service.html">
+<link rel="import" href="/elements/common/services/challenge-template-service.html">
 <link rel="import" href="/elements/common/services/result-service.html">
 <link rel="import" href="/elements/common/services/user-service.html">
 <link rel="import" href="/elements/common/skill/skill-polygon.html">
@@ -41,7 +41,7 @@
 		}
 	</style>
 	<template>
-		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<challenge-template-service id="challengeService" challenge-template="{{challenge}}"></challenge-template-service>
 		<result-service id="resultService" result="{{result}}"></result-service>
 		<user-service id="userService" user="{{user}}"></user-service>
 		<iron-ajax

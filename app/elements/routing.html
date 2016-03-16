@@ -42,7 +42,7 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/challenges', function () {
 		app.route = 'challenges';
-		Polymer.Base.importHref('/elements/company/challenge/challenge-list.html', function(){
+		Polymer.Base.importHref('/elements/company/challenge/challenge-template-list.html', function(){
 			app.$.challengeList.getChallenges();
 		});
 	});
@@ -50,8 +50,8 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/challenges/:challengeKey', function(data){
 		checkIsOrganization();
 		app.route = 'challenge-detail';
-		Polymer.Base.importHref('/elements/company/challenge/challenge-detail.html', function(){
-			app.$.challengeDetail.loadData(data.params.challengeKey);
+		Polymer.Base.importHref('/elements/company/challenge/challenge-template-detail.html', function(){
+			app.$.challengeTemplateDetail.loadData(data.params.challengeKey);
 		});
 	});
 
