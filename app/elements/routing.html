@@ -25,11 +25,10 @@ window.addEventListener('WebComponentsReady', function() {
 		Polymer.Base.importHref('/elements/common/register/register-page.html');
 	});
 
-	page('/challenge', function() {
+	page('/challenge/:id', function(context) {
 		app.route = 'challenge';
-		Polymer.Base.importHref('/elements/coder/challenge/page/challenge-page.html', function(){
-			app.startChallenge();
-		});
+		app.challenge = context.params.id;
+		Polymer.Base.importHref('/elements/coder/challenge/page/challenge-page.html');
 	});
 
 	page('/challenge/create', function() {
