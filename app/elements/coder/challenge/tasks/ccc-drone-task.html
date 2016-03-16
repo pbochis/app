@@ -3,6 +3,7 @@
 <link rel="import" href="/elements/coder/challenge/tasks/task-display.html">
 <link rel="import" href="/elements/common/services/template-service.html">
 <link rel="import" href="/elements/coder/code-editor/code-editor.html">
+<link rel="import" href="/elements/coder/input-view/input-view.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
@@ -100,14 +101,14 @@
 			</div>
 			<div class="flex">
 				<paper-material elevation="1" id="topRightHeader">
-					<paper-tabs selected="1" align-bottom="true" no-ink="true" class="headerTab">
-					  <paper-tab on-click="setInputView" class="headerTab">Input view</paper-tab>
-					  <paper-tab on-click="setCodeEditorView">Code editor view</paper-tab>
+					<paper-tabs selected="{{selected}}" align-bottom="true" no-ink="true" class="headerTab">
+						<paper-tab on-click="setInputView" class="headerTab">Input view</paper-tab>
+						<paper-tab on-click="setCodeEditorView">Code editor view</paper-tab>
 					</paper-tabs>
 				</paper-material>
 				<template is="dom-if" if="{{inputView}}">
 					<paper-material id="inputViewRightCard" elevation="1">
-						<p>Select the files to upload for testing</p>
+						<input-view id="inputView" task="{{task}}"></input-view>
 					</paper-material>
 				</template>
 				<template is="dom-if" if="{{!inputView}}">
@@ -151,6 +152,10 @@
 					type: String,
 					notify: true
 				},
+				selected: {
+					type: Number,
+					notify: true
+				},
 				inputView: {
 					type: Boolean,
 					notify: true,
@@ -192,6 +197,7 @@
 				}
 			},
 			afterPropertiesSet: function(){
+				this.selected = 1;
 					this.languages = [{
 						tag: 'py',
 						name: 'Python'

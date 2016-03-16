@@ -29,7 +29,7 @@
 			_onOpen: function (event) {
 				this.fire('ws-open', event);
 				console.log('socket opened');
-				this.send(util.user().id);
+				this.send('open_connection');
 			},
 			_onClose: function (event) {
 				this.fire('ws-close', event);

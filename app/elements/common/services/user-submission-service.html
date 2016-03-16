@@ -1,0 +1,46 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="user-submission-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="postOutput"
+			method="POST"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script>
+	//TODO add requests from code editor here too
+		Polymer({
+			is: 'user-submission-service',
+			properties: {
+			},
+			submitOutput: function(testId, name, value, mimeType){
+				var body = new FormData();
+				var f = this.getFile(name, value, mimeType);
+				body.append('file', f, f.name);
+
+				this.$.postOutput.body = body;
+				this.$.postOutput.url = util.build('/results/' + localStorage.getItem('result') + '/tests/' + testId +'/output');
+				this.$.postOutput.generateRequest();
+			},
+			getFile: function(name, value, mimeType) {
+				var blob = new Blob([value], {type: mimeType});
+				blob.name = name;
+				return blob;
+			},
+			_onResponse: function(r){
+				this.fire('response', r);
+			},
+			_onError: function(res, req){
+				this.fire('error', {res: res, req: req});
+			}
+		});
+	</script>
+</dom-module>
