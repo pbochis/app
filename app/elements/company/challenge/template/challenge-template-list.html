@@ -10,7 +10,7 @@
 		}
 	</style>
 	<template>
-		<challenge-template-service id="challengeService" challenge-templates="{{challengeTemplates}}"></challenge-template-service>
+		<challenge-template-service id="challengeTemplateService" challenge-templates="{{challengeTemplates}}"></challenge-template-service>
 
 		<div class="horizontal layout wrap challenge-template-list ">
 			<template is="dom-repeat" items="{{challengeTemplates}}">
@@ -28,7 +28,7 @@
 				}
 			},
 			getChallenges: function () {
-				this.$.challengeService.getAll();
+				this.$.challengeTemplateService.getAll();
 			}
 		});
 	</script>

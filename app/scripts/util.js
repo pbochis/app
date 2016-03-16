@@ -69,6 +69,21 @@ var util = {
 		var s = Math.floor(d % 60);
 		return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2) + ':' + ('0' + s).slice(-2);
 	},
+	formatDate: function(date, ommitTime){
+		var month = Number(date.getMonth()) + 1;
+		var formattedDate = date.getDate() + '-' + month + '-' + date.getFullYear();
+		if (!ommitTime){
+			formattedDate = formattedDate + ' ' + this.formatTime(date.getHours()) + ':' + this.formatTime(date.getMinutes());
+		}
+		return formattedDate;
+	},
+	formatTime: function(timeField){
+		if (timeField < 10){
+			return '0' + timeField;
+		}
+		return timeField;
+
+	},
 	initialError: undefined,
 	languages: [
 		'java',

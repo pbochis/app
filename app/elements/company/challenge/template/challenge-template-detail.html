@@ -4,6 +4,7 @@
 <link rel="import" href="/elements/common/skill/skill-polygon.html">
 <link rel="import" href="/elements/company/task/task-card.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 
@@ -66,6 +67,7 @@
 					<span>Invite candidates</span>
 				</div>
 				<h4>Leaderboard</h4>
+				<paper-button on-click="_createChallenge">ASDASDASDAS</paper-button>
 				<table>
 					<tr>
 						<th>#</th>
@@ -109,7 +111,7 @@
 					notify: true,
 					observer: '_taskChanged'
 				},
-				challengeTemplateIdy: {
+				challengeTemplateId: {
 					type: String
 				},
 				coders: {
@@ -148,6 +150,9 @@
 			},
 			_challengeTemplateAsList: function (challengeTemplate) {
 				return [challengeTemplate];
+			},
+			_createChallenge: function(){
+				page('/challenge/template/'+ this.challengeTemplate.id + '/create')
 			}
 		});
 	</script>

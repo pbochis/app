@@ -85,13 +85,13 @@
 						<div id="skillPolygonWrapper">
 							<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>
 						</div>
-						<template is="dom-if" if="{{!hasCompletedchallengeTemplates}}">
+						<template is="dom-if" if="{{!hasCompletedChallenges}}">
 							<h3 id="noActivity">User has no activity yet</h3>
 						</template>
 					</div>
 				</div>
 			</paper-material>
-			<template is="dom-if" if="{{hasCompletedchallengeTemplates}}">
+			<template is="dom-if" if="{{hasCompletedChallenges}}">
 				<div id="bottom" class="horizontal layout">
 					<paper-material id="midLeft" class="vertical layout" elevation="1">
 						<h3>Last challenge</h3>
@@ -101,9 +101,9 @@
 							<paper-button style="float: right;" class="secondary" raised on-click="_loadChallenge">Load more</paper-button>
 						</div>
 					</paper-material>
-					<template is="dom-if" if="{{displayPreviouschallengeTemplates}}">
+					<template is="dom-if" if="{{displayPreviousChallenges}}">
 						<paper-material id="midRight" elevation="1">
-							<h3>Previous challenge templates</h3>
+							<h3>Previous challenge</h3>
 							<template is="dom-repeat" items="{{previouschallengeTemplates}}">
 								<p>{{item.Name}}</p>
 							</template>
@@ -146,12 +146,12 @@
 						'Coding Speed': 0.7
 					}
 				},
-				hasCompletedchallengeTemplates: {
+				hasCompletedChallenges: {
 					type: Boolean,
 					value: false,
 					notify: true
 				},
-				displayPreviouschallengeTemplates: {
+				displayPreviousChallenges: {
 					type: Boolean,
 					value: false,
 					notify: true
@@ -160,8 +160,8 @@
 			refresh: function(){
 				this.lastChallenge = undefined;
 				this.previouschallengeTemplates = undefined;
-				this.hasCompletedchallengeTemplates = false;
-				this.displayPreviouschallengeTemplates = false;
+				this.hasCompletedChallenges = false;
+				this.displayPreviousChallenges = false;
 				this.$.skillPolygonWrapper.innerHTML = '';
 			},
 			getData: function(key){
@@ -176,13 +176,13 @@
 				if(challengeTemplates === undefined || challengeTemplates.length===0){
 					return;
 				}
-				this.hasCompletedchallengeTemplates = true;
+				this.hasCompletedChallenges = true;
 				this.lastChallenge = challengeTemplates[0];
 
 				if(challengeTemplates.length===1){
 					return;
 				}
-				this.displayPreviouschallengeTemplates = true;
+				this.displayPreviousChallenges = true;
 				this.previouschallengeTemplates = challengeTemplates.slice(1, challengeTemplates.length);
 			},
 			_loadChallenge: function(){

@@ -76,7 +76,6 @@
 				if (!this.$.form.validate()){
 					return;
 				}
-				console.log(this.candidates.length);
 				for (var i = 0; i < this.candidates.length; i++) {
 					this.$.userService.invite({
 						'email': this.candidates[i].email,

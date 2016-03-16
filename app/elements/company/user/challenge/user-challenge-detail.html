@@ -41,7 +41,7 @@
 		}
 	</style>
 	<template>
-		<challenge-template-service id="challengeService" challenge-template="{{challenge}}"></challenge-template-service>
+		<challenge-template-service id="challengeTemplateService" challenge-template="{{challenge}}"></challenge-template-service>
 		<result-service id="resultService" result="{{result}}"></result-service>
 		<user-service id="userService" user="{{user}}"></user-service>
 		<iron-ajax
@@ -107,7 +107,7 @@
 				this.previousChallenges = undefined;
 
 				this.$.userService.getById(userKey);
-				this.$.challengeService.getById(challengeKey);
+				this.$.challengeTemplateService.getById(challengeKey);
 			},
 			_challengeChanged: function(){
 				this.$.resultService.getByUserAndChallengeId(this.userKey, this.challengeKey);
