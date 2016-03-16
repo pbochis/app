@@ -1,13 +1,13 @@
 <link rel="import" href="challenge/user-challenge-detail.html">
 <link rel="import" href="/elements/common/services/user-service.html">
-<link rel="import" href="/elements/common/services/challenge-service.html">
+<link rel="import" href="/elements/common/services/challenge-template-service.html">
 <link rel="import" href="/elements/common/services/profile-service.html">
 <link rel="import" href="/elements/common/skill/skill-polygon.html">
 
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-
+<!--TODO this element is very outdated. Must be fixed-->
 <dom-module id="user-detail">
 	<style>
 		:host {
@@ -61,7 +61,7 @@
 
 	<template>
 		<user-service id="userService" user="{{user}}"></user-service>
-		<challenge-service id="challengeService" challenges="{{challenges}}"></challenge-service>
+		<challenge-template-service id="challengeTemplateService" challenge-templates="{{challengeTemplates}}"></challenge-template-service>
 		<profile-service id="profileService" profile="{{profile}}"></profile-service>
 
 		<iron-ajax
@@ -85,13 +85,13 @@
 						<div id="skillPolygonWrapper">
 							<skill-polygon id="skillPolygon" skills="{{mockedSkills}}"></skill-polygon>
 						</div>
-						<template is="dom-if" if="{{!hasCompletedChallenges}}">
+						<template is="dom-if" if="{{!hasCompletedchallengeTemplates}}">
 							<h3 id="noActivity">User has no activity yet</h3>
 						</template>
 					</div>
 				</div>
 			</paper-material>
-			<template is="dom-if" if="{{hasCompletedChallenges}}">
+			<template is="dom-if" if="{{hasCompletedchallengeTemplates}}">
 				<div id="bottom" class="horizontal layout">
 					<paper-material id="midLeft" class="vertical layout" elevation="1">
 						<h3>Last challenge</h3>
@@ -101,10 +101,10 @@
 							<paper-button style="float: right;" class="secondary" raised on-click="_loadChallenge">Load more</paper-button>
 						</div>
 					</paper-material>
-					<template is="dom-if" if="{{displayPreviousChallenges}}">
+					<template is="dom-if" if="{{displayPreviouschallengeTemplates}}">
 						<paper-material id="midRight" elevation="1">
-							<h3>Previous challenges</h3>
-							<template is="dom-repeat" items="{{previousChallenges}}">
+							<h3>Previous challenge templates</h3>
+							<template is="dom-repeat" items="{{previouschallengeTemplates}}">
 								<p>{{item.Name}}</p>
 							</template>
 						</paper-material>
@@ -121,9 +121,9 @@
 					type: Object,
 					notify: true
 				},
-				challenges: {
+				challengeTemplates: {
 					type: Array,
-					observer: '_challengesChanged'
+					observer: '_challengeTemplatesChanged'
 				},
 				profile: {
 					type: Object,
@@ -132,7 +132,7 @@
 				lastChallenge: {
 					type: Object
 				},
-				previousChallenges: {
+				previouschallengeTemplates: {
 					type: Array,
 					notify: true
 				},
@@ -146,12 +146,12 @@
 						'Coding Speed': 0.7
 					}
 				},
-				hasCompletedChallenges: {
+				hasCompletedchallengeTemplates: {
 					type: Boolean,
 					value: false,
 					notify: true
 				},
-				displayPreviousChallenges: {
+				displayPreviouschallengeTemplates: {
 					type: Boolean,
 					value: false,
 					notify: true
@@ -159,9 +159,9 @@
 			},
 			refresh: function(){
 				this.lastChallenge = undefined;
-				this.previousChallenges = undefined;
-				this.hasCompletedChallenges = false;
-				this.displayPreviousChallenges = false;
+				this.previouschallengeTemplates = undefined;
+				this.hasCompletedchallengeTemplates = false;
+				this.displayPreviouschallengeTemplates = false;
 				this.$.skillPolygonWrapper.innerHTML = '';
 			},
 			getData: function(key){
@@ -172,18 +172,18 @@
 			getInitialLetter: function(user) {
 				return (user.Name || user.Address).charAt(0).toUpperCase();
 			},
-			_challengesChanged: function(challenges){
-				if(challenges === undefined || challenges.length===0){
+			_challengeTemplatesChanged: function(challengeTemplates){
+				if(challengeTemplates === undefined || challengeTemplates.length===0){
 					return;
 				}
-				this.hasCompletedChallenges = true;
-				this.lastChallenge = challenges[0];
+				this.hasCompletedchallengeTemplates = true;
+				this.lastChallenge = challengeTemplates[0];
 
-				if(challenges.length===1){
+				if(challengeTemplates.length===1){
 					return;
 				}
-				this.displayPreviousChallenges = true;
-				this.previousChallenges = challenges.slice(1, challenges.length);
+				this.displayPreviouschallengeTemplates = true;
+				this.previouschallengeTemplates = challengeTemplates.slice(1, challengeTemplates.length);
 			},
 			_loadChallenge: function(){
 				// TODO(victorbalan): create routing module that passes the objects with the
@@ -191,7 +191,7 @@
 				page.redirect('/user/' + this.user.Key + '/challenge/' + this.lastChallenge.Key);
 			},
 			_profileChanged: function(profile){
-				this.$.challengeService.getLatestChallengesByProfileId(profile.Key);
+				this.$.challengeTemplateService.getLatestChallengeTemplatesByProfileId(profile.Key);
 			}
 		});
 	</script>
