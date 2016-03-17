@@ -10,9 +10,8 @@
 
 <dom-module id="challenge-template-detail">
 	<style>
-		#inviteCandidates {
+		.inviteCandidates {
 			cursor: pointer;
-			float: right;
 		}
 
 		#inviteCandidates:active {
@@ -41,7 +40,7 @@
 		<challenge-template-service id="challengeTemplateService" challenge-template="{{challengeTemplate}}"></challenge-template-service>
 		<task-service id="taskService" task="{{task}}"></task-service>
 
-		<invite-candidates id="inviteCandidatesModal" challenges="{{challengeTemplateAsList}}"></invite-candidates>
+		<invite-candidates id="inviteCandidatesModal"></invite-candidates>
 		<div class="grid vertical layout mainContent">
 			<div class="horizontal layout">
 				<paper-material class="card grid-element" elevation="1">
@@ -62,12 +61,23 @@
 			</div>
 
 			<paper-material class="card grid-row">
-				<div id="inviteCandidates" on-click="_inviteCandidates">
-					<iron-icon icon="mail"></iron-icon>
-					<span>Invite candidates</span>
+				<h4>Challenges for this template</h4>
+				<div class="layout vertical">
+					<template is="dom-repeat" items="{{challengeTemplate.challenges}}">
+						<div class="layout horizontal">
+							<div class="flex">{{item.name}}</div>
+							<div class="inviteCandidates" on-click="_inviteCandidates">
+								<iron-icon icon="mail"></iron-icon>
+								<span>Invite candidates</span>
+							</div>
+						</div>
+					</template>
 				</div>
+				<paper-button on-click="_createChallenge">New challenge</paper-button>
+			</paper-material>
+
+			<paper-material class="card grid-row">
 				<h4>Leaderboard</h4>
-				<paper-button on-click="_createChallenge">ASDASDASDAS</paper-button>
 				<table>
 					<tr>
 						<th>#</th>
@@ -133,19 +143,19 @@
 				this.push('tasks', this.task);
 			},
 			loadData: function (challengeTemplateId) {
-				if (this.challengeTemplateId === challengeTemplateId) {
-					return;
-				}
 				this.challengeTemplateId = challengeTemplateId;
 				this.$.challengeTemplateService.getById(challengeTemplateId);
 			},
 			computeDuration: function (challengeTemplate) {
-				return util.computeDuration(challengeTemplate.duration);
+				if (!!challengeTemplate){
+					return util.computeDuration(challengeTemplate.duration);
+				}
 			},
 			computeIndex: function (index) {
 				return index + 1;
 			},
-			_inviteCandidates: function () {
+			_inviteCandidates: function (e) {
+				this.$.inviteCandidatesModal.challenges = [e.model.__data__.item];
 				this.$.inviteCandidatesModal.toggle();
 			},
 			_challengeTemplateAsList: function (challengeTemplate) {

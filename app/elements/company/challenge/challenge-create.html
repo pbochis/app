@@ -26,7 +26,7 @@
 		<div class="mainContent">
 			<paper-material class="card" elevation="1">
 				<form is="iron-form" id="challengeForm">
-					<paper-input id="name" class="margined" label="Name" value="{{challenge.name}}"></paper-input>
+					<paper-input id="name" class="margined" label="Name" value="{{challenge.name}}" required></paper-input>
 					<paper-input id="canonicalName" class="margined" label="Canonical name*" value="{{challenge.canonicalName}}" required></paper-input>
 					<paper-checkbox id="inviteOnly" value="{{challenge.inviteOnly}}" checked>Invite only</paper-checkbox>
 					<date-time-picker id="startDate" label="Fixed start date" date-time="{{challenge.startDate}}"></date-time-picker>
@@ -57,14 +57,14 @@
 					console.log('invalid');
 					return;
 				}
-				this.$.challengeService.save(this.challengeTemplate);
+				this.$.challengeService.save(this.challengeTemplate, this.challenge);
 			},
 			_clearChallenge: function(){
 				this.challengeTemplateToSave = {};
 			},
 			_savedChallengeChanged: function(){
 				this.challenge = {};
-				page('/challenge/' + this.challengeTemplate);
+				page('/challenges/' + this.challengeTemplate);
 			}
 		});
 	</script>
