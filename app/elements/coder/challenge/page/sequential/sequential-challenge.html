@@ -93,7 +93,7 @@
 				'challenge-timeout': '_challengeTimeout',
 				'server-finished-task': '_serverFinishedTask'
 			},
-			afterPropertiesSet: function
+			afterPropertiesSet: function() {
 				this.contentStyle = '';
 				var currentTask = '';
 				if(this.result.startTimes){
