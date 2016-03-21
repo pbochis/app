@@ -1,11 +1,15 @@
 <link rel="import" href="/elements/common/markdown/render-markdown.html">
 <link rel="import" href="/elements/common/services/task-service.html">
 <link rel="import" href="/elements/common/services/endpoint-service.html">
+<link rel="import" href="/elements/common/services/runner-service.html">
 
 <link rel="import" href="/bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
 
 <dom-module id="task-form">
 	<style>
@@ -33,6 +37,7 @@
 	</style>
 	<template>
 		<task-service id="taskService" task="{{savedTask}}"></task-service>
+		<runner-service id="runnerService" runners="{{runners}}"></runner-service>
 		<endpoint-service id="endpointService" endpoints="{{endpoints}}"></endpoint-service>
 
 		<div class="mainContent">
@@ -42,19 +47,26 @@
 					<paper-input id="name" label="Name" value="{{task.name}}" required></paper-input>
 					<iron-autogrow-textarea placeHolder="Description" id="descriptionInput" bind-value="{{task.description}}" rows="5" max-rows="5" required></iron-autogrow-textarea>
 					<render-markdown markdown="{{task.description}}"></render-markdown>
-					<paper-input id="duration" label="Duration(minutes)" value="{{task.duration}}" required pattern="^[1-9][0-9]*$" auto-validate></paper-input>
+					<paper-input id="duration" label="Duration(minutes)" value="{{task.duration}}" required pattern="^[1-9][0-9]*$"></paper-input>
 					<iron-autogrow-textarea placeHolder="Instructions" id="instructionsInput" bind-value="{{task.instructions}}" rows="15" max-rows="15"></iron-autogrow-textarea>
 					<render-markdown markdown="{{task.instructions}}"></render-markdown>
 
-					<paper-dropdown-menu  class="self-center" id="endpoints" label="Endpoint" selected-item="{{selectedEndpoint}}" required>
+					<paper-dropdown-menu class="self-center" id="endpoints" label="Endpoint" selected-item="{{selectedEndpoint}}" required>
 						<paper-menu class="dropdown-content">
 							<template is="dom-repeat" items="{{endpoints}}">
 								<option value="{{item.id}}">{{item.name}}</option><br>
 							</template>
 						</paper-menu>
 					</paper-dropdown-menu>
+					<paper-dropdown-menu class="self-center" id="runners" label="Runner" selected-item="{{selectedRunner}}" required>
+						<paper-menu class="dropdown-content">
+							<template is="dom-repeat" items="{{runners}}">
+								<option value="{{item.id}}">{{item.name}}</option><br>
+							</template>
+						</paper-menu>
+					</paper-dropdown-menu>
 					<!--TODO: skills-->
-					<paper-button class="colorful" raised on-click="_saveTask">Create</paper-button>
+					<paper-button class="colorful" raised on-click="_saveTask">{{saveButtonLabel}}</paper-button>
 				</form>
 			</paper-material>
 		</div>
@@ -73,12 +85,9 @@
 					type: Array,
 					notify: true
 				},
-				selectedEndpoint: {
-					type: Object
-				},
-				languages: {
+				runners: {
 					type: Array,
-					value: util.languages
+					notify: true
 				},
 				task: {
 					type: Object,
@@ -87,17 +96,43 @@
 				savedTask: {
 					type: Object,
 					observer: '_savedTaskChanged'
+				},
+				edit: {
+					type: String,
+					reflectToAttribute: true,
+					observer: '_editSet'
+				},
+				taskId: {
+					type: Number,
+					reflectToAttribute: true
+				}
+			},
+			observers:[
+				'_afterPropertiesSet(taskId)'
+			],
+			_afterPropertiesSet: function(){
+			},
+			_editSet: function(){
+				if(this.edit === 'false'){
+					this.saveButtonLabel = 'Create';
+				}else{
+					this.saveButtonLabel = 'Update';
 				}
 			},
 			ready: function(){
 				this.$.endpointService.getEndpoints();
+				this.$.runnerService.getAll();
 			},
 			_saveTask: function(){
 				this.task.duration = this.task.duration * 60;
+				this.task.endpointId = this.selectedEndpoint ? this.selectedEndpoint.value : null;
+				this.task.runnerId = this.selectedRunner ? this.selectedRunner.value : null;
+				this.task.organizationId = util.organization().id;
+				this.task.skillMap = {'CODING_SPEED': 1.0};
 				this.$.taskService.save(this.task);
 			},
 			_savedTaskChanged: function(task){
-				page.redirect('/tasks/' + task.Key);
+				page.redirect('/tasks/' + task);
 			}
 		});
 	</script>

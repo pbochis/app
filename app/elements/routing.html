@@ -93,6 +93,13 @@ window.addEventListener('WebComponentsReady', function() {
 		Polymer.Base.importHref('/elements/company/task/task-form.html');
 	});
 
+	page('/task/edit/:id', function(context){
+		checkIsOrganization();
+		app.route = 'task-edit';
+		app.$.taskEditForm.taskId = context.params.id;
+		Polymer.Base.importHref('/elements/company/task/task-form.html');
+	});
+
 	page('/user/:userKey', function(context){
 		checkIsOrganization();
 		app.route = 'user';

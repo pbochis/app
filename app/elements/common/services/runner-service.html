@@ -1,11 +1,11 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
-<dom-module id="endpoint-service">
+<dom-module id="runner-service">
 	<template>
 		<iron-ajax
 		  id="getMultiple"
 		  method="GET"
-		  last-response="{{endpoints}}"
+		  last-response="{{runners}}"
 		  on-error="_onError"
 			with-credentials="true"
 		  >
@@ -14,19 +14,19 @@
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
 		Polymer({
-			is: 'endpoint-service',
+			is: 'runner-service',
 			behaviors: [
 				Behaviors.ServiceBehavior
 			],
 			properties: {
-				endpoints: {
+				runners: {
 					type: Array,
 					notify: true,
 					reflectToAttribute: true
 				}
 			},
-			getEndpoints: function(){
-				this.$.getMultiple.url = util.build('/endpoints');
+			getAll: function(){
+				this.$.getMultiple.url = util.build('/runners');
 				this.$.getMultiple.generateRequest();
 			},
 			_onError: function(err){
