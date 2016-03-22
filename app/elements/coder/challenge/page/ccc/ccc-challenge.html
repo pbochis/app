@@ -46,43 +46,21 @@
 			>
 		</iron-ajax>
 	</template>
+	<script type="application/javascript" src="/scripts/behaviors/challenge-behavior.js"></script>
 	<script>
 		Polymer({
 			// TODO(victorbalan): Refactor component and split logic and refactor requests.
 			is: 'ccc-challenge',
+			behaviors: [
+				Behaviors.ChallengeBehavior
+			],
 			properties: {
-				challenge: {
-					type: Object,
-					notify: true,
-					reflectToAttribute: true
-				},
-				result: {
-					type: Object,
-					notify: true,
-					reflectToAttribute: true
-				},
-				task: {
-					type: Object,
-					notify: true,
-					observer: '_taskChanged'
-				},
-				taskIndex: {
-					type: Number,
-					notify: true
-				},
 				contentStyle:{
 					type: String,
 					notify: true,
 					value: 'display: none;'
-				},
-				challengeStartTime: {
-					type: Number,
-					value: 0
 				}
 			},
-			observers: [
-				'afterPropertiesSet(challenge, result)'
-			],
 			listeners: {
 				'challenge-timeout': '_challengeTimeout',
 				'server-finished-task': '_serverFinishedTask',
@@ -95,92 +73,27 @@
 					alert('You must finish all levels to this level');
 				}
 			},
-			afterPropertiesSet: function(){
-				this.contentStyle = '';
-				this.taskIndex = 0;
-				var currentTask = '';
-				if(this.result.startTimes){
-					for(var i=0; i<this.challenge.tasks.length; i++){
-						if(new Date(this.result.startTimes[i]).getTime()>0){
-							this.taskIndex = i;
-							currentTask = this.challenge.tasks[this.taskIndex];
-						}
-					}
-				}
-				if(currentTask.id && this.taskIndex >= 0){
-					this.challengeStartTime = new Date(this.result.startTimes[0]).getTime();
-
-					this.task = currentTask;
-					this.$.coolNav.start();
-				}else{
-					this.startChallenge();
-				}
-			},
 			startChallenge: function() {
-				this.task = this.challenge.tasks[this.taskIndex];
-				this.startTask(this.task.id);
-				// TODO - update result and set starting time
+				this.contentStyle = '';
+				this.startTask();
 				this.$.coolNav.start();
 			},
-			startTask: function(taskId){
-				this.$.taskService.startTask(this.result.id, taskId);
+			startTask: function(){
+				var task = this.challenge.tasks[this.taskIndex];
+				this.$.taskService.startTask(this.result.id, task.id);
+				this.$.taskService.getById(task.id);
 			},
 			_serverFinishedTask: function(){
 				this._nextTask();
 			},
-			_taskChanged: function(){
-				if(!this.task){
-					return;
-				}
-				this.importHref('/elements/coder/challenge/tasks/' + this.task.endpoint.component + '.html', function(){
-					var webInterface = document.createElement(this.task.endpoint.component);
-					webInterface.task = this.task;
-
-					var element = this;
-					webInterface.addEventListener('task-finished', function(){
-						var msg = 'Are you sure you want to finish this task? You will not able to come back again and change it.';
-						if (!window.confirm(msg)) {
-							return;
-						}
-						// TODO(victorbalan): Do we really need this lastSubmission param?
-						// element.$.taskService.finishTask(element.result.Key, element.taskIndex, localStorage.getItem('lastSubmission'));
-						element._nextTask();
-					});
-
-					this._replaceContent(webInterface);
-				});
-			},
-			_nextTask: function(){
-				this.taskIndex++;
-				if(this.taskIndex < this.challenge.tasks.length){
-					this.task = this.challenge.tasks[this.taskIndex];
-					this.startTask(this.task.id);
-					return;
-				}
-				this.$.coolNav.stop();
-				// This starts the result computing
-				this.$.getResultRequest.url = util.build('/results/' + this.result.id);
-				this.$.getResultRequest.generateRequest();
-
-				this._importAndReplaceContent('/elements/coder/challenge/info/challenge-finished.html', 'challenge-finished');
-
-				app.finishChallenge();
-			},
 			_challengeTimeout: function(){
 				this._importAndReplaceContent('/elements/coder/challenge/info/challenge-timeout.html', 'challenge-timeout');
 			},
-			_replaceContent: function(element){
-				this.contentStyle = '';
-				this.$.content.innerHTML = '';
-				this.$.content.appendChild(element);
-			},
-			_importAndReplaceContent: function(importPath, elementName){
-				this.importHref(importPath, function(){
-					this._replaceContent(document.createElement(elementName));
-				});
-			},
 			_levelCompleted: function(){
 				this._nextTask();
+			},
+			elementTaskChanged: function(){
+
 			}
 		});
 

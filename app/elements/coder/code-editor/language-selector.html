@@ -26,27 +26,28 @@
 		Polymer({
 			is: 'language-selector',
 			properties: {
-				languages:{
-					type: Array,
-					notify: true,
-					reflectToAttribute: true
-				},
 				language: {
+					type: Object,
+					notify: true
+				},
+				task: {
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
 				}
 			},
 			observers: [
-				'afterPropertiesSet(languages)'
+				'afterPropertiesSet(task)'
 			],
-			afterPropertiesSet: function(languages){
-				if(languages.length > 0){
+			afterPropertiesSet: function(task){
+				if (task.languages) {
+					this.languages = task.languages;
+					return;
+				}
+
+				if(this.languages.length > 0){
 					this.$.languageMenu.selected = 0;
 				}
-			},
-			_select: function(e){
-				this.fire('language-change', e.detail.item.value);
 			}
 		});
 

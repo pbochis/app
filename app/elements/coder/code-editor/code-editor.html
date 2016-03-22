@@ -1,5 +1,6 @@
 <link rel="import" href="/elements/coder/challenge/sock-ws-element.html">
 <link rel="import" href="/elements/coder/challenge/ws-element.html">
+<link rel="import" href="/elements/common/services/user-submission-service.html">
 
 <dom-module id="code-editor">
 	<style>
@@ -14,6 +15,7 @@
 		}
 	</style>
 	<template>
+		<user-submission-service id="submissionService"></user-submission-service>
 		<ws-element url="{{wsUrl}}"></ws-element>
 		<div id="editor"></div>
 	</template>
@@ -34,7 +36,8 @@
 				},
 				language: {
 					type: String,
-					reflectToAttribute: true
+					reflectToAttribute: true,
+					observer: '_languageChanged'
 				},
 				filename: String,
 				mimeType: String,
@@ -44,7 +47,12 @@
 					value: false
 				}
 			},
-			// TODO refactor component. remove duplicate code
+			run: function() {
+				this.$.submissionService.run(this.taskId, this.language, this.getFile());
+			},
+			submit: function() {
+				this.$.submissionService.submit(this.taskId, this.language, this.getFile());
+			},
 			ready: function(){
 				this.wsUrl = util.getWSUrl('/ws');
 				ace.require('ace/ext/language_tools');
@@ -60,7 +68,7 @@
 						win: 'Ctrl-Enter',
 					},
 					exec: function(){
-						self.runCode();
+						self.runCodeNormal();
 						console.log('loading animation not started');
 					},
 					readOnly: true
@@ -71,50 +79,6 @@
 				if(this.loadCachedCode){
 					this.loadCached();
 				}
-			},
-			runCodeNormal: function() {
-				if(!this.language){
-					alert('no language selected.');
-					return;
-				}
-				var body = new FormData();
-				var f = this.getFile();
-				body.append('file', f, f.name);
-				body.append('language', this.language);
-				// NOTE(flowlo): This does not use iron-ajax because
-				// we need a multipart form.
-				var url = util.build('/tasks/' + this.taskId +'/run');
-				var xhr = new XMLHttpRequest();
-				xhr.onerror = function(e) {
-					// TODO(flowlo): Maybe pass this to util.error?
-					console.log(e);
-				};
-				xhr.withCredentials = true;
-				xhr.open('POST', url, true);
-				xhr.setRequestHeader('Authorization', localStorage.getItem('authorization'));
-				xhr.send(body);
-			},
-			runCode: function() {
-				if(!this.language){
-					alert('no language selected.');
-					return;
-				}
-				var body = new FormData();
-				var f = this.getFile();
-				body.append('file', f, f.name);
-				body.append('language', this.language);
-				// NOTE(flowlo): This does not use iron-ajax because
-				// we need a multipart form.
-				var url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + this.taskId +'/submissions');
-				var xhr = new XMLHttpRequest();
-				xhr.onerror = function(e) {
-					// TODO(flowlo): Maybe pass this to util.error?
-					console.log(e);
-				};
-				xhr.withCredentials = true;
-				xhr.open('POST', url, true);
-				xhr.setRequestHeader('Authorization', localStorage.getItem('authorization'));
-				xhr.send(body);
 			},
 			getFile: function() {
 				var blob = new Blob([this.$.editor.getValue()], {type: this.mimeType });
@@ -132,7 +96,15 @@
 				this.mimeType = f.type;
 				this.filename = f.name;
 			},
-			setMode: function(lang){
+			loadCached: function(){
+				this.$.editor.getSession().setValue(localStorage.cachedCode);
+			},
+			_languageChanged: function(){
+				if(this.language){
+					this._setMode(this.language);
+				}
+			},
+			_setMode: function(lang){
 				var mode;
 				switch (lang) {
 					case 'java':
@@ -152,9 +124,6 @@
 						break;
 				}
 				this.$.editor.getSession().setMode('ace/mode/' + mode);
-			},
-			loadCached: function(){
-				this.$.editor.getSession().setValue(localStorage.cachedCode);
 			}
 		});
 	</script>

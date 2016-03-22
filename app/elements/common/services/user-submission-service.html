@@ -8,7 +8,7 @@
 	</style>
 	<template>
 		<iron-ajax
-			id="postOutput"
+			id="post"
 			method="POST"
 			with-credentials="true"
 			on-response="_onResponse"
@@ -21,14 +21,32 @@
 			is: 'user-submission-service',
 			properties: {
 			},
+			submit: function(taskId, language, f){
+				var body = new FormData();
+				body.append('file', f, f.name);
+				body.append('language', language);
+
+				this.$.post.body = body;
+				this.$.post.url = util.build('/results/' + localStorage.getItem('result') + '/tasks/' + taskId +'/submissions');
+				this.$.post.generateRequest();
+			},
+			run: function(taskId, language, f){
+				var body = new FormData();
+				body.append('file', f, f.name);
+				body.append('language', language);
+
+				this.$.post.body = body;
+				this.$.post.url = util.build('/tasks/' + taskId +'/run');
+				this.$.post.generateRequest();
+			},
 			submitOutput: function(testId, name, value, mimeType){
 				var body = new FormData();
 				var f = this.getFile(name, value, mimeType);
 				body.append('file', f, f.name);
 
-				this.$.postOutput.body = body;
-				this.$.postOutput.url = util.build('/results/' + localStorage.getItem('result') + '/tests/' + testId +'/output');
-				this.$.postOutput.generateRequest();
+				this.$.post.body = body;
+				this.$.post.url = util.build('/results/' + localStorage.getItem('result') + '/tests/' + testId +'/output');
+				this.$.post.generateRequest();
 			},
 			getFile: function(name, value, mimeType) {
 				var blob = new Blob([value], {type: mimeType});
