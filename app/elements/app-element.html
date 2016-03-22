@@ -20,6 +20,22 @@
 					<register-page data-route="register"></register-page>
 
 					<user-detail id="userDetail" data-route="user" class="fullHeight"></user-detail>
+					<section data-route="challenge-templates">
+						<challenge-template-list id="challengeList"></challenge-template-list>
+					</section>
+
+					<section data-route="challenge-template-detail">
+						<challenge-template-detail id="challengeTemplateDetail"></challenge-template-detail>
+					</section>
+
+					<section data-route="challenge" class="fullHeight">
+						<challenge-page challenge-id="{{challenge}}"></challenge-page>
+					</section>
+
+					<section data-route="challenge-create" class="fullHeight">
+						<challenge-create id="challengeCreate"></challenge-create>
+					</section>
+
 
 					<error-page id="error" error="{{error}}" data-route="error"></error-page>
 					<paper-material elevation="1" data-route="unauthorized">
