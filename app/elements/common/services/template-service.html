@@ -47,7 +47,7 @@
 			getTemplates: function(language) {
 				this.app.startLoading();
 				this.templates = [];
-				this.$.getTemplateList.url = util.build('/tasks/' + this.task.Key + '/templates' + (language ? '?language=' + language : ''));
+				this.$.getTemplateList.url = util.build('/tasks/' + this.task.id + '/templates' + (language ? '?language=' + language : ''));
 				this.$.getTemplateList.generateRequest();
 			},
 			_onList: function(e) {

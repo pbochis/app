@@ -106,7 +106,9 @@
 				if(this.taskIndex > 0){
 					this.$$('#nav' + (this.taskIndex-1)).setState('completed');
 				}
-				this.$$('#nav' + this.taskIndex).setState('current');
+				if(this.$$('#nav' + this.taskIndex)){
+					this.$$('#nav' + this.taskIndex).setState('current');
+				}
 			},
 			_show: function(){
 				this.taskNavHeaderStyle = '';
