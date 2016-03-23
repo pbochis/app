@@ -2,16 +2,16 @@
 <script>
 window.addEventListener('WebComponentsReady', function() {
 	function checkIsOrganization() {
-		return !!localStorage.organization || page.redirect('/login');
+		return !!util.organization() || page.redirect('/login');
 	}
 
 	page('/', function() {
-		if (!localStorage.authorization){
-			page('/login');
-		}else if (util.organization()) {
+		if (util.organization()) {
 			page('/challenges');
-		} else {
+		} else if(util.user()){
 			page('/challenge');
+		} else {
+				page('/login');
 		}
 	});
 

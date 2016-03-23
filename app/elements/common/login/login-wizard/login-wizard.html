@@ -119,7 +119,7 @@ Polymer({
 	},
 	_onUser: function(r){
 		// A successful response means the user has successfully authenticated
-		localStorage.authorization = 'Basic ' + btoa(this.email + ':' + this.password);
+		localStorage.authorization = 'to_be_removed';
 		localStorage.user = JSON.stringify(r.detail.response);
 		this.$.organizationRequest.url = util.build('/user/organization');
 		this.$.organizationRequest.generateRequest();

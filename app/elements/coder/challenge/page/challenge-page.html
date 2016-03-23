@@ -89,7 +89,7 @@
 			},
 			onResultError: function(e) {
 				if(e.detail.request.xhr.status === 403){
-					page.redirect('/user/' + JSON.parse(localStorage.getItem('user')).Key + '/challenge/' + localStorage.getItem('challenge'));
+					page.redirect('/user/' + JSON.parse(util.user().id + '/challenge/' + this.challengeId);
 					return;
 				}
 				util.error(e);
