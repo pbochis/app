@@ -56,10 +56,10 @@
 				this.fire('user-error');
 			},
 			onOrganization: function() {
-				this.fire('user-ok', {user: this.loggedInUser, organization: this.$.organizationRequest.lastResponse})
+				this.fire('user-ok', {user: this.loggedInUser, organization: this.$.organizationRequest.lastResponse});
 			},
 			onOrganizationError: function() {
-				this.fire('user-ok', {user: this.loggedInUser})
+				this.fire('user-ok', {user: this.loggedInUser});
 			}
 		});
 	</script>

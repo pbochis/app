@@ -92,6 +92,9 @@
 				this.$.startTaskRequest.generateRequest();
 			},
 			getAll: function(){
+				if(!util.organization()){
+					return page.redirect('/');
+				}
 				this.app.startLoading();
 				this.$.getMultiTasks.url = util.build('/tasks?organization=' + util.organization().id);
 				this.$.getMultiTasks.generateRequest();
@@ -113,6 +116,10 @@
 				this.app.stopLoading();
 			},
 			_onResponse: function(){
+				this.app.stopLoading();
+			},
+			_onError: function(err){
+				util.error(err);
 				this.app.stopLoading();
 			}
 		});

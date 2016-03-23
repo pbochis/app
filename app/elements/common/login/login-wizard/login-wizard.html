@@ -87,7 +87,7 @@ Polymer({
 	login: function() {
 		this.$.cookieService.login('Basic ' + btoa(this.email + ':' + this.password));
 	},
-	_onUserError: function(err) {
+	_onUserError: function() {
 		// NOTE: HTTP 401 would normally cause a redirect to
 		// /login but we are already in the process of logging
 		// in, so this has to be dealt with here to avoid

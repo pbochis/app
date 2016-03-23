@@ -96,7 +96,7 @@
 					self.userInfo = e.detail;
 					self.refreshMenu();
 				});
-				cookieService.addEventListener('user-error', function(e){
+				cookieService.addEventListener('user-error', function(){
 					page.redirect('/login');
 				});
 				cookieService.login();
@@ -133,7 +133,6 @@
 				invitationRequest.url = util.build('/invite/auth/' + token);
 				var self = this;
 				invitationRequest.addEventListener('response', function(r){
-					localStorage.user = JSON.stringify({id: 0, name: 'mocked'});
 					self.initializeUserInfo();
 					page('/challenge/' + r.detail.response);
 				});
