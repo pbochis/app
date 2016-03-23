@@ -1,0 +1,83 @@
+<link rel="import" href="/bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="/bower_components/paper-progress/paper-progress.html">
+
+<dom-module id="app-nav">
+	<style>
+
+	</style>
+	<template>
+		<template is="dom-if" if="{{isLoggedIn}}">
+			<paper-toolbar>
+				<paper-icon-button icon="code"></paper-icon-button>
+				<div>CODUNO</div>
+				<div class="flex">
+					<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
+						<span class="flex-5"></span>
+						<template is="dom-if" if="{{isCompany}}">
+							<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
+							<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
+						</template>
+						<template is="dom-if" if="{{isCoder}}">
+							<paper-tab link><a href="/challenge" class="center-center horizontal layout fullHeight">Challenge</a></paper-tab>
+						</template>
+						<span class="flex-5"></span>
+					</paper-tabs>
+				</div>
+				<paper-menu-button horizontal-align="right">
+					<paper-icon-button icon="supervisor-account" class="dropdown-trigger"></paper-icon-button>
+					<paper-menu class="dropdown-content">
+						<paper-item><a href="/" style="color: #444444; text-decoration: none;">Settings</a></paper-item>
+						<paper-item><a href="/logout" style="color: #444444; text-decoration: none;">Logout</a></paper-item>
+					</paper-menu>
+				</paper-menu-button>
+				<paper-progress class="secnav bottom fit" indeterminate style$="{{progressStyle}}"></paper-progress>
+			</paper-toolbar>
+		</template>
+	</template>
+	<script>
+		Polymer({
+			is: 'app-nav',
+			properties: {
+				isLoggedIn: {
+					type: Boolean,
+					value: false
+				},
+				isCompany: {
+					type: Boolean,
+					value: false
+				},
+				isCoder: {
+					type: Boolean,
+					value: false
+				},
+				progressStyle: {
+					notify: true,
+					value: 'display: none;'
+				},
+				pendingRequests: {
+					type: Number,
+					value: 0
+				}
+			},
+			startLoading: function(){
+				if(this.pendingRequests === 0){
+					this.progressStyle = '';
+				}
+				this.pendingRequests ++;
+			},
+			stopLoading: function(){
+				this.pendingRequests --;
+				if(this.pendingRequests === 0){
+					this.progressStyle = 'display: none;';
+				}
+			},
+			refresh: function(){
+				this.isCompany = !!util.organization();
+				this.isCoder = !!util.user() && !this.isCompany;
+				this.isLoggedIn = this.isCompany || this.isCoder;
+			}
+		});
+	</script>
+</dom-module>

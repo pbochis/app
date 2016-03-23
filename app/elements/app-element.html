@@ -1,6 +1,4 @@
-<link rel="import" href="/elements/common/coduno-iron-ajax.html">
 <link rel="import" href="/elements/elements.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="app-element">
 	<style>
@@ -13,99 +11,35 @@
 		}
 	</style>
 	<template>
-		<coduno-iron-ajax
-			id="invitationRequest"
-			on-response="onInvitationResponse"
-			debounce-duration="1000"
-			>
-		</coduno-iron-ajax>
-
 		<paper-header-panel class="fullHeight">
-			<template is="dom-if" if="{{isLoggedIn}}">
-				<paper-toolbar>
-					<paper-icon-button icon="code"></paper-icon-button>
-					<div>CODUNO</div>
-					<div class="flex">
-						<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
-							<span class="flex-5"></span>
-							<template is="dom-if" if="{{isCompany}}">
-								<paper-tab link><a href="/challenges" class="center-center horizontal layout">Challenges</a></paper-tab>
-								<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
-							</template>
-							<template is="dom-if" if="{{isCoder}}">
-								<paper-tab link><a href="/challenge" class="center-center horizontal layout fullHeight">Challenge</a></paper-tab>
-							</template>
-							<span class="flex-5"></span>
-						</paper-tabs>
-					</div>
-					<paper-menu-button horizontal-align="right">
-						<paper-icon-button icon="supervisor-account" class="dropdown-trigger"></paper-icon-button>
-						<paper-menu class="dropdown-content">
-							<paper-item><a href="/" style="color: #444444; text-decoration: none;">Settings</a></paper-item>
-							<paper-item><a href="/logout" style="color: #444444; text-decoration: none;">Logout</a></paper-item>
-						</paper-menu>
-					</paper-menu-button>
-					<paper-progress class="secnav bottom fit" indeterminate style$="{{progressStyle}}"></paper-progress>
-				</paper-toolbar>
-			</template>
+			<app-nav id="appNav"></app-nav>
 			<div id="sections" class="content">
 				<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight" style$="{{ironPagesStyle}}">
-					<section data-route="login">
-						<login-wizard id="loginWizard"></login-wizard>
-					</section>
+					<!-- COMMON -->
+					<login-wizard id="loginWizard" data-route="login"></login-wizard>
+					<register-page data-route="register"></register-page>
 
-					<section data-route="register">
-						<register-page></register-page>
-					</section>
+					<user-detail id="userDetail" data-route="user" class="fullHeight"></user-detail>
 
-					<section data-route="challenges">
-						<challenge-template-list id="challengeList"></challenge-template-list>
-					</section>
+					<error-page id="error" error="{{error}}" data-route="error"></error-page>
+					<paper-material elevation="1" data-route="unauthorized">
+						<h2 class="paper-font-display2">You are not authorized to see this page.</h2>
+					</paper-material>
+					<!-- COMPANY -->
+					<challenge-create id="challengeCreate" data-route="challenge-create" class="fullHeight"></challenge-create>
 
-					<section data-route="challenge-detail">
-						<challenge-template-detail id="challengeTemplateDetail"></challenge-template-detail>
-					</section>
+					<user-challenge-detail id="userChallengeDetail" data-route="userChallenge" class="fullHeight"></user-challenge-detail>
 
-					<section data-route="challenge" class="fullHeight">
-						<challenge-page challenge-id="{{challenge}}"></challenge-page>
-					</section>
+					<challenge-template-list id="challengeList" data-route="challenges"></challenge-template-list>
+					<challenge-template-detail id="challengeTemplateDetail" data-route="challenge-detail"></challenge-template-detail>
 
-					<section data-route="challenge-create" class="fullHeight">
-						<challenge-create id="challengeCreate"></challenge-create>
-					</section>
+					<task-form id="taskForm" edit="false" data-route="task-create"></task-form>
+					<task-form id="taskEditForm" edit="true" data-route="task-edit"></task-form>
+					<task-list id="taskList" data-route="tasks"></task-list>
+					<task-detail id="taskDetail" data-route="task-detail"></task-detail>
 
-					<section data-route="tasks">
-						<task-list id="taskList"></task-list>
-					</section>
-
-					<section data-route="task-detail">
-						<task-detail id="taskDetail"></task-detail>
-					</section>
-
-					<section data-route="task-create">
-						<task-form id="taskForm" edit="false"></task-form>
-					</section>
-
-					<section data-route="task-edit">
-						<task-form id="taskEditForm" edit="true"></task-form>
-					</section>
-
-					<section data-route="user" class="fullHeight">
-						<user-detail id="userDetail"></user-detail>
-					</section>
-
-					<section data-route="userChallenge" class="fullHeight">
-						<user-challenge-detail id="userChallengeDetail"></user-challenge-detail>
-					</section>
-
-					<section data-route="unauthorized">
-						<paper-material elevation="1">
-							<h2 class="paper-font-display2">You are not authorized to see this page.</h2>
-						</paper-material>
-					</section>
-					<section data-route="error">
-						<error-page id="error" error="{{error}}"></error-page>
-					</section>
+					<!-- CODER -->
+					<challenge-page challenge-id="{{challenge}}" data-route="challenge" class="fullHeight"></challenge-page>
 				</iron-pages>
 			</div>
 		</paper-header-panel>
@@ -126,19 +60,6 @@
 		Polymer({
 			is: 'app-element',
 			properties: {
-				isCompany: {
-					type: Boolean,
-					notify: true
-				},
-				isCoder: {
-					type: Boolean,
-					notify: true
-				},
-				isLoggedIn: {
-					type: Boolean,
-					notify: true,
-					value: true
-				},
 				selected: {
 					type: String,
 					notify: true,
@@ -148,17 +69,9 @@
 					type: String,
 					notify: true
 				},
-				progressStyle: {
-					notify: true,
-					value: 'display: none;'
-				},
 				error: {
 					type: Object,
 					notify: true
-				},
-				pendingRequests: {
-					type: Number,
-					value: 0
 				}
 			},
 			ready: function(){
@@ -166,35 +79,19 @@
 				// See https://github.com/Polymer/polymer/issues/1381
 				window.addEventListener('WebComponentsReady', function() {
 					// imports are loaded and elements have been registered
-					element.progressStyle = 'display: none;';
-					element.refreshMenu(element.isLoggedIn);
+					element.refreshMenu();
 				});
 			},
 			startLoading: function(){
-				if(this.pendingRequests === 0){
-					this._showProgress();
-				}
-				this.pendingRequests ++;
-			},
-			stopLoading: function(){
-				this.pendingRequests --;
-				if(this.pendingRequests === 0){
-					this._hideProgress();
-				}
-			},
-			_showProgress: function(){
-				this.progressStyle = '';
+				this.$.appNav.startLoading();
 				this.ironPagesStyle = 'display: none;';
 			},
-			_hideProgress: function(){
-				this.progressStyle = 'display: none;';
+			stopLoading: function(){
+				this.$.appNav.stopLoading();
 				this.ironPagesStyle = '';
 			},
-			finishChallenge: function() {
-				localStorage.removeItem('result');
-			},
 			login: function() {
-				this.refreshMenu(true);
+				this.refreshMenu();
 				if (!!util.organization()) {
 					return page.redirect('/challenges');
 				}
@@ -202,26 +99,27 @@
 			},
 			logout: function() {
 				localStorage.clear();
-				this.refreshMenu(false);
+				this.refreshMenu();
 				page.redirect('/login');
 			},
-			refreshMenu: function(loggedIn) {
-				this.isCompany = !!util.organization();
-				this.isCoder = !this.isCompany;
-				this.isLoggedIn = loggedIn;
+			refreshMenu: function() {
+				this.$.appNav.refresh();
 			},
 			displayInstalledToast: function() {
 				console.log('Caching complete.');
 			},
-			createChallenge: function() {
-				this.$.taskList.createChallenge();
-			},
 			inviteByToken: function(token){
-				this.$.invitationRequest.url = util.build('/invite/auth/' + token);
-				this.$.invitationRequest.generateRequest();
-			},
-			onInvitationResponse: function(r){
-				page('/challenge/' + r.detail.detail.response);
+				var invitationRequest = document.createElement('iron-ajax');
+				invitationRequest.withCredentials = true;
+				invitationRequest.url = util.build('/invite/auth/' + token);
+				invitationRequest.onResponse = this.onInvitationResponse;
+				var self = this;
+				invitationRequest.addEventListener('response', function(r){
+					localStorage.user = JSON.stringify({id: 0, name: 'mocked'});
+					self.refreshMenu();
+					page('/challenge/' + r.detail.response);
+				});
+				invitationRequest.generateRequest();
 			}
 		});
 	</script>
