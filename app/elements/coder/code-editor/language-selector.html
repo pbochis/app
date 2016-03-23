@@ -40,10 +40,10 @@
 				'afterPropertiesSet(task)'
 			],
 			afterPropertiesSet: function(task){
-				if (task.languages) {
-					this.languages = task.languages;
+				if (!task.languages) {
 					return;
 				}
+				this.languages = task.languages;
 
 				if(this.languages.length > 0){
 					this.$.languageMenu.selected = 0;

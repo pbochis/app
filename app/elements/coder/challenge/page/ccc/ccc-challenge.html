@@ -49,7 +49,6 @@
 	<script type="application/javascript" src="/scripts/behaviors/challenge-behavior.js"></script>
 	<script>
 		Polymer({
-			// TODO(victorbalan): Refactor component and split logic and refactor requests.
 			is: 'ccc-challenge',
 			behaviors: [
 				Behaviors.ChallengeBehavior
@@ -77,11 +76,6 @@
 				this.contentStyle = '';
 				this.startTask();
 				this.$.coolNav.start();
-			},
-			startTask: function(){
-				var task = this.challenge.tasks[this.taskIndex];
-				this.$.taskService.startTask(this.result.id, task.id);
-				this.$.taskService.getById(task.id);
 			},
 			_serverFinishedTask: function(){
 				this._nextTask();
