@@ -1,4 +1,6 @@
 language: node_js
+node_js:
+  - "4"
 
 notifications:
   email: never
@@ -14,8 +16,4 @@ script:
 
 deploy:
   provider: gae
-  edge:
-    source: flowlo/dpl
-    branch: gae
-  on:
-    all_branches: true
+  project: coduno
