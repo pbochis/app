@@ -62,9 +62,6 @@
 				}
 			},
 			generateRequest: function(){
-				if (localStorage.authorization){
-					this.headers.Authorization = localStorage.authorization;
-				}
 				this.$.ajaxRequest.generateRequest();
 			},
 			_onResponse: function(r){

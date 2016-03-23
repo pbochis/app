@@ -46,6 +46,11 @@ Behaviors.ChallengeBehavior = {
 		this.taskStartTime = new Date(this.result.startTimes[this.taskIndex]).getTime();
 		this.startChallenge();
 	},
+	startTask: function(){
+		var task = this.challenge.tasks[this.taskIndex];
+		this.$.taskService.startTask(this.result.id, task);
+		this.$.taskService.getById(task);
+	},
 	// TODO abstract task listeners
 	_taskChanged: function(){
 		if(!this.task){

@@ -46,6 +46,7 @@
 		}
 	</style>
 	<template>
+		<task-service id="taskService" task="{{task}}"></task-service>
 		<paper-material
 			id="task"
 			animated
@@ -109,7 +110,19 @@
 					type: String,
 					notify: true,
 					value: 'check-circle'
+				},
+				taskId: {
+					type: String,
+					notify: true,
+					reflectToAttribute: true,
+					observer: '_taskIdChanged'
 				}
+			},
+			_taskIdChanged: function(){
+				var self = this;
+				Polymer.Base.importHref('/elements/common/services/task-service.html', function(){
+					self.$.taskService.getById(self.taskId);
+				});
 			},
 			_onHovered: function () {
 				this.showSelect = !this.noSelect && true;

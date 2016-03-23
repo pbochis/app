@@ -1,5 +1,4 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="user-service.html">
 
 <dom-module id="cookie-service">
 	<style>
@@ -8,40 +7,59 @@
 		}
 	</style>
 	<template>
-		<user-service id="userService" user="{{user}}"></user-service>
 		<iron-ajax
-			id="getCookie"
-			method="PUT"
-			content-type="application/json"
-			last-response="{{profile}}"
+			id="userRequest"
+			method="GET"
+			handle-as="json"
+			on-response="_onUser"
+			on-error="_onUserError"
+			with-credentials="true">
+		</iron-ajax>
+		<iron-ajax
+			id="organizationRequest"
+			method="GET"
+			handle-as="json"
+			on-response="onOrganization"
+			on-error="onOrganizationError"
 			with-credentials="true"
-			on-response="_onResponse"
-			on-error="_onError">
+		>
 		</iron-ajax>
 	</template>
+	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'cookie-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
 			properties: {
-				user: {
-					type: Object,
-					notify: true,
-					observer: '_userChanged'
+			},
+			login: function(authHeader){
+				if(authHeader){
+					this.$.userRequest.headers = JSON.parse('{ "Authorization" : "' + authHeader + '"}');
 				}
+				this.$.userRequest.url = util.build('/user');
+				this.$.userRequest.generateRequest();
 			},
-			_userChanged: function(){
-				this.fire('cookie-user-changed', this.user);
+			_onUser: function(r){
+				// A successful response means the user has successfully authenticated
+				this.loggedInUser = r.detail.response;
+				this.$.organizationRequest.url = util.build('/user/organization');
+				this.$.organizationRequest.generateRequest();
 			},
-			getCookie: function(authorization){
-				this.$.getCookie.url = util.build('/cookie');
-				this.$.getCookie.headers = { 'Authorization': authorization};
-				this.$.getCookie.generateRequest();
+			_onUserError: function(err) {
+				if (err.detail.request.xhr.status !== 401) {
+					util.error(err);
+					return;
+				}
+
+				this.fire('user-error');
 			},
-			_onResponse: function(){
-				this.$.userService.whoAmI();
+			onOrganization: function() {
+				this.fire('user-ok', {user: this.loggedInUser, organization: this.$.organizationRequest.lastResponse});
 			},
-			_onError: function(err){
-				this.fire('cookie-error', err);
+			onOrganizationError: function() {
+				this.fire('user-ok', {user: this.loggedInUser});
 			}
 		});
 	</script>

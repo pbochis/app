@@ -15,7 +15,7 @@
 	</style>
 	<template>
 		<paper-dropdown-menu label="Language" selected-item="{{language}}">
-			<paper-menu id="languageMenu" class="dropdown-content" on-iron-select="_select">
+			<paper-menu id="languageMenu" class="dropdown-content">
 				<template is="dom-repeat" items="{{languages}}">
 					<option value="{{item.tag}}">{{item.name}}</option>
 				</template>
@@ -40,10 +40,10 @@
 				'afterPropertiesSet(task)'
 			],
 			afterPropertiesSet: function(task){
-				if (task.languages) {
-					this.languages = task.languages;
+				if (!task.languages) {
 					return;
 				}
+				this.languages = task.languages;
 
 				if(this.languages.length > 0){
 					this.$.languageMenu.selected = 0;

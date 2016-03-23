@@ -85,6 +85,9 @@
 				this.$.getMultiChallengeTemplates.generateRequest();
 			},
 			getAll: function(){
+				if(!util.organization()){
+					return page.redirect('/');
+				}
 				this.app.startLoading();
 				this.$.getMultiChallengeTemplates.url = util.build('/challenges/templates?organization=' + util.organization().id);
 				this.$.getMultiChallengeTemplates.generateRequest();

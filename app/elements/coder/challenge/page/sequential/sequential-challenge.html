@@ -68,11 +68,6 @@
 				this.startTask();
 				this.$.coolNav.start();
 			},
-			startTask: function(){
-				var task = this.challenge.tasks[this.taskIndex];
-				this.$.taskService.startTask(localStorage.result, task.id);
-				this.$.taskService.getById(task.id);
-			},
 			_serverFinishedTask: function(){
 				this._nextTask();
 			},
