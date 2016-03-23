@@ -54,17 +54,17 @@
 			_saveChallenge: function () {
 				this.challenge.inviteOnly = this.$.inviteOnly.checked;
 				if (!this.$.challengeForm.validate()){
-					console.log('invalid');
 					return;
 				}
-				this.$.challengeService.save(this.challengeTemplate, this.challenge);
+				this.challenge.templateId = this.challengeTemplate;
+				this.$.challengeService.save(this.challenge);
 			},
 			_clearChallenge: function(){
 				this.challengeTemplateToSave = {};
 			},
 			_savedChallengeChanged: function(){
 				this.challenge = {};
-				page('/challenges/' + this.challengeTemplate);
+				page('/challenges/' + this.savedChallenge);
 			}
 		});
 	</script>
