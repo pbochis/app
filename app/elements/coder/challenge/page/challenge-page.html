@@ -79,8 +79,7 @@
 				return;
 			},
 			startChallenge: function() {
-				this.$.resultRequest.url = util.build('/results');
-				this.$.resultRequest.body = this.challengeId;
+				this.$.resultRequest.url = util.build('/results/' + this.challengeId);
 				this.$.resultRequest.generateRequest();
 			},
 			onResultResponse: function(r) {
