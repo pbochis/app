@@ -1,34 +1,21 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/elements/common/coduno-iron-ajax.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/elements/common/login/login-page-email/login-page-email.html">
 <link rel="import" href="/elements/common/login/login-page-password/login-page-password.html">
 <link rel="import" href="/elements/common/login/login-page-u2f/login-page-u2f.html">
+<link rel="import" href="/elements/common/services/cookie-service.html">
 
 <dom-module id="login-wizard">
 	<template>
+		<cookie-service id="cookieService" on-user-error="_onUserError" on-user-ok="_userOk"></cookie-service>
 		<neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 			<login-page-email email="{{email}}" on-next="next"></login-page-email>
 			<login-page-password email="{{email}}" password="{{password}}" on-next="next" on-prev="prev"></login-page-password>
 			<login-page-u2f on-next="next"></login-page-u2f>
 		</neon-animated-pages>
 		<paper-toast id="toastCredentials" text="Invalid username/e-mail and password combination, please try again."></paper-toast>
-		<iron-ajax id="userRequest"
-		  	handle-as="json"
-		  	on-response="_onUser"
-		  	on-error="_onUserError"
-		    method="GET">
-		</iron-ajax>
-		<iron-ajax
-		  	id="organizationRequest"
-			on-response="onOrganization"
-			on-error="onOrganizationError"
-			method="GET"
-			with-credentials="true"
-		>
-		</iron-ajax>
 	</template>
 </dom-module>
 <script>
@@ -98,16 +85,9 @@ Polymer({
 		this.selected++;
 	},
 	login: function() {
-		this.$.userRequest.headers = JSON.parse('{ "Authorization" : "Basic ' + btoa(this.email + ':' + this.password) + '"}');
-		this.$.userRequest.url = util.build('/user');
-		this.$.userRequest.generateRequest();
+		this.$.cookieService.login('Basic ' + btoa(this.email + ':' + this.password));
 	},
 	_onUserError: function(err) {
-		if (err.detail.request.xhr.status !== 401) {
-			util.error(err);
-			return;
-		}
-
 		// NOTE: HTTP 401 would normally cause a redirect to
 		// /login but we are already in the process of logging
 		// in, so this has to be dealt with here to avoid
@@ -118,17 +98,8 @@ Polymer({
 		this.exitAnimation = 'slide-right-animation';
 		this.selected = pageEmail;
 	},
-	_onUser: function(r){
-		// A successful response means the user has successfully authenticated
-		this.loggedInUser = r.detail.response;
-		this.$.organizationRequest.url = util.build('/user/organization');
-		this.$.organizationRequest.generateRequest();
-	},
-	onOrganization: function() {
-		app.login(this.loggedInUser, this.$.organizationRequest.lastResponse);
-	},
-	onOrganizationError: function() {
-		app.login(this.loggedInUser);
+	_userOk: function(e, userInfo){
+		app.login(userInfo.user, userInfo.organization);
 	}
 });
 </script>

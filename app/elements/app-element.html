@@ -91,21 +91,15 @@
 			},
 			initializeUserInfo: function(){
 				var self = this;
-				var userRequest = document.createElement('iron-ajax');
-				userRequest.withCredentials = true;
-				userRequest.url = util.build('/user');
-				userRequest.addEventListener('response', function(r){
-					self.userInfo.user = r.detail.response;
-					var organizationRequest = document.createElement('iron-ajax');
-					organizationRequest.withCredentials = true;
-					organizationRequest.url = util.build('/user/organization');
-					organizationRequest.addEventListener('response', function(r){
-						self.userInfo.organization = r.detail.response;
-						self.refreshMenu();
-					});
-					organizationRequest.generateRequest();
+				var cookieService = document.createElement('cookie-service');
+				cookieService.addEventListener('user-ok', function(e){
+					self.userInfo = e.detail;
+					self.refreshMenu();
 				});
-				userRequest.generateRequest();
+				cookieService.addEventListener('user-error', function(e){
+					page.redirect('/login');
+				});
+				cookieService.login();
 			},
 			startLoading: function(){
 				this.$.appNav.startLoading();
