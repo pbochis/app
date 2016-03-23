@@ -10,6 +10,7 @@ before_install:
   -in service-account.json.enc -out service-account.json -d
 - npm install --global bower jshint
 - bower install
+- rm -rf bower_components/prism/tests
 
 script:
 - find . -path ./bower_components -prune -o -print | egrep "(html|js|json)$" | xargs jshint --extract=auto
