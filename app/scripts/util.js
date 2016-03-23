@@ -29,14 +29,12 @@ var util = {
 		return prefix + suffix;
 	},
 	organization: function() {
-		if (localStorage.organization) {
-			return JSON.parse(localStorage.organization);
-		}
+		var app = document.querySelector('#app');
+		return app.userInfo.organization;
 	},
 	user: function() {
-		if (localStorage.user) {
-			return JSON.parse(localStorage.user);
-		}
+		var app = document.querySelector('#app');
+		return app.userInfo.user;
 	},
 	computeDuration: function(duration) {
 		var minutes = Math.floor(duration / 60);

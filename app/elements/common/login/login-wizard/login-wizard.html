@@ -21,13 +21,14 @@
 		  	on-error="_onUserError"
 		    method="GET">
 		</iron-ajax>
-		<coduno-iron-ajax
+		<iron-ajax
 		  	id="organizationRequest"
 			on-response="onOrganization"
 			on-error="onOrganizationError"
 			method="GET"
+			with-credentials="true"
 		>
-		</coduno-iron-ajax>
+		</iron-ajax>
 	</template>
 </dom-module>
 <script>
@@ -119,17 +120,15 @@ Polymer({
 	},
 	_onUser: function(r){
 		// A successful response means the user has successfully authenticated
-		localStorage.authorization = 'to_be_removed';
-		localStorage.user = JSON.stringify(r.detail.response);
+		this.loggedInUser = r.detail.response;
 		this.$.organizationRequest.url = util.build('/user/organization');
 		this.$.organizationRequest.generateRequest();
 	},
 	onOrganization: function() {
-		localStorage.organization = JSON.stringify(this.$.organizationRequest.lastResponse);
-		app.login();
+		app.login(this.loggedInUser, this.$.organizationRequest.lastResponse);
 	},
 	onOrganizationError: function() {
-		app.login();
+		app.login(this.loggedInUser);
 	}
 });
 </script>

@@ -12,7 +12,7 @@
 	</style>
 	<template>
 		<paper-header-panel class="fullHeight">
-			<app-nav id="appNav"></app-nav>
+			<app-nav id="appNav" user-info="{{userInfo}}"></app-nav>
 			<div id="sections" class="content">
 				<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight" style$="{{ironPagesStyle}}">
 					<!-- COMMON -->
@@ -72,6 +72,11 @@
 				error: {
 					type: Object,
 					notify: true
+				},
+				userInfo: {
+					type: Object,
+					notify: true,
+					value: {}
 				}
 			},
 			ready: function(){
@@ -79,8 +84,28 @@
 				// See https://github.com/Polymer/polymer/issues/1381
 				window.addEventListener('WebComponentsReady', function() {
 					// imports are loaded and elements have been registered
-					element.refreshMenu();
+					if(element.route !== 'token' && element.route !== 'login' && element.route !== 'register'){
+						element.initializeUserInfo();
+					}
 				});
+			},
+			initializeUserInfo: function(){
+				var self = this;
+				var userRequest = document.createElement('iron-ajax');
+				userRequest.withCredentials = true;
+				userRequest.url = util.build('/user');
+				userRequest.addEventListener('response', function(r){
+					self.userInfo.user = r.detail.response;
+					var organizationRequest = document.createElement('iron-ajax');
+					organizationRequest.withCredentials = true;
+					organizationRequest.url = util.build('/user/organization');
+					organizationRequest.addEventListener('response', function(r){
+						self.userInfo.organization = r.detail.response;
+						self.refreshMenu();
+					});
+					organizationRequest.generateRequest();
+				});
+				userRequest.generateRequest();
 			},
 			startLoading: function(){
 				this.$.appNav.startLoading();
@@ -90,14 +115,14 @@
 				this.$.appNav.stopLoading();
 				this.ironPagesStyle = '';
 			},
-			login: function() {
+			login: function(user, organization) {
+				this.userInfo.user = user;
+				this.userInfo.organization = organization;
 				this.refreshMenu();
-				if (!!util.organization()) {
-					return page.redirect('/challenges');
-				}
-				page.redirect('/challenge');
+				page.redirect('/');
 			},
 			logout: function() {
+				this.userInfo = {};
 				localStorage.clear();
 				this.refreshMenu();
 				page.redirect('/login');
@@ -112,11 +137,10 @@
 				var invitationRequest = document.createElement('iron-ajax');
 				invitationRequest.withCredentials = true;
 				invitationRequest.url = util.build('/invite/auth/' + token);
-				invitationRequest.onResponse = this.onInvitationResponse;
 				var self = this;
 				invitationRequest.addEventListener('response', function(r){
 					localStorage.user = JSON.stringify({id: 0, name: 'mocked'});
-					self.refreshMenu();
+					self.initializeUserInfo();
 					page('/challenge/' + r.detail.response);
 				});
 				invitationRequest.generateRequest();

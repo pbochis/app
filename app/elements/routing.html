@@ -2,13 +2,13 @@
 <script>
 window.addEventListener('WebComponentsReady', function() {
 	function checkIsOrganization() {
-		return !!util.organization() || page.redirect('/login');
+		return !!app.userInfo.organization || page.redirect('/login');
 	}
 
 	page('/', function() {
-		if (util.organization()) {
+		if (app.userInfo.organization) {
 			page('/challenges');
-		} else if(util.user()){
+		} else if(app.userInfo.user){
 			page('/challenge');
 		} else {
 				page('/login');
@@ -16,6 +16,7 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/token/:token', function(context) {
+		app.route = 'token';
 		var token = context.params.token;
 		app.inviteByToken(token);
 	});

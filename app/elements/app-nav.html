@@ -59,6 +59,10 @@
 				pendingRequests: {
 					type: Number,
 					value: 0
+				},
+				userInfo: {
+					type: Object,
+					reflectToAttribute: true
 				}
 			},
 			startLoading: function(){
@@ -74,8 +78,8 @@
 				}
 			},
 			refresh: function(){
-				this.isCompany = !!util.organization();
-				this.isCoder = !!util.user() && !this.isCompany;
+				this.isCompany = !!this.userInfo.organization;
+				this.isCoder = !!this.userInfo.user && !this.isCompany;
 				this.isLoggedIn = this.isCompany || this.isCoder;
 			}
 		});
