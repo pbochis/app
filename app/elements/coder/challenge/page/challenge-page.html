@@ -1,7 +1,11 @@
 <link rel="import" href="sequential/sequential-challenge.html">
 <link rel="import" href="ccc/ccc-challenge.html">
+<link rel="import" href="time-until-challenge.html">
 <link rel="import" href="/elements/common/services/challenge-template-service.html">
 <link rel="import" href="/elements/common/services/result-service.html">
+<link rel="import" href="/elements/common/services/challenge-service.html">
+<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
 <dom-module id="challenge-page">
 	<style>
 		:host {
@@ -16,20 +20,24 @@
 			margin-top: 60px;
 			width:35%;
 		}
+		#remainingTime {
+			height: 100%;
+		}
+
+		time-until-challenge {
+			margin-top: 60px;
+			width:30%;
+		}
 	</style>
 	<template>
 		<challenge-template-service id="challengeTemplateService" challenge-template="{{challengeTemplate}}"></challenge-template-service>
 		<result-service id="resultService" result="{{result}}"></result-service>
-		<coduno-iron-ajax
-			id="resultRequest"
-			method="POST"
-			handle-as="json"
-			on-response="onResultResponse"
-			debounce-duration="1000"
-			content-type="application/json"
-			on-error="onResultError"
-			>
-		</coduno-iron-ajax>
+		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<div id="timeUntilChallenge" class="horizontal layout" style="{{remainingTimeStyle}}">
+			<span class="flex"></span>
+			<time-until-challenge class="self-center" challenge="{{challenge}}" on-start-challenge="_displayChallengeTemplate"></time-until-challenge>
+			<span class="flex"></span>
+		</div>
 		<div id="challenge" style$="{{contentStyle}}">
 			<paper-material id="startChallengeCard" elevation="1" class="card">
 				<div class="flex">
@@ -55,7 +63,15 @@
 					type: Object,
 					observer: '_challengeTemplateLoaded'
 				},
+				challenge: {
+					type: Object,
+					observer: '_challengeLoaded'
+				},
 				contentStyle:{
+					type: String,
+					value: 'display: none;'
+				},
+				remainingTimeStyle:{
 					type: String,
 					value: 'display: none;'
 				}
@@ -63,6 +79,13 @@
 			observers: [
 				'afterPropertiesSet(challengeId)'
 			],
+			_challengeLoaded: function(){
+				if(!this.challenge.startDate || ((this.challenge.startDate * 1000) - new Date().getTime()) <= 0){
+					this._displayChallengeTemplate();
+				}else{
+					this.remainingTimeStyle = '';
+				}
+			},
 			_resultLoaded: function(){
 				if(this.result){
 					localStorage.result = this.result.id;
@@ -74,24 +97,18 @@
 			_challengeTemplateLoaded: function(){
 				this.$.resultService.getMyResultByChallengeId(this.challengeId);
 			},
-			afterPropertiesSet: function(){
+			_displayChallengeTemplate: function(){
+				this.contentStyle = '';
+				this.remainingTimeStyle = 'display: none;';
+				this.$.timeUntilChallenge.innerHTML = '';
 				this.$.challengeTemplateService.getByScheduledChallengeId(this.challengeId);
+			},
+			afterPropertiesSet: function(){
+				this.$.challengeService.getById(this.challengeId);
 				return;
 			},
 			startChallenge: function() {
-				this.$.resultRequest.url = util.build('/results/' + this.challengeId);
-				this.$.resultRequest.generateRequest();
-			},
-			onResultResponse: function(r) {
-				this.result = r.detail.detail.response;
-				this.replaceContent();
-			},
-			onResultError: function(e) {
-				if(e.detail.request.xhr.status === 403){
-					page.redirect('/user/' + util.user().id + '/challenge/' + this.challengeId);
-					return;
-				}
-				util.error(e);
+				this.$.resultService.post(this.challengeId);
 			},
 			replaceContent: function(){
 				var webInterface = document.createElement(this.challengeTemplate.endpoint.component);
