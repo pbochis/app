@@ -8,6 +8,15 @@
 	</style>
 	<template>
 		<iron-ajax
+			id="postResult"
+			method="POST"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{result}}"
+			with-credentials="true"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
 			id="getSingleResult"
 			method="GET"
 			handle-as="json"
@@ -46,6 +55,10 @@
 					notify: true,
 					reflectToAttribute: true
 				}
+			},
+			post: function(id){
+				this.$.postResult.url = util.build('/results/' + id);
+				this.$.postResult.generateRequest();
 			},
 			getByUserAndChallengeId: function(userKey, challengeKey){
 				this.app.startLoading();

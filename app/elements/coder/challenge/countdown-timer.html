@@ -59,6 +59,7 @@
 				this._formatDuration();
 			},
 			timeout: function() {
+				this.stop();
 				this.fire('timeout');
 				return;
 			}

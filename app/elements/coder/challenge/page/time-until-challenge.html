@@ -1,0 +1,59 @@
+<link rel="import" href="/elements/common/description-list/description-list.html">
+<link rel="import" href="/elements/common/description-list/description-list-item.html">
+<link rel="import" href="/elements/coder/challenge/countdown-timer.html">
+
+<dom-module id="time-until-challenge">
+	<style>
+		:host {
+			display: block;
+			height: 100%;
+		}
+		#challenge {
+			height: 100%;
+		}
+
+		#startChallengeCard{
+			margin-top: 60px;
+			width:35%;
+		}
+	</style>
+	<template>
+		<paper-material class="card" elevation="1">
+			<div class="layout horizontal">
+				<h1 class="flex">{{challenge.name}}</h1>
+			</div>
+			<description-list>
+				<description-list-item label="Canonical name" value="{{challenge.canonicalName}}"></description-list-item>
+				<description-list-item label="Start date" value="{{challenge.startDate}}" date></description-list-item>
+				<description-list-item label="End date" value="{{challenge.endDate}}" date></description-list-item>
+			</description-list>
+			<div class="horizontal layout">
+				<p>Time until challenge</p>
+				<span class="flex"></span>
+				<countdown-timer id="timer" duration="{{timeUntilChallenge}}" class="self-center"></countdown-timer>
+			</div>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			is: 'time-until-challenge',
+			properties: {
+				challenge: {
+					type: Object,
+					reflectToAttribute: true
+				}
+			},
+			observers: [
+				'afterPropertiesSet(challenge)'
+			],
+			afterPropertiesSet: function(){
+				this.timeUntilChallenge = (this.challenge.startDate * 1000 - new Date().getTime())/1000;
+				this.$.timer.start();
+				var self = this;
+				this.$.timer.addEventListener('timeout', function(){
+					self.fire('start-challenge');
+				});
+			}
+		});
+	</script>
+</dom-module>

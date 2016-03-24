@@ -69,7 +69,7 @@ var util = {
 	},
 	formatDate: function(date, ommitTime){
 		if (!(date instanceof Date)){
-			date = new Date(date);
+			date = new Date(date * 1000);
 		}
 		var month = Number(date.getMonth()) + 1;
 		var formattedDate = date.getDate() + '-' + month + '-' + date.getFullYear();
