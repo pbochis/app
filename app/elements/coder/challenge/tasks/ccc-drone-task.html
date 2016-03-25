@@ -126,7 +126,7 @@
 						</div>
 						<div id="consoleWrapper">
 							<p style="font-family: 'Lucida Console', Monaco, monospace;white-space: pre-wrap;">{{normalConsoleText}}</p>
-							<test-stats-console id="console" task="{{task}}"></test-stats-console>
+							<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
 						</div>
 					</paper-material>
 				</template>
@@ -183,12 +183,12 @@
 				var detail = JSON.parse(m.detail);
 				if(detail.Test){
 					this.$$('#console').setOutput(detail);
-					if(detail.Failed === false){
-						this.fire('level-completed');
-					}
 				}else{
 					this.normalConsoleText = detail.Stdout + '\n\n' + detail.Stderr;
 				}
+			},
+			_allTestsGreen: function(){
+				this.fire('level-completed');
 			},
 			afterPropertiesSet: function(){
 				this.selected = 1;
