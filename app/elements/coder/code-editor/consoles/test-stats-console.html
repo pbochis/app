@@ -64,25 +64,25 @@
 				},
 				testStats: {
 					type: Object,
-					value: {},
-					observer: '_testStatsObserver'
+					value: {}
 				}
 			},
 			observers: [
 				'_afterPropertiesSet(task)'
 			],
-			_testStatsObserver: function(){
+			_testAllGreen: function(){
 				if(!this.tests){
 					return;
 				}
 				for(var i = 0;i<this.tests.length; i ++){
-					if(!this.testTstats[this.tests[i].id]){
+					if(!this.testStats[this.tests[i].id]){
 						return;
 					}
 				}
 				this.fire('all-green');
 			},
 			_afterPropertiesSet: function(){
+				this.testStats = {};
 				this.$.getTestsRequest.url = util.build('/tasks/' + this.task.id + '/tests');
 				this.$.getTestsRequest.generateRequest();
 			},
@@ -125,7 +125,11 @@
 				console.log(err);
 			},
 			appendTestStats: function(result){
-				this.testStats[result.Test] = result.Failed;
+				if(result.Failed === undefined){
+					result.Failed = true;
+				}
+				this.testStats[result.Test] = !result.Failed;
+				this._testAllGreen();
 				var element = this.$$('#test' + result.Test);
 				if(!!element){
 					element.setFailed(result.Failed);
