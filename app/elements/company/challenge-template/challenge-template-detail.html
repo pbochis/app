@@ -77,12 +77,16 @@
 					type: String,
 					computed: 'computeDuration(challengeTemplate)'
 				},
+				challengeTemplateId: {
+					reflectToAttribute: true,
+					observer: '_challengeTemplateIdChanged'
+				}
+			},
+			_challengeTemplateIdChanged: function(){
+				this.$.challengeTemplateService.getById(this.challengeTemplateId);
 			},
 			_taskChanged: function(){
 				this.push('tasks', this.task);
-			},
-			loadData: function (challengeTemplateId) {
-				this.$.challengeTemplateService.getById(challengeTemplateId);
 			},
 			computeDuration: function (challengeTemplate) {
 				if (!!challengeTemplate){

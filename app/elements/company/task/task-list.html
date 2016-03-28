@@ -92,11 +92,11 @@
 				'task-removed': '_removeTask',
 				'task-added': '_addTask'
 			},
+			ready: function(){
+				this.$.taskService.getAll();
+			},
 			createChallenge: function () {
 				this.$.challengeModal.toggle();
-			},
-			getTasks: function () {
-				this.$.taskService.getAll();
 			},
 		 	startChallengeCreation: function(){
 				this.showAllButtons = true;
