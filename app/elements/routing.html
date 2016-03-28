@@ -77,7 +77,7 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/challenge/template/:templateId/create', function(ctx) {
 		Polymer.Base.importHref('/elements/company/challenge/challenge-create.html', function(){
 			var page = document.createElement('challenge-create');
-			page.challengeTemplate = ctx.params.id;
+			page.challengeTemplate = ctx.params.templateId;
 			app.swapContent(page);
 		});
 	});
