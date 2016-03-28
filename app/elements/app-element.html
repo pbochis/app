@@ -14,34 +14,6 @@
 		<paper-header-panel class="fullHeight">
 			<app-nav id="appNav" user-info="{{userInfo}}"></app-nav>
 			<div id="sections" class="content">
-				<iron-pages attr-for-selected="data-route" selected="{{route}}" class="fullHeight" style$="{{ironPagesStyle}}">
-					<!-- COMMON -->
-					<login-wizard id="loginWizard" data-route="login"></login-wizard>
-					<register-page data-route="register"></register-page>
-
-					<user-detail id="userDetail" data-route="user" class="fullHeight"></user-detail>
-
-					<error-page id="error" error="{{error}}" data-route="error"></error-page>
-					<paper-material elevation="1" data-route="unauthorized">
-						<h2 class="paper-font-display2">You are not authorized to see this page.</h2>
-					</paper-material>
-					<!-- COMPANY -->
-					<challenge-create id="challengeCreate" data-route="challenge-create" class="fullHeight"></challenge-create>
-					<challenge-detail id="challengeDetail"  data-route="challenge-detail"></challenge-detail>
-
-					<user-challenge-detail id="userChallengeDetail" data-route="userChallenge" class="fullHeight"></user-challenge-detail>
-
-					<challenge-template-list id="challengeList" data-route="challenge-templates"></challenge-template-list>
-					<challenge-template-detail id="challengeTemplateDetail" data-route="challenge-template-detail"></challenge-template-detail>
-
-					<task-form id="taskForm" edit="false" data-route="task-create"></task-form>
-					<task-form id="taskEditForm" edit="true" data-route="task-edit"></task-form>
-					<task-list id="taskList" data-route="tasks"></task-list>
-					<task-detail id="taskDetail" data-route="task-detail"></task-detail>
-
-					<!-- CODER -->
-					<challenge-page challenge-id="{{challenge}}" data-route="challenge" class="fullHeight"></challenge-page>
-				</iron-pages>
 			</div>
 		</paper-header-panel>
 
@@ -81,11 +53,12 @@
 				}
 			},
 			ready: function(){
+				this.initUserInfo = true;
 				var element = this;
 				// See https://github.com/Polymer/polymer/issues/1381
 				window.addEventListener('WebComponentsReady', function() {
 					// imports are loaded and elements have been registered
-					if(element.route !== 'token' && element.route !== 'login' && element.route !== 'register'){
+					if(element.initUserInfo){
 						element.initializeUserInfo();
 					}
 				});
@@ -135,9 +108,13 @@
 				var self = this;
 				invitationRequest.addEventListener('response', function(r){
 					self.initializeUserInfo();
-					page('/challenge/' + r.detail.response);
+					page('/contest/' + r.detail.response);
 				});
 				invitationRequest.generateRequest();
+			},
+			swapContent: function(element){
+				this.$$('#sections').innerHTML = '';
+				this.$$('#sections').appendChild(element);
 			}
 		});
 	</script>

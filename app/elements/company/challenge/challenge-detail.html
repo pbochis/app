@@ -58,10 +58,14 @@
 				challenge: {
 					type: Object,
 					notify: true
+				},
+				challengeId: {
+					reflectToAttribute: true,
+					observer: '_challengeIdChanged'
 				}
 			},
-			loadData: function (challengeId) {
-				this.$.challengeService.getById(challengeId);
+			_challengeIdChanged: function(){
+				this.$.challengeService.getById(this.challengeId);
 			},
 			_formatDate: function(date){
 				if (!!date){
@@ -71,7 +75,6 @@
 			_inviteCandidates: function(){
 				this.$.inviteCandidates.challenges = [this.challenge];
 				this.$.inviteCandidates.toggle();
-				console.log(this.challenge);
 			}
 		});
 	</script>

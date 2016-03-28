@@ -165,7 +165,7 @@
 			},
 			_viewTaskDetail: function(){
 				if(!this.selectionView){
-					page.redirect('/tasks/' + this.task.id);
+					page('/tasks/' + this.task.id);
 				}else{
 					this._toggleSelectTask();
 				}
