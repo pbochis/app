@@ -35,6 +35,7 @@ Behaviors.ChallengeBehavior = {
 		'afterPropertiesSet(challenge, result)'
 	],
 	afterPropertiesSet: function() {
+		this.taskIndex = -1;
 		if(this.result.startTimes){
 			for(var i=0; i<this.challenge.tasks.length; i++){
 				if(new Date(this.result.startTimes[i]).getTime()>0){
@@ -44,11 +45,20 @@ Behaviors.ChallengeBehavior = {
 		}
 		this.challengeStartTime = new Date(this.result.startTimes[0]).getTime();
 		this.taskStartTime = new Date(this.result.startTimes[this.taskIndex]).getTime();
+		if(this.taskIndex !== -1){
+			this.getTask();
+		}else{
+			this.startTask();
+		}
 		this.startChallenge();
 	},
 	startTask: function(){
 		var task = this.challenge.tasks[this.taskIndex];
 		this.$.taskService.startTask(this.result.id, task);
+		this.$.taskService.getById(task);
+	},
+	getTask: function(){
+		var task = this.challenge.tasks[this.taskIndex];
 		this.$.taskService.getById(task);
 	},
 	// TODO abstract task listeners
