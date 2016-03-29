@@ -48,6 +48,7 @@ Behaviors.ChallengeBehavior = {
 		if(this.taskIndex !== -1){
 			this.getTask();
 		}else{
+			this.taskIndex = 0;
 			this.startTask();
 		}
 		this.startChallenge();
