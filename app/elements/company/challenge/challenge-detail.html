@@ -3,6 +3,7 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="/elements/common/services/challenge-service.html">
+<link rel="import" href="/elements/common/services/result-service.html">
 <link rel="import" href="/elements/common/description-list/description-list.html">
 <link rel="import" href="/elements/common/description-list/description-list-item.html">
 <link rel="import" href="/elements/common/leaderboard/challenge-leaderboard.html">
@@ -23,6 +24,7 @@
 	</style>
 	<template>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
 		<invite-candidates id="inviteCandidates"></invite-candidates>
 
 		<div class="grid vertical layout mainContent">
@@ -48,7 +50,7 @@
 					</template>
 				</paper-material>
 			<paper-material class="card">
-				<challenge-leaderboard leaderboard="{{challenge.leaderboard}}"></challenge-leaderboard>
+				<challenge-leaderboard leaderboard="{{leaderboard}}"></challenge-leaderboard>
 			</paper-material>
 		</div>
 	</template>
@@ -60,6 +62,10 @@
 					type: Object,
 					notify: true
 				},
+				leaderboard: {
+					type: Array,
+					notify: true
+				},
 				challengeId: {
 					reflectToAttribute: true,
 					observer: '_challengeIdChanged'
@@ -67,6 +73,7 @@
 			},
 			_challengeIdChanged: function(){
 				this.$.challengeService.getById(this.challengeId);
+				this.$.resultService.getLeaderboard(this.challengeId);
 			},
 			_formatDate: function(date){
 				if (!!date){

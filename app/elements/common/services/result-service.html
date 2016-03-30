@@ -26,16 +26,26 @@
 			on-response="_onResponse"
 			on-error="_onError">
 		</iron-ajax>
-			<iron-ajax
-				id="getMultiResults"
-				method="GET"
-				handle-as="json"
-				content-type="application/json"
-				last-response="{{results}}"
-				with-credentials="true"
-				on-response="_onResponse"
-				on-error="_onError">
-			</iron-ajax>
+		<iron-ajax
+			id="getMultiResults"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{results}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="getLeaderboard"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{leaderboard}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
 	<script>
@@ -54,6 +64,10 @@
 					type: Array,
 					notify: true,
 					reflectToAttribute: true
+				},
+				leaderboard: {
+					type: Array,
+					notify: true
 				}
 			},
 			post: function(id){
@@ -73,6 +87,10 @@
 			getMyResultByChallengeId: function(challengeId){
 				this.$.getSingleResult.url = util.build('/results/challenge/' + challengeId + '/my');
 				this.$.getSingleResult.generateRequest();
+			},
+			getLeaderboard: function(challengeId){
+				this.$.getLeaderboard.url = util.build('/challenge/' + challengeId + '/leaderboard');
+				this.$.getLeaderboard.generateRequest();
 			},
 			_onResponse: function(){
 				this.app.stopLoading();

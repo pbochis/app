@@ -9,13 +9,15 @@ Behaviors.ChallengeBehavior = {
 		},
 		challenge: {
 			type: Object,
-			notify: true,
-			reflectToAttribute: true
+			notify: true
+		},
+		challengeId: {
+			type: Number,
+			notify: true
 		},
 		result: {
 			type: Object,
-			notify: true,
-			reflectToAttribute: true
+			notify: true
 		},
 		task: {
 			type: Object,
@@ -72,6 +74,7 @@ Behaviors.ChallengeBehavior = {
 		this.importHref('/elements/coder/challenge/tasks/' + this.task.endpoint.component + '.html', function(){
 			var webInterface = document.createElement(this.task.endpoint.component);
 			webInterface.task = this.task;
+			webInterface.challengeId = this.challengeId;
 
 			var element = this;
 			webInterface.addEventListener('task-finished', function(){
