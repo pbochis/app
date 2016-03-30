@@ -102,8 +102,8 @@
 			<div class="flex">
 				<paper-material elevation="1" id="topRightHeader">
 					<paper-tabs selected="{{selected}}" align-bottom="true" no-ink="true" class="headerTab">
-						<paper-tab on-click="setInputView" class="headerTab">Input view</paper-tab>
-						<paper-tab on-click="setCodeEditorView">Code editor view</paper-tab>
+						<paper-tab>Input view</paper-tab>
+						<paper-tab>Code editor view</paper-tab>
 					</paper-tabs>
 				</paper-material>
 				<template is="dom-if" if="{{inputView}}">
@@ -150,7 +150,8 @@
 				},
 				selected: {
 					type: Number,
-					notify: true
+					notify: true,
+					observer: '_selectedChanged'
 				},
 				inputView: {
 					type: Boolean,
@@ -166,14 +167,18 @@
 				'ws-open': '_onWsOpen',
 				'ws-message': '_onMessage'
 			},
+			_selectedChanged: function(){
+				switch(this.selected){
+					case 0:
+						this.inputView = true;
+						return;
+					case 1:
+						this.inputView = false;
+						return;
+				}
+			},
 			_addFile: function(){
 				this.$$('#fileToRun').click();
-			},
-			setCodeEditorView: function(){
-				this.inputView = false;
-			},
-			setInputView: function(){
-				this.inputView = true;
 			},
 			setFiles: function() {
 				var files = this.$$('#fileToRun').files;
