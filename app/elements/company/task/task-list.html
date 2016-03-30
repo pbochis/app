@@ -118,7 +118,7 @@
 				this._taskSelectionLogic();
 			},
 			_createTask: function() {
-				page.redirect('/task/create');
+				page('/task/create');
 			},
 			_removeTask: function(event){
 				var index = this.selectedTasks.indexOf(event.detail);

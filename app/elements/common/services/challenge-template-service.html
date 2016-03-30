@@ -86,7 +86,7 @@
 			},
 			getAll: function(){
 				if(!util.organization()){
-					return page.redirect('/');
+					return page('/');
 				}
 				this.app.startLoading();
 				this.$.getMultiChallengeTemplates.url = util.build('/challenges/templates?organization=' + util.organization().id);

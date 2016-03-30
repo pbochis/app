@@ -132,7 +132,7 @@
 				this.$.taskService.save(this.task);
 			},
 			_savedTaskChanged: function(task){
-				page.redirect('/tasks/' + task);
+				page('/tasks/' + task);
 			}
 		});
 	</script>
