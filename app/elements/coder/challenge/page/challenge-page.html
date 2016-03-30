@@ -112,7 +112,9 @@
 			},
 			replaceContent: function(){
 				var webInterface = document.createElement(this.challengeTemplate.endpoint.component);
+				//TODO: for the dear love of god, we must refactor at least the names here
 				webInterface.challenge = this.challengeTemplate;
+				webInterface.challengeId = this.challengeId;
 				webInterface.result = this.result;
 				this.$.challenge.innerHTML = '';
 				this.$.challenge.appendChild(webInterface);

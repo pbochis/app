@@ -3,6 +3,8 @@
 <link rel="import" href="/elements/coder/challenge/tasks/task-display.html">
 <link rel="import" href="/elements/coder/code-editor/code-editor.html">
 <link rel="import" href="/elements/coder/input-view/input-view.html">
+<link rel="import" href="/elements/common/leaderboard/challenge-leaderboard.html">
+<link rel="import" href="/elements/common/services/result-service.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
@@ -10,16 +12,29 @@
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 
-<dom-module id="ccc-drone-task"><style>
+<dom-module id="ccc-drone-task">
+<style>
 	:host{
 		display: block;
 		height: 100%;
 		--paper-tabs-selection-bar-color: #87CEFA;
 		--paper-tab-ink: #87CEFA;
 	}
-	.headerTab{
-		color: black;
+	.header{
 		background: white;
+		color: black;
+		height: 50px;
+		width: calc(100% - 24px);
+		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+	}
+
+	.right {
+		margin: 16px 16px 8px 8px;
+		width: calc(100% - 24px);
+	}
+	.left {
+		margin: 16px 8px 16px 16px;
+		width: calc(100% - 24px);
 	}
 	#componentWrapper{
 		height: 100%;
@@ -39,7 +54,7 @@
 	#leftCard{
 		margin: 16px 8px 16px 16px;
 		width: calc(100% - 24px);
-		height: calc(100% - 32px);
+		height: calc(100% - 98px);
 	}
 	#topRightCard>h2{
 		height: 40px;
@@ -75,11 +90,6 @@
 		margin: 0;
 	}
 
-	#topRightHeader{
-		margin: 16px 16px 8px 8px;
-		height: 50px;
-		width: calc(100% - 24px);
-	}
 	#inputViewRightCard {
 		margin: 8px 16px 16px 8px;
 		width: calc(100% - 24px);
@@ -92,20 +102,27 @@
 	}
 </style>
 	<template>
+		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
 		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
+				<paper-tabs selected="{{leftTab}}" align-bottom="true" no-ink="true" class="header left">
+					<paper-tab on-click="_setDescriptionView">Task description</paper-tab>
+					<paper-tab on-click="_setLeaderboardView">Leaderboard</paper-tab>
+				</paper-tabs>
+
 				<paper-material id="leftCard" elevation="1">
-					<task-display task="{{task}}"></task-display>
+					<iron-pages selected="{{leftTab}}">
+						<task-display task="{{task}}"></task-display>
+						<challenge-leaderboard leaderboard="{{leaderboard}}"></challenge-leaderboard>
+					</iron-pages>
 				</paper-material>
 			</div>
 			<div class="flex">
-				<paper-material elevation="1" id="topRightHeader">
-					<paper-tabs selected="{{selected}}" align-bottom="true" no-ink="true" class="headerTab">
-						<paper-tab>Input view</paper-tab>
-						<paper-tab>Code editor view</paper-tab>
-					</paper-tabs>
-				</paper-material>
+				<paper-tabs selected="{{selected}}" align-bottom="true" no-ink="true" class="header right">
+					<paper-tab>Input view</paper-tab>
+					<paper-tab>Code editor view</paper-tab>
+				</paper-tabs>
 				<template is="dom-if" if="{{inputView}}">
 					<paper-material id="inputViewRightCard" elevation="1">
 						<input-view id="inputView" task="{{task}}"></input-view>
@@ -144,6 +161,10 @@
 					notify: true,
 					reflectToAttribute: true
 				},
+				challengeId: {
+					type: Number,
+					notify: true
+				},
 				language: {
 					type: String,
 					notify: true
@@ -157,10 +178,21 @@
 					type: Boolean,
 					notify: true,
 					value: false
-				}
+				},
+				leftTab: {
+					type: Number,
+					notify: true,
+					value: 0,
+					observer: '_selectedLeftTabChanged'
+				},
+				leaderboard: {
+					type: Array,
+					notify: true
+				},
+				intervalId: Number
 			},
 			observers: [
-				'afterPropertiesSet(task)'
+				'afterPropertiesSet(task, challengeId)'
 			],
 			listeners: {
 				'ws-error': '_onWsError',
@@ -177,8 +209,26 @@
 						return;
 				}
 			},
+			_selectedLeftTabChanged: function(){
+				switch (this.leftTab){
+					case 0:
+						clearInterval(this.intervalId);
+						return;
+					case 1:
+						this._startPollingLeaderboard();
+						return;
+				}
+			},
 			_addFile: function(){
 				this.$$('#fileToRun').click();
+			},
+			_startPollingLeaderboard: function(){
+				var that = this;
+				this.intervalId = setInterval(function(){
+					if (that.leftTab === 1){
+						that.$.resultService.getLeaderboard(that.challengeId);
+					}
+				}, 5000);
 			},
 			setFiles: function() {
 				var files = this.$$('#fileToRun').files;
@@ -206,6 +256,7 @@
 			},
 			afterPropertiesSet: function(){
 				this.selected = 1;
+				this.$.resultService.getLeaderboard(this.challengeId);
 			},
 			runCode: function(){
 				this.$$('#codeEditor').run();
@@ -219,6 +270,7 @@
 				this.$$('#console').loading();
 			},
 			finishTask: function(){
+				clearInterval(this.intervalId);
 				this.fire('task-finished');
 			}
 		});

@@ -1,0 +1,57 @@
+<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
+<dom-module id="challenge-leaderboard">
+	<template>
+		<style>
+			.header {
+				font-weight: bold;
+			}
+			.row {
+				@apply(--layout-horizontal);
+			}
+			.row div {
+				@apply(--layout-flex);
+			}
+			hr {
+				margin: 0;
+			}
+			.leaderboard {
+				@apply(--layout-vertical);
+				padding: 5px;
+			}
+		</style>
+		<div class="leaderboard">
+			<div class="header row">
+				<div>User</div>
+				<div>Finished tasks</div>
+				<div>Last finished task</div>
+			</div>
+			<hr>
+			<template is="dom-repeat" items="{{leaderboard}}">
+				<div class="row">
+					<div>{{item.user.username}}</div>
+					<div>{{item.tasksCompleted}}</div>
+					<div>{{_formatDate(item.lastLevelFinishDate)}}</div>
+				</div>
+				<hr>
+			</template>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-leaderboard',
+			properties: {
+				leaderboard: {
+					type: Array,
+					notify: true
+				}
+			},
+			_formatDate: function(date){
+				if (!!date){
+					return util.formatDate(date);
+				}
+				return '-';
+			}
+		});
+	</script>
+</dom-module>
