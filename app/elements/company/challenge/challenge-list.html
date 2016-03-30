@@ -1,13 +1,13 @@
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="/elements/company/candidate/invite/invite-candidates.html">
 
 <dom-module id="challenge-list">
 	<template>
-		<style>
+		<style include="iron-flex">
 			:host {
 				padding: 8px;
 			}
@@ -17,6 +17,9 @@
 			.row {
 				@apply(--layout-horizontal);
 				@apply(--layout-center-center);
+			}
+			.row-item {
+				@apply(--layout-flex);
 			}
 
 			hr {
@@ -29,8 +32,8 @@
 			<div class="rows">
 				<template is="dom-repeat" items="{{challengeTemplate.challenges}}">
 					<div class="row">
-						<div class="flex" style="cursor: pointer" on-click="_viewDetail">{{item.name}}</div>
-						<div class="flex">{{_formatDate(item.startDate)}}</div>
+						<div class="row-item" style="cursor: pointer" on-click="_viewDetail">{{item.name}}</div>
+						<div class="row-item">{{_formatDate(item.startDate)}}</div>
 						<paper-button on-click="_inviteCandidates">
 							<iron-icon icon="mail"></iron-icon>
 							Invite candidates

@@ -1,9 +1,10 @@
 <link rel="import" href="/elements/common/description-list/description-list.html">
 <link rel="import" href="/elements/common/description-list/description-list-item.html">
 <link rel="import" href="/elements/coder/challenge/countdown-timer.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="time-until-challenge">
-	<style>
+	<style include="iron-flex">
 		:host {
 			display: block;
 			height: 100%;
@@ -16,21 +17,41 @@
 			margin-top: 60px;
 			width:35%;
 		}
+
+		#timer {
+				@apply(--layout-self-center);
+		}
+
+		#timerWrapper {
+			@apply(--layout-horizontal);
+		}
+
+		span {
+			@apply(--layout-flex);
+		}
+
+		#challengeName {
+			@apply(--layout-flex);
+		}
+
+		#challengeWrapper {
+			@apply(--layout-horizontal);
+		}
 	</style>
 	<template>
 		<paper-material class="card" elevation="1">
-			<div class="layout horizontal">
-				<h1 class="flex">{{challenge.name}}</h1>
+			<div id="challengeWrapper" class="layout horizontal">
+				<h1 id="challengeName">{{challenge.name}}</h1>
 			</div>
 			<description-list>
 				<description-list-item label="Canonical name" value="{{challenge.canonicalName}}"></description-list-item>
 				<description-list-item label="Start date" value="{{challenge.startDate}}" date></description-list-item>
 				<description-list-item label="End date" value="{{challenge.endDate}}" date></description-list-item>
 			</description-list>
-			<div class="horizontal layout">
+			<div id="timerWrapper">
 				<p>Time until challenge</p>
-				<span class="flex"></span>
-				<countdown-timer id="timer" duration="{{timeUntilChallenge}}" class="self-center"></countdown-timer>
+				<span></span>
+				<countdown-timer id="timer" duration="{{timeUntilChallenge}}"></countdown-timer>
 			</div>
 		</paper-material>
 	</template>

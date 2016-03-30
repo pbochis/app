@@ -3,10 +3,10 @@
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-input/all-imports.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="login-page-email">
-	<style type="text/css">
+	<style type="text/css" include="iron-flex">
 iron-icon.huge {
 	--iron-icon-height: 50%;
 	--iron-icon-width: 50%;
@@ -51,6 +51,14 @@ paper-material > div > paper-button {
 	margin: 0 !important;
 	margin-top: 12px !important;
 }
+
+#signupWrapper {
+	@apply(--layout-horizontal);
+}
+
+span {
+	@apply(--layout-flex);
+}
 	</style>
 	<template>
 		<paper-material elevation="1">
@@ -63,10 +71,10 @@ paper-material > div > paper-button {
 				<paper-input type="text" label="Username or e-mail" value="{{email}}" autofocus="true" on-keydown="onKeydown"></paper-input>
 				<paper-button class$="{{empty}}" flat colorful on-change="checkEmpty" on-click="next">Next</paper-button>
 			</div>
-			<div class="horizontal layout">
-				<span class="flex"></span>
+			<div id="signupWrapper">
+				<span></span>
 				<a href="/register">Do not have an account? Sign up here.</a>
-				<span class="flex"></span>
+				<span></span>
 			</div>
 		</paper-material>
 	</template>

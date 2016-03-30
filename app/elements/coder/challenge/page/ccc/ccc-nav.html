@@ -4,13 +4,13 @@
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="/bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="/elements/coder/challenge/countdown-timer.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="/elements/coder/challenge/page/ccc/nav-level-element.html">
 <link rel="import" href="/elements/common/services/task-service.html">
 <link rel="import" href="/elements/coder/challenge/tasks/task-display.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="ccc-nav">
-	<style>
+	<style include="iron-flex">
 		:host{
 			display: block;
 		}
@@ -19,11 +19,15 @@
 			padding-top: 10px;
 			width: 50px;
 		}
-		#taskNavHeader{
+		#taskNavHeader {
 			height: 40px;
 			background: white;
 			margin: 0;
 			padding: 0px 20px;
+			@apply(--layout-horizontal);
+		}
+		#tabElements {
+			@apply(--layout-horizontal);
 		}
 		#backArrowWrapper{
 			padding-left: 10px;
@@ -41,17 +45,15 @@
 	</style>
 	<template>
 		<task-service id="taskService" task="{{clickedTask}}"></task-service>
-		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout" style$="{{taskNavHeaderStyle}}">
+		<paper-material id="taskNavHeader" elevation="1" style$="{{taskNavHeaderStyle}}">
 			<div class="timer"></div>
 			<span class="flex"></span>
-			<div id="tabElements" class="horizontal layout"></div>
+			<div id="tabElements"></div>
 			<span class="flex"></span>
 			<countdown-timer id="challengeTimer" class="timer" duration="{{challengeDuration}}" timeout="{{timeout}}"></countdown-timer>
 		</paper-material>
 		<paper-dialog id="dialog" style="background: white;">
-			<!-- <paper-dialog-scrollable> -->
 				<task-display task="{{clickedTask}}"></task-display>
-			<!-- </paper-dialog-scrollable> -->
 		</paper-dialog>
 	</template>
 	<script>

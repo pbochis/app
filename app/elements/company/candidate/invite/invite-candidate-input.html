@@ -2,20 +2,22 @@
 <link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="/bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="invite-candidate-input">
-	<style>
+	<style  include="iron-flex">
 		:host {
 			display: block;
 		}
 		#address {
 			width: 325px;
+			@apply(--layout-self-center);
 		}
 
 		#challenges {
 			width: 200px;
 			margin-left: 15px;
+			@apply(--layout-self-center);
 		}
 		option {
 			width: 200px;
@@ -35,12 +37,15 @@
 			bottom: -5px;
 			margin-left: 15px;
 			cursor: pointer;
+			@apply(--layout-self-center);
+		}
+		#wrapper {
+			@apply(--layout-horizontal)
 		}
 	</style>
 	<template>
-		<div class="horizontal layout">
+		<div id="wrapper">
 			<paper-input
-				class="self-center"
 				id="address"
 				label="person@example.com"
 				value="{{candidate.email}}"
@@ -51,7 +56,7 @@
 				<p id="challenge">{{challenges.0.Name}}</p>
 			</template>
 			<template is="dom-if" if="{{!isSingleChallenge}}">
-				<paper-dropdown-menu  class="self-center" id="challenges" label="Challenge" selected-item="{{selectedChallenge}}" required>
+				<paper-dropdown-menu  id="challenges" label="Challenge" selected-item="{{selectedChallenge}}" required>
 					<paper-menu class="dropdown-content">
 						<template is="dom-repeat" items="{{challenges}}">
 							<option value="{{item.Key}}">{{item.Name}}</option><br>
@@ -59,7 +64,7 @@
 					</paper-menu>
 				</paper-dropdown-menu>
 			</template>
-			<iron-icon class="self-center" icon="remove" on-click="_removeItem"></iron-icon>
+			<iron-icon icon="remove" on-click="_removeItem"></iron-icon>
 		</div>
 	</template>
 	<script>

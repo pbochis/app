@@ -1,12 +1,13 @@
-<link rel="import" href="/bower_components/paper-material/paper-material.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/elements/common/skill/skill-polygon.html">
 <link rel="import" href="/elements/common/markdown/render-markdown.html">
 <link rel="import" href="/elements/common/services/task-service.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="task-detail">
-	<style>
+	<style include="iron-flex">
 		.grid-element {
 			margin: 16px;
 			width: calc(50% - 64px);
@@ -16,11 +17,18 @@
 			margin: 16px;
 			width: calc(100% - 64px);
 		}
+
+		#wrapper {
+			@apply(--layout-vertical);
+		}
+		#description {
+			@apply(--layout-horizontal);
+		}
 	</style>
 
 	<template>
-		<div class="vertical layout mainContent">
-			<div class="horizontal layout">
+		<div id="wrapper" class="mainContent">
+			<div id="description">
 				<paper-material class="card grid-element" elevation="1">
 					<h1>{{task.name}}</h1>
 					<dl class="dl-horizontal">

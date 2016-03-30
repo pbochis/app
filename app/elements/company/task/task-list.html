@@ -1,19 +1,21 @@
 <link rel="import" href="task-card.html">
 <link rel="import" href="/elements/company/challenge-template/challenge-template-modal.html">
-<link rel="import" href="/elements/company/task/task-detail.html">
 <link rel="import" href="/elements/common/services/task-service.html">
+
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="task-list">
-	<style>
+	<style include="iron-flex">
 		:host{
 			display: block;
 			height: 100%;
 		}
 
-		.task-list {
+		.tasklist {
 			padding: 10px;
+			@apply(--layout-wrap);
+			@apply(--layout-horizontal);
 		}
 
 		#createTaskButton {
@@ -25,6 +27,7 @@
 		#header{
 			background-color: #7C7C7A;
 			padding: 0px 10px;
+			@apply(--layout-horizontal);
 		}
 
 		#headerText{
@@ -34,23 +37,28 @@
 
 		paper-icon-button{
 			color: white;
+			@apply(--layout-self-center);
+		}
+
+		span {
+			@apply(--layout-flex);
 		}
 	</style>
 	<template>
 		<task-service id="taskService" tasks="{{tasks}}"></task-service>
 
 		<template is="dom-if" if="{{displayHeader}}">
-			<div id="header" class="horizontal layout">
-				<paper-icon-button class="self-center" icon="clear" on-click="_resetSelected"></paper-icon-button>
+			<div id="header">
+				<paper-icon-button icon="clear" on-click="_resetSelected"></paper-icon-button>
 				<p id="headerText">{{header}}</p>
-				<div class="flex"></div>
-				<paper-icon-button class="self-center" icon="done" on-click="createChallenge"></paper-icon-button>
+				<span></span>
+				<paper-icon-button icon="done" on-click="createChallenge"></paper-icon-button>
 			</div>
 		</template>
 		<template is="dom-if" if="{{!showAllButtons}}">
 			<paper-fab id="createTaskButton" on-click="_createTask" icon="create"></paper-fab>
 		</template>
-		<div class="horizontal layout wrap task-list">
+		<div class="tasklist">
 			<template is="dom-repeat" items="{{tasks}}" as="task">
 				<task-card task="{{task}}" selection-view="{{showAllButtons}}">
 				</task-card>

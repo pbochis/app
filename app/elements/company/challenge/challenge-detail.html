@@ -1,4 +1,4 @@
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 
@@ -11,7 +11,7 @@
 <link rel="import" href="/elements/company/candidate/invite/invite-candidates.html">
 
 <dom-module id="challenge-detail">
-	<style>
+	<style include="iron-flex">
 		.card h1 {
 			padding: 20px 0;
 		}
@@ -29,6 +29,15 @@
 		th, td {
 			padding: 5px;
 		}
+		#wrapper {
+			@apply(--layout-vertical);
+		}
+		#inviteWrapper {
+			@apply(--layout-horizontal);
+		}
+		#challengeName {
+			@apply(--layout-flex);
+		}
 	</style>
 	<template>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
@@ -36,10 +45,10 @@
 		<invitation-service id="invitationService" invitations="{{invitations}}"></invitation-service>
 		<invite-candidates id="inviteCandidates"></invite-candidates>
 
-		<div class="grid vertical layout mainContent">
+		<div id="wrapper" class="grid mainContent">
 				<paper-material class="card" elevation="1">
-					<div class="layout horizontal">
-						<h1 class="flex">{{challenge.name}}</h1>
+					<div id="inviteWrapper">
+						<h1 id="challengeName">{{challenge.name}}</h1>
 						<paper-button on-click="_inviteCandidates">
 							<iron-icon icon="mail"></iron-icon>
 							Invite candidates
