@@ -33,7 +33,7 @@
 		<task-service id="taskService" task="{{task}}"></task-service>
 		<ccc-nav id="coolNav" total-tasks="{{challenge.tasks.length}}" task-index="{{taskIndex}}"
 			challenge-duration="{{challenge.duration}}" challenge-start-time="{{challengeStartTime}}"
-			on-task-switch="_onTaskSwitch">
+			task-ids="{{challenge.tasks}}">
 		</ccc-nav>
 
 		<div id="content" style$="{{contentStyle}}">
@@ -64,13 +64,6 @@
 				'challenge-timeout': '_challengeTimeout',
 				'server-finished-task': '_serverFinishedTask',
 				'level-completed': '_levelCompleted'
-			},
-			_onTaskSwitch: function(e, taskIndex){
-				if(taskIndex < this.taskIndex){
-					alert(this.challenge.tasks[taskIndex].instructions);
-				}else if(taskIndex > this.taskIndex){
-					alert('You must finish all levels to this level');
-				}
 			},
 			startChallenge: function() {
 				this.contentStyle = '';
