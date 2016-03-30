@@ -1,0 +1,48 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="invitation-service">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getMultiple"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{invitations}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+	</template>
+	<script type="application/javascript" src="/scripts/behaviors/service-behavior.js"></script>
+	<script>
+		Polymer({
+			is: 'invitation-service',
+			behaviors: [
+				Behaviors.ServiceBehavior
+			],
+			properties: {
+				invitations: {
+					type: Array,
+					notify: true,
+					reflectToAttribute: true
+				}
+			},
+			getByChallengeId: function(challengeId){
+				this.app.startLoading();
+				this.$.getMultiple.url = util.build('/challenges/' + challengeId + '/invitations');
+				this.$.getMultiple.generateRequest();
+			},
+			_onResponse: function(){
+				this.app.stopLoading();
+			},
+			_onError: function(){
+				this.app.stopLoading();
+			}
+		});
+	</script>
+</dom-module>
