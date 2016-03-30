@@ -58,6 +58,10 @@
 				 value: 'circle gray'
 			 }
 		 },
+		 refresh: function(){
+			 this.stopLoading();
+			 this.divClass = 'circle gray';
+		 },
 		 setFailed: function(failed){
 			 this.failed = failed;
 			 this.divClass = this.failed ? 'circle red': 'circle green';

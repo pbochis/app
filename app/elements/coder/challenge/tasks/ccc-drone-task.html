@@ -8,6 +8,7 @@
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="ccc-drone-task"><style>
 	:host{
@@ -91,6 +92,7 @@
 	}
 </style>
 	<template>
+		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
@@ -181,6 +183,13 @@
 			},
 			_onMessage: function(m){
 				var detail = JSON.parse(m.detail);
+				if(detail.error){
+					this.normalConsoleText = '';
+					this.$$('#console').show();
+					this.$$('#console').stopLoading();
+					this.$.toast.show();
+					return;
+				}
 				if(detail.Test){
 					this.$$('#console').setOutput(detail);
 				}else{
