@@ -1,6 +1,6 @@
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="/elements/common/services/challenge-template-service.html">
 <link rel="import" href="/elements/common/services/task-service.html">
@@ -9,7 +9,7 @@
 <link rel="import" href="/elements/company/challenge/challenge-list.html">
 
 <dom-module id="challenge-template-detail">
-	<style>
+	<style include="iron-flex">
 		.card h1 {
 			padding: 20px 0;
 		}
@@ -27,13 +27,25 @@
 			margin: 16px;
 			width: calc(100% - 64px);
 		}
+
+		#wrapper {
+			@apply(--layout-vertical);
+		}
+
+		#descriptionWrapper {
+			@apply(--layout-horizontal);
+		}
+		#tasks {
+			@apply(--layout-horizontal);
+			@apply(--layout-wrap);
+		}
 	</style>
 	<template>
 		<challenge-template-service id="challengeTemplateService" challenge-template="{{challengeTemplate}}"></challenge-template-service>
 		<task-service id="taskService" task="{{task}}"></task-service>
 
-		<div class="grid vertical layout mainContent">
-			<div class="horizontal layout">
+		<div id="wrapper" class="grid mainContent">
+			<div id="descriptionWrapper">
 				<paper-material class="card grid-element" elevation="1">
 					<h1>{{challengeTemplate.name}}</h1>
 					<dl class="dl-horizontal">
@@ -53,7 +65,7 @@
 
 			<challenge-list challenge-template="{{challengeTemplate}}"></challenge-list>
 
-			<div class="grid-row horizontal layout wrap">
+			<div id="tasks" class="grid-row">
 				<template is="dom-repeat" items="{{challengeTemplate.tasks}}">
 					<task-card task-id="{{item}}" no-select></task-card>
 				</template>

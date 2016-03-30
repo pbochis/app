@@ -2,27 +2,34 @@
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="app-nav">
-	<style>
-
-	</style>
 	<template>
+		<style include="iron-flex">
+			.tablink {
+				@apply(--layout-horizontal);
+				@apply(--layout-center-center);
+			}
+			span {
+				@apply(--layout-flex);
+			}
+		</style>
 		<template is="dom-if" if="{{isLoggedIn}}">
 			<paper-toolbar>
 				<paper-icon-button icon="code"></paper-icon-button>
 				<div>CODUNO</div>
 				<div class="flex">
 					<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
-						<span class="flex-5"></span>
+						<span></span>
 						<template is="dom-if" if="{{isCompany}}">
-							<paper-tab link><a href="/challengetemplates" class="center-center horizontal layout">Challenges</a></paper-tab>
-							<paper-tab link><a href="/tasks" class="center-center horizontal layout fullHeight">Tasks</a></paper-tab>
+							<paper-tab link><a href="/challengetemplates" class="tablink">Challenges</a></paper-tab>
+							<paper-tab link><a href="/tasks" class="tablink">Tasks</a></paper-tab>
 						</template>
 						<template is="dom-if" if="{{isCoder}}">
-							<paper-tab link><a href="/mychallenges" class="center-center horizontal layout fullHeight">My challenges</a></paper-tab>
+							<paper-tab link><a href="/mychallenges" class="tablink">My challenges</a></paper-tab>
 						</template>
-						<span class="flex-5"></span>
+						<span></span>
 					</paper-tabs>
 				</div>
 				<paper-menu-button horizontal-align="right">

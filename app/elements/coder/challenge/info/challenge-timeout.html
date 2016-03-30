@@ -1,6 +1,6 @@
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <dom-module id="challenge-timeout">
-	<style>
+	<style include="iron-flex">
 		:host{
 			display: block;
 		}
@@ -10,14 +10,22 @@
 			margin: 16px;
 			span: 16px;
 		}
+
+		#wrapper {
+			@apply(--layout-horizontal);
+		}
+
+		span {
+			@apply(--layout-flex);
+		}
 	</style>
 	<template>
-		<div class="horizontal layout">
-			<span class="flex"></span>
+		<div id="wrapper">
+			<span></span>
 			<paper-material elevation="1">
 				<h2>Time`s up!</h2>
 			</paper-material>
-			<span class="flex"></span>
+			<span></span>
 		</div>
 	</template>
 	<script>

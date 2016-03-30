@@ -1,8 +1,8 @@
 <link rel="import" href="test-stats-element.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="test-stats-console">
-	<style>
+	<style include="iron-flex">
 		:host{
 			display: block;
 			height: 100%;
@@ -14,6 +14,10 @@
 		}
 		#consoleWrapper{
 			overflow: auto;
+		}
+		#data{
+			@apply(--layout-horizontal);
+			@apply(--layout-wrap);
 		}
 	</style>
 	<template>
@@ -28,7 +32,7 @@
 		</iron-ajax>
 		<div id="consoleWrapper" style$="{{style}}">
 			<p>{{stderr}}</p>
-			<div id="data" class="horizontal layout wrap" style$="{{dataStyle}}">
+			<div id="data" style$="{{dataStyle}}">
 			</div>
 		</div>
 	</template>

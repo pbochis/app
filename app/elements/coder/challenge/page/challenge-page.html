@@ -4,10 +4,10 @@
 <link rel="import" href="/elements/common/services/challenge-template-service.html">
 <link rel="import" href="/elements/common/services/result-service.html">
 <link rel="import" href="/elements/common/services/challenge-service.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="challenge-page">
-	<style>
+	<style include="iron-flex">
 		:host {
 			display: block;
 			height: 100%;
@@ -27,13 +27,14 @@
 		time-until-challenge {
 			margin-top: 60px;
 			width:30%;
+			@apply(--layout-horizontal);
 		}
 	</style>
 	<template>
 		<challenge-template-service id="challengeTemplateService" challenge-template="{{challengeTemplate}}"></challenge-template-service>
 		<result-service id="resultService" result="{{result}}"></result-service>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
-		<div id="timeUntilChallenge" class="horizontal layout" style="{{remainingTimeStyle}}">
+		<div id="timeUntilChallenge" style="{{remainingTimeStyle}}">
 			<span class="flex"></span>
 			<time-until-challenge class="self-center" challenge="{{challenge}}" on-start-challenge="_displayChallengeTemplate"></time-until-challenge>
 			<span class="flex"></span>

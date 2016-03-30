@@ -2,10 +2,10 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/elements/coder/challenge/countdown-timer.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="challenge-nav">
-	<style>
+	<style include="iron-flex">
 		:host{
 			display: block;
 		}
@@ -19,6 +19,7 @@
 			background: white;
 			margin: 0;
 			padding: 0;
+			@apply(--layout-horizontal)
 		}
 		#backArrowWrapper{
 			padding-left: 10px;
@@ -33,18 +34,21 @@
 			margin: 0;
 			padding-top: 10px;
 		}
+		span {
+			@apply(--layout-flex)
+		}
 	</style>
 	<template>
-		<paper-material id="taskNavHeader" elevation="1" class="horizontal layout" style$="{{taskNavHeaderStyle}}">
+		<paper-material id="taskNavHeader" elevation="1" style$="{{taskNavHeaderStyle}}">
 			<div id="backArrowWrapper">
 				<template is="dom-if" if="{{showBackArrow}}">
 					<paper-icon-button icon="arrow-back" on-click="_previousTask"></paper-icon-button>
 				</template>
 			</div>
 			<countdown-timer id="taskTimer" class="timer" duration="{{taskDuration}}" timeout="{{timeout}}"></countdown-timer>
-			<span class="flex"></span>
+			<span></span>
 			<p id="taskNavTitle">{{taskNavTitle}}</p>
-			<span class="flex"></span>
+			<span></span>
 			<countdown-timer id="challengeTimer" class="timer" duration="{{challengeDuration}}" timeout="{{timeout}}"></countdown-timer>
 			<div id="frontArrowWrapper">
 				<template is="dom-if" if="{{showForwardArrow}}" >

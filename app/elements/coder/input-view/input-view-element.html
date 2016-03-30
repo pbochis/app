@@ -1,18 +1,29 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/elements/common/services/user-submission-service.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="input-view-element">
-	<style>
+	<style include="iron-flex">
+		.inputelement{
+			@apply(--layout-horizontal);
+		}
+		textarea {
+			@apply(--layout-flex);
+			@apply(--layout-self-center);
+		}
+		paper-icon-button  {
+			@apply(--layout-self-center);
+		}
 	</style>
 	<template>
 		<user-submission-service id="submissionService" on-response="_onResponse" on-error="_onError"></user-submission-service>
 		<input type="file" name="inputToTest" id="inputToTest" on-change="setInput" style="display: none;">
-		<div class="horizontal layout">
+		<div class="inputelement">
 			<p>Test <span>{{counter}}</counter></p>
-			<textarea id="input" type="text" class="flex self-center" style$="{{inputStyle}}"></textarea>
-			<paper-icon-button id="uploadButton" class="self-center" icon="file-upload" on-click="addInputFile"></paper-icon-button>
-			<paper-icon-button id="runButton" class="self-center" icon="av:play-arrow" on-click="runTest"></paper-icon-button>
+			<textarea id="input" type="text" style$="{{inputStyle}}"></textarea>
+			<paper-icon-button id="uploadButton" icon="file-upload" on-click="addInputFile"></paper-icon-button>
+			<paper-icon-button id="runButton" icon="av:play-arrow" on-click="runTest"></paper-icon-button>
 		</div>
 	</template>
 	<script>

@@ -11,9 +11,10 @@
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="ccc-drone-task">
-<style>
+<style include="iron-flex">
 	:host{
 		display: block;
 		height: 100%;
@@ -38,6 +39,7 @@
 	}
 	#componentWrapper{
 		height: 100%;
+		@apply(--layout-horizontal);
 	}
 	#componentWrapper>div{
 		height: 100%;
@@ -76,6 +78,7 @@
 	#buttons{
 		height: 45px;
 		margin: 16px 16px 16px 8px;
+		@apply(--layout-horizontal);
 	}
 	#consoleWrapper{
 		margin: 8px 16px 16px 16px;
@@ -104,11 +107,11 @@
 	<template>
 		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
 		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
-		<div id="componentWrapper" class="horizontal layout">
+		<div id="componentWrapper">
 			<div class="flex">
 				<paper-tabs selected="{{leftTab}}" align-bottom="true" no-ink="true" class="header left">
-					<paper-tab on-click="_setDescriptionView">Task description</paper-tab>
-					<paper-tab on-click="_setLeaderboardView">Leaderboard</paper-tab>
+					<paper-tab>Task description</paper-tab>
+					<paper-tab>Leaderboard</paper-tab>
 				</paper-tabs>
 
 				<paper-material id="leftCard" elevation="1">
@@ -123,32 +126,34 @@
 					<paper-tab>Input view</paper-tab>
 					<paper-tab>Code editor view</paper-tab>
 				</paper-tabs>
-				<template is="dom-if" if="{{inputView}}">
-					<paper-material id="inputViewRightCard" elevation="1">
-						<input-view id="inputView" task="{{task}}"></input-view>
-					</paper-material>
-				</template>
-				<template is="dom-if" if="{{!inputView}}">
-					<paper-material id="topRightCard" elevation="1">
-						<div id="codeEditorWrapper">
-							<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language.value}}" load-cached-code="true"></code-editor>
-							<paper-fab mini id="addFile" on-click="_addFile" icon="file-upload"></paper-fab>
-							<input type="file" name="fileToRun" id="fileToRun" on-change="setFiles" style="display: none;">
-						</div>
-					</paper-material>
-					<paper-material id="botRightCard" elevation="1">
-						<div id="buttons" class="horizontal layout">
-							<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
-							<language-selector class="self-center" id="languageSelector" task="{{task}}" language="{{language}}"></language-selector>
-							<span class="flex"></span>
-							<paper-button class="self-center" raised noink on-click="runTests">Run tests</paper-button>
-						</div>
-						<div id="consoleWrapper">
-							<p style="font-family: 'Lucida Console', Monaco, monospace;white-space: pre-wrap;">{{normalConsoleText}}</p>
-							<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
-						</div>
-					</paper-material>
-				</template>
+				<iron-pages selected="{{selected}}" class="fullHeight">
+					<div class="fullHeight">
+						<paper-material id="inputViewRightCard" elevation="1">
+							<input-view id="inputView" task="{{task}}"></input-view>
+						</paper-material>
+					</div>
+					<div class="fullHeight">
+						<paper-material id="topRightCard" elevation="1">
+							<div id="codeEditorWrapper">
+								<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language.value}}" load-cached-code="true"></code-editor>
+								<paper-fab mini id="addFile" on-click="_addFile" icon="file-upload"></paper-fab>
+								<input type="file" name="fileToRun" id="fileToRun" on-change="setFiles" style="display: none;">
+							</div>
+						</paper-material>
+						<paper-material id="botRightCard" elevation="1">
+							<div id="buttons">
+								<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
+								<language-selector class="self-center" id="languageSelector" task="{{task}}" language="{{language}}"></language-selector>
+								<span class="flex"></span>
+								<paper-button class="self-center" raised noink on-click="runTests">Run tests</paper-button>
+							</div>
+							<div id="consoleWrapper">
+								<p style="font-family: 'Lucida Console', Monaco, monospace;white-space: pre-wrap;">{{normalConsoleText}}</p>
+								<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
+							</div>
+						</paper-material>
+					</div>
+				</iron-pages>
 			</div>
 		</div>
 	</template>
@@ -195,8 +200,6 @@
 				'afterPropertiesSet(task, challengeId)'
 			],
 			listeners: {
-				'ws-error': '_onWsError',
-				'ws-open': '_onWsOpen',
 				'ws-message': '_onMessage'
 			},
 			_selectedChanged: function(){

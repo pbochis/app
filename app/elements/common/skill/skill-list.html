@@ -1,9 +1,14 @@
 <link rel="import" href="skill-mini.html">
-<link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="skill-list">
+	<style include="iron-flex">
+		#wrapper {
+			@apply(--layout-horizontal);
+		}
+	</style>
 	<template>
-		<div class="horizontal layout">
+		<div id="wrapper">
 			<template is="dom-repeat" items="{{skills}}">
 				<skill-mini skill="{{item}}"></skill-mini>
 			</template>
