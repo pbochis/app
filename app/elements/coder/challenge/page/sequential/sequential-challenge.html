@@ -27,7 +27,7 @@
 		}
 	</style>
 	<template>
-		<task-service id="taskService" task="{{task}}"></task-service>
+		<task-service id="taskService" task="{{task}}" on-task-started="onTaskStarted"></task-service>
 		<challenge-nav id="coolNav" task-index="{{taskIndex}}" total-tasks="{{challenge.tasks.length}}"
 			task-duration="{{task.duration}}" challenge-duration="{{challenge.duration}}"
 			task-start-time="{{taskStartTime}}" challenge-start-time="{{challengeStartTime}}">

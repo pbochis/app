@@ -30,7 +30,7 @@
 		}
 	</style>
 	<template>
-		<task-service id="taskService" task="{{task}}"></task-service>
+		<task-service id="taskService" task="{{task}}" on-task-started="onTaskStarted"></task-service>
 		<ccc-nav id="coolNav" total-tasks="{{challenge.tasks.length}}" task-index="{{taskIndex}}"
 			challenge-duration="{{challenge.duration}}" challenge-start-time="{{challengeStartTime}}"
 			task-ids="{{challenge.tasks}}">
