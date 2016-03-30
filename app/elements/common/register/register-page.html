@@ -110,7 +110,7 @@ Polymer({
 		Polymer.NeonAnimatableBehavior
 	],
 	_savedUserChanged: function(savedUser){
-		page.redirect('/login?address=' + savedUser.Address);
+		page('/login?address=' + savedUser.Address);
 	},
 	register: function() {
 		if(this.user.Password !== this.repeatedPassword){

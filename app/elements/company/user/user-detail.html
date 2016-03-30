@@ -188,7 +188,7 @@
 			_loadChallenge: function(){
 				// TODO(victorbalan): create routing module that passes the objects with the
 				// redirect so we don`t load everything twice.
-				page.redirect('/user/' + this.user.Key + '/challenge/' + this.lastChallenge.Key);
+				page('/user/' + this.user.Key + '/challenge/' + this.lastChallenge.Key);
 			},
 			_profileChanged: function(profile){
 				this.$.challengeTemplateService.getLatestChallengeTemplatesByProfileId(profile.Key);

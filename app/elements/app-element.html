@@ -71,7 +71,7 @@
 					self.refreshMenu();
 				});
 				cookieService.addEventListener('user-error', function(){
-					page.redirect('/login');
+					page('/login');
 				});
 				cookieService.login();
 			},
@@ -87,13 +87,13 @@
 				this.userInfo.user = user;
 				this.userInfo.organization = organization;
 				this.refreshMenu();
-				page.redirect('/');
+				page('/');
 			},
 			logout: function() {
 				this.userInfo = {};
 				localStorage.clear();
 				this.refreshMenu();
-				page.redirect('/login');
+				page('/login');
 			},
 			refreshMenu: function() {
 				this.$.appNav.refresh();
