@@ -121,6 +121,17 @@
 					this.$$('#test' + this.tests[i].id).startLoading();
 				}
 			},
+			stopLoading: function(){
+				this.testStats = {};
+				this.dataStyle = '';
+				this.stderr = '';
+				if(!this.tests){
+					return;
+				}
+				for(var i=0;i<this.tests.length;i++){
+					this.$$('#test' + this.tests[i].id).refresh();
+				}
+			},
 			error: function(err){
 				console.log(err);
 			},
