@@ -56,11 +56,13 @@ Behaviors.ChallengeBehavior = {
 	startTask: function(){
 		var task = this.challenge.tasks[this.taskIndex];
 		this.$.taskService.startTask(this.result.id, task);
-		this.$.taskService.getById(task);
 	},
 	getTask: function(){
 		var task = this.challenge.tasks[this.taskIndex];
 		this.$.taskService.getById(task);
+	},
+	onTaskStarted: function(){
+		this.getTask();
 	},
 	// TODO abstract task listeners
 	_taskChanged: function(){

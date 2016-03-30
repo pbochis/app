@@ -50,7 +50,7 @@
 			method="POST"
 			content-type="application/json"
 			with-credentials="true"
-			on-response="_onResponse"
+			on-response="_onStartTaskResponse"
 			on-error="_onError"
 			>
 		</iron-ajax>
@@ -121,6 +121,10 @@
 			_onError: function(err){
 				util.error(err);
 				this.app.stopLoading();
+			},
+			_onStartTaskResponse: function(){
+				this.app.stopLoading();
+				this.fire('task-started');
 			}
 		});
 	</script>
