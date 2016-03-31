@@ -85,7 +85,6 @@ var util = {
 		return timeField;
 
 	},
-	initialError: undefined,
 	languages: [
 		'java',
 		'py',
