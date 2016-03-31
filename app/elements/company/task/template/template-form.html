@@ -1,0 +1,112 @@
+<link rel="import" href="/elements/common/services/task-service.html">
+<link rel="import" href="/elements/common/services/language-service.html">
+
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/iron-form/iron-form.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-material/paper-material.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+
+<dom-module id="template-form">
+	<style import="iron-flex">
+		paper-input {
+			margin: 10px 0;
+		}
+
+		h4 {
+			margin: 16px 0;
+		}
+
+		paper-material {
+			width: 90%;
+			padding: 5%;
+		}
+		paper-dropdown-menu{
+			@apply(--layout-self-center);
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="saveTemplateRequest"
+			method="POST"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+
+		<task-service id="taskService" tasks="{{tasks}}"></task-service>
+		<language-service id="languageService" languages="{{languages}}"></language-service>
+
+		<div class="mainContent">
+			<paper-material class="card">
+				<h2>New template</h2>
+				<form is="iron-form">
+					<paper-input id="name" label="File path" value="{{template.filePath}}" required></paper-input>
+					<paper-dropdown-menu class="self-center" id="tasks" label="Task" selected-item="{{selectedTask}}" required>
+						<paper-menu class="dropdown-content">
+							<template is="dom-repeat" items="{{tasks}}">
+								<option value="{{item.id}}">{{item.name}}</option><br>
+							</template>
+						</paper-menu>
+					</paper-dropdown-menu>
+					<paper-dropdown-menu class="self-center" id="languages" label="Language" selected-item="{{selectedLanguage}}" required>
+						<paper-menu class="dropdown-content">
+							<template is="dom-repeat" items="{{languages}}">
+								<option value="{{item.id}}">{{item.name}}</option><br>
+							</template>
+						</paper-menu>
+					</paper-dropdown-menu>
+          <input type="file" name="file" id="file" on-change="setFile">
+					<paper-button class="colorful" raised on-click="_save">Create</paper-button>
+				</form>
+			</paper-material>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'template-form',
+			properties: {
+				tasks: {
+					type: Array,
+					notify: true
+				},
+				languages: {
+					type: Array,
+					notify: true
+				},
+				template: {
+					type: Object,
+					value: {}
+				}
+			},
+			ready: function(){
+				this.$.taskService.getAll();
+				this.$.languageService.getAll();
+			},
+			setFile: function() {
+				var files = this.$$('#file').files;
+				if(files.length > 0){
+					this.file = files[0];
+				}
+			},
+			_save: function(){
+				this.template.taskId = this.selectedTask ? this.selectedTask.value : null;
+				this.template.languageId = this.selectedLanguage ? this.selectedLanguage.value : null;
+				var body = new FormData();
+				body.append('file', this.file, this.file.name);
+				body.append('languageId', this.selectedLanguage ? this.selectedLanguage.value : null);
+				body.append('taskId', this.selectedTask ? this.selectedTask.value : null);
+				body.append('filePath', this.template.filePath);
+
+				this.$.saveTemplateRequest.body = body;
+				this.$.saveTemplateRequest.url = util.build('/templates');
+				this.$.saveTemplateRequest.generateRequest();
+			},
+			_onResponse: function(r){
+				console.log(r);
+			}
+		});
+	</script>
+</dom-module>
