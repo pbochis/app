@@ -76,6 +76,7 @@
 				this.$.editor.getSession().on('change', function(){
 					localStorage.cachedCode = self.$.editor.getValue();
 				});
+				this.$.editor.$blockScrolling = Infinity;
 				if(this.loadCachedCode){
 					this.loadCached();
 				}

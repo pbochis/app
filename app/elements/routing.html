@@ -7,7 +7,7 @@ window.addEventListener('WebComponentsReady', function() {
 			page('/challengetemplates');
 		} else if(app.userInfo.user){
 			// TODO add a default /home route
-			page('/login');
+			page('/mychallenges');
 		} else {
 			page('/login');
 		}
@@ -52,7 +52,7 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/error', function() {
 		Polymer.Base.importHref('/elements/common/error/error-page.html', function(){
 			var page = document.createElement('error-page');
-			page.initialError = util.initialError;
+			page.error = app.error;
 			app.swapContent(page);
 		});
 	});
