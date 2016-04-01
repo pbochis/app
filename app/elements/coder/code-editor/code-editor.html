@@ -87,13 +87,15 @@
 				return blob;
 			},
 			setFile: function(f) {
+				if(this.loadCachedCode && localStorage.cachedCode){
+					return;
+				}
 				var that = this;
 				var fr = new FileReader();
 				fr.onload = function(e) {
 					that.$.editor.getSession().setValue(e.target.result);
 				};
 				fr.readAsText(f);
-				this.setMode(this.language);
 				this.mimeType = f.type;
 				this.filename = f.name;
 			},
