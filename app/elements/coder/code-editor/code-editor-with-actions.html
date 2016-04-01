@@ -1,0 +1,145 @@
+<link rel="import" href="/elements/coder/code-editor/code-editor.html">
+<link rel="import" href="/elements/common/services/template-service.html">
+
+<link rel="import" href="/bower_components/iron-icons/av-icons.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="code-editor-with-actions">
+	<style include="iron-flex iron-flex-reverse">
+		:host {
+			display: block;
+			height: 100%;
+		}
+
+		#codeEditor {
+			height: 100%;
+		}
+
+		#codeEditorCommands {
+			height: 35px;
+			@apply(--layout-horizontal-reverse);
+		}
+
+		.maximized {
+			position: fixed;
+			top: 108px;
+			right: 0;
+			height: calc(100% - 120px) !important;
+			width: 100%;
+			z-index: 1;
+		}
+
+		#codeEditorWrapper{
+			height: 100%;
+			width: 100%;
+			background: white;
+		}
+
+		#addFile{
+			position: absolute;
+			right: 2%;
+			bottom: 2%;
+		}
+	</style>
+	<template>
+		<template-service id="templateService" template="{{template}}"></template-service>
+		<div id="codeEditorWrapper" class$="{{codeEditorWrapperClass}}">
+			<div id="codeEditorCommands">
+				<paper-icon-button on-click="_maximize" class="self-center" icon="{{maximizeIcon}}">Run code</paper-icon-button>
+			</div>
+			<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language}}" on-code-changed="_setCachedCode"></code-editor>
+			<paper-fab mini id="addFile" on-click="_addFile" icon="file-upload"></paper-fab>
+			<input type="file" name="fileToRun" id="fileToRun" on-change="_filesUploaded" style="display: none;">
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'code-editor-with-actions',
+			properties: {
+				language: {
+					type: String,
+					notify: true,
+					observer: '_languageChanged'
+				},
+				task: {
+					type: Object
+				},
+				maximizeIcon: {
+					value: 'fullscreen'
+				},
+				template: {
+					notify: true,
+					observer: '_templateChanged'
+				}
+			},
+			run: function(){
+				this.$$('#codeEditor').run();
+			},
+			submit: function(){
+				this.$$('#codeEditor').submit();
+			},
+			ready: function(){
+				this._setValue(this._getCachedCode());
+			},
+			_addFile: function(){
+				this.$$('#fileToRun').click();
+			},
+			_maximize: function(){
+				if(this.codeEditorWrapperClass === 'maximized'){
+					this.maximizeIcon = 'fullscreen';
+					this.codeEditorWrapperClass = '';
+					return;
+				}
+				this.codeEditorWrapperClass = 'maximized';
+				this.maximizeIcon = 'fullscreen-exit';
+			},
+			_setValue: function(value){
+				this.$$('#codeEditor').setValue(value);
+			},
+			_setCachedCode: function(e, code){
+				if(!this.language){
+					return;
+				}
+				localStorage.setItem('cachedCode.' + this.language, code);
+			},
+			_getCachedCode: function(){
+				if(!this.language){
+					return undefined;
+				}
+				return localStorage.getItem('cachedCode.' + this.language);
+			},
+			_languageChanged: function(){
+				if(this.language){
+					var cachedCode = this._getCachedCode();
+					if(cachedCode){
+						this._setValue(cachedCode);
+						return;
+					}
+					if(!this.task || !this.task.templates || !this.language){
+						return;
+					}
+					for(var i=0;i<this.task.templates.length;i++){
+						if(this.task.templates[i].language === this.language){
+							this.$.templateService.getById(this.task.templates[i].id);
+							return;
+						}
+					}
+				}
+			},
+			_templateChanged: function(){
+				if(this.template && !this._getCachedCode()){
+					this.$$('#codeEditor').setFile(this.template);
+				}
+			},
+			_filesUploaded: function() {
+				var files = this.$$('#fileToRun').files;
+				if(files.length > 0){
+					this.$$('#codeEditor').setFile(files[0]);
+				}
+			}
+		});
+	</script>
+</dom-module>

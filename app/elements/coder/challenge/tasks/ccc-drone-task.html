@@ -1,14 +1,13 @@
 <link rel="import" href="/elements/coder/code-editor/consoles/test-stats-console.html">
 <link rel="import" href="/elements/coder/code-editor/language-selector.html">
 <link rel="import" href="/elements/coder/challenge/tasks/task-display.html">
-<link rel="import" href="/elements/coder/code-editor/code-editor.html">
+<link rel="import" href="/elements/coder/code-editor/code-editor-with-actions.html">
 <link rel="import" href="/elements/coder/input-view/input-view.html">
 <link rel="import" href="/elements/common/leaderboard/challenge-leaderboard.html">
 <link rel="import" href="/elements/common/services/result-service.html">
-<link rel="import" href="/elements/common/services/template-service.html">
+
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
@@ -49,10 +48,6 @@
 		width: 100%;
 		margin: auto;
 		background: white;
-	}
-	#codeEditorWrapper{
-		height: 100%;
-		width: 100%;
 	}
 	#leftCard{
 		margin: 16px 8px 16px 16px;
@@ -99,16 +94,11 @@
 		width: calc(100% - 24px);
 		height: calc(100% - 98px);
 	}
-	#addFile{
-		position: absolute;
-		right: 2%;
-		bottom: 5%;
-	}
 </style>
 	<template>
 		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
-		<template-service id="templateService" template="{{template}}"></template-service>
 		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
+
 		<div id="componentWrapper">
 			<div class="flex">
 				<paper-tabs selected="{{leftTab}}" align-bottom="true" no-ink="true" class="header left">
@@ -128,34 +118,29 @@
 					<paper-tab>Input view</paper-tab>
 					<paper-tab>Code editor view</paper-tab>
 				</paper-tabs>
-				<iron-pages selected="{{selected}}" class="fullHeight">
-					<div class="fullHeight">
-						<paper-material id="inputViewRightCard" elevation="1">
-							<input-view id="inputView" task="{{task}}"></input-view>
-						</paper-material>
-					</div>
-					<div class="fullHeight">
-						<paper-material id="topRightCard" elevation="1">
-							<div id="codeEditorWrapper">
-								<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language.value}}" load-cached-code="true"></code-editor>
-								<paper-fab mini id="addFile" on-click="_addFile" icon="file-upload"></paper-fab>
-								<input type="file" name="fileToRun" id="fileToRun" on-change="setFiles" style="display: none;">
-							</div>
-						</paper-material>
-						<paper-material id="botRightCard" elevation="1">
-							<div id="buttons">
-								<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
-								<language-selector class="self-center" id="languageSelector" task="{{task}}" language="{{language}}"></language-selector>
-								<span class="flex"></span>
-								<paper-button class="self-center" raised noink on-click="runTests">Run tests</paper-button>
-							</div>
-							<div id="consoleWrapper">
-								<p style="font-family: 'Lucida Console', Monaco, monospace;white-space: pre-wrap;">{{normalConsoleText}}</p>
-								<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
-							</div>
-						</paper-material>
-					</div>
-				</iron-pages>
+				<template is="dom-if" if="{{inputView}}">
+					<paper-material id="inputViewRightCard" elevation="1">
+						<input-view id="inputView" task="{{task}}"></input-view>
+					</paper-material>
+				</template>
+				<template is="dom-if" if="{{!inputView}}">
+					<paper-material id="topRightCard" elevation="1">
+						<code-editor-with-actions id="codeEditor" task="{{task}}" language="{{language.value}}"></code-editor-with-actions>
+					</paper-material>
+					<paper-material id="botRightCard" elevation="1">
+						<div id="buttons">
+							<paper-icon-button class="self-center" icon="av:play-arrow" on-click="runCode">Run code</paper-icon-button>
+							<language-selector class="self-center" id="languageSelector" task="{{task}}" language="{{language}}"></language-selector>
+							<span class="flex"></span>
+							<paper-button class="self-center" raised noink on-click="runTests">Run tests</paper-button>
+						</div>
+						<div id="consoleWrapper">
+							<!-- TODO extend test stats console -->
+							<p style="font-family: 'Lucida Console', Monaco, monospace;white-space: pre-wrap;">{{normalConsoleText}}</p>
+							<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
+						</div>
+					</paper-material>
+				</template>
 			</div>
 		</div>
 	</template>
@@ -192,18 +177,13 @@
 					type: Array,
 					notify: true
 				},
-				intervalId: Number,
-				template: {
-					notify: true,
-					observer: '_templateChanged'
-				}
+				intervalId: Number
 			},
 			observers: [
 				'afterPropertiesSet(task, challengeId)'
 			],
 			listeners: {
-				'ws-message': '_onMessage',
-				'language-changed': '_languageChanged'
+				'ws-message': '_onMessage'
 			},
 			_selectedChanged: function(){
 				switch(this.selected){
@@ -225,9 +205,6 @@
 						return;
 				}
 			},
-			_addFile: function(){
-				this.$$('#fileToRun').click();
-			},
 			_startPollingLeaderboard: function(){
 				var that = this;
 				this.intervalId = setInterval(function(){
@@ -235,12 +212,6 @@
 						that.$.resultService.getLeaderboard(that.challengeId);
 					}
 				}, 5000);
-			},
-			setFiles: function() {
-				var files = this.$$('#fileToRun').files;
-				if(files.length > 0){
-					this.$$('#codeEditor').setFile(files[0]);
-				}
 			},
 			_onMessage: function(m){
 				var detail = JSON.parse(m.detail);
@@ -278,22 +249,6 @@
 			finishTask: function(){
 				clearInterval(this.intervalId);
 				this.fire('task-finished');
-			},
-			_languageChanged: function(e, language){
-				if(!this.task || !this.task.templates || !language){
-					return;
-				}
-				for(var i=0;i<this.task.templates.length;i++){
-					if(this.task.templates[i].language === language){
-						this.$.templateService.getById(this.task.templates[i].id);
-						return;
-					}
-				}
-			},
-			_templateChanged: function(){
-				if(this.template){
-					this.$$('#codeEditor').setFile(this.template);
-				}
 			}
 		});
 	</script>
