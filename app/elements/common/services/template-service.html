@@ -8,18 +8,19 @@
 	</style>
 	<template>
 		<iron-ajax
-			id="getTemplateList"
+			id="download"
 			method="GET"
-			handle-as="json"
-			with-credentials="true"
-			on-response="_onList"
+			handle-as="blob"
+			last-response="{{template}}"
+			on-response="_onTemplate"
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
-			id="getTemplate"
+			id="getOne"
 			method="GET"
-			handle-as="blob"
-			on-response="_onTemplate"
+			handle-as="text"
+			with-credentials="true"
+			on-response="_onGetOne"
 			on-error="_onError">
 		</iron-ajax>
 	</template>
@@ -31,61 +32,24 @@
 				Behaviors.ServiceBehavior
 			],
 			properties: {
-				templates: {
-					type: Array,
-					value: []
-				},
-				task: {
-					type: Object,
-					notify: true,
-					reflectToAttribute: true
-				},
-				templateCount: {
-					type: Number
+				template: {
+					reflectToAttribute: true,
+					notify: true
 				}
 			},
-			getTemplates: function(language) {
-				this.app.startLoading();
-				this.templates = [];
-				this.$.getTemplateList.url = util.build('/tasks/' + this.task.id + '/templates' + (language ? '?language=' + language : ''));
-				this.$.getTemplateList.generateRequest();
+			getById: function(id){
+				this.$.getOne.url = util.build('/templates/' + id);
+				this.$.getOne.generateRequest();
 			},
-			_onList: function(e) {
-				var urls = e.detail.response;
-				if (!urls || urls.length === 0) {
-					// No template available.
-					this.app.stopLoading();
-					return;
-				}
-				this.templateCount = urls.length;
-				for (var i = 0; i < urls.length; i++) {
-					this.$.getTemplate.url = urls[i];
-					this.$.getTemplate.generateRequest();
-				}
+			download: function(url) {
+				this.$.download.url = url;
+				this.$.download.generateRequest();
 			},
-			_onTemplate: function(e, req) {
-				// NOTE(flowlo): This matches a sensible subset of
-				// Content-Disposition filename parameters. It diverges
-				// from the spec as it does not allow omitting quotes if
-				// the filename contains no space (because there is no
-				// support for lookbehinds in JS RegExes), and also is a
-				// bit more strict with path names (only allows '/') and
-				// special chars (only allows '.'). So a colon in a
-				// filename won't match for example.
-				var match = /filename\s*=\s*"([\w\.\/]+)"/.exec(
-					req.xhr.getResponseHeader('Content-Disposition')
-				);
-				if (!match) {
-					console.log('Got malformed Content-Disposition!');
-					this.templateCount--;
-					return;
-				}
-				e.detail.response.name = match[1];
-				this.templates.push(e.detail.response);
-				if (this.templateCount <= this.templates.length) {
-					this.app.stopLoading();
-					this.fire('templates', this.templates);
-				}
+			_onGetOne: function(r){
+				this.download(r.detail.response);
+			},
+			_onTemplate: function(r) {
+				this.template = r.detail.response;
 			}
 		});
 	</script>

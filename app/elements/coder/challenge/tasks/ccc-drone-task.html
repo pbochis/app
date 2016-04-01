@@ -5,6 +5,7 @@
 <link rel="import" href="/elements/coder/input-view/input-view.html">
 <link rel="import" href="/elements/common/leaderboard/challenge-leaderboard.html">
 <link rel="import" href="/elements/common/services/result-service.html">
+<link rel="import" href="/elements/common/services/template-service.html">
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tab.html">
@@ -106,6 +107,7 @@
 </style>
 	<template>
 		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
+		<template-service id="templateService" template="{{template}}"></template-service>
 		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
 		<div id="componentWrapper">
 			<div class="flex">
@@ -170,10 +172,6 @@
 					type: Number,
 					notify: true
 				},
-				language: {
-					type: String,
-					notify: true
-				},
 				selected: {
 					type: Number,
 					notify: true,
@@ -194,13 +192,18 @@
 					type: Array,
 					notify: true
 				},
-				intervalId: Number
+				intervalId: Number,
+				template: {
+					notify: true,
+					observer: '_templateChanged'
+				}
 			},
 			observers: [
 				'afterPropertiesSet(task, challengeId)'
 			],
 			listeners: {
-				'ws-message': '_onMessage'
+				'ws-message': '_onMessage',
+				'language-changed': '_languageChanged'
 			},
 			_selectedChanged: function(){
 				switch(this.selected){
@@ -275,6 +278,22 @@
 			finishTask: function(){
 				clearInterval(this.intervalId);
 				this.fire('task-finished');
+			},
+			_languageChanged: function(e, language){
+				if(!this.task || !this.task.templates || !language){
+					return;
+				}
+				for(var i=0;i<this.task.templates.length;i++){
+					if(this.task.templates[i].language === language){
+						this.$.templateService.getById(this.task.templates[i].id);
+						return;
+					}
+				}
+			},
+			_templateChanged: function(){
+				if(this.template){
+					this.$$('#codeEditor').setFile(this.template);
+				}
 			}
 		});
 	</script>

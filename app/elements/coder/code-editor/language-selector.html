@@ -28,7 +28,8 @@
 			properties: {
 				language: {
 					type: Object,
-					notify: true
+					notify: true,
+					observer:  '_languageChanged'
 				},
 				task: {
 					type: Object,
@@ -47,6 +48,11 @@
 
 				if(this.languages.length > 0){
 					this.$.languageMenu.selected = 0;
+				}
+			},
+			_languageChanged: function(){
+				if(this.language && this.language.value){
+					this.fire('language-changed', this.language.value);
 				}
 			}
 		});
