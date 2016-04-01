@@ -40,12 +40,7 @@
 					observer: '_languageChanged'
 				},
 				filename: String,
-				mimeType: String,
-				loadCachedCode: {
-					type: Boolean,
-					reflectToAttribute: true,
-					value: false
-				}
+				mimeType: String
 			},
 			run: function() {
 				this.$.submissionService.run(this.taskId, this.language, this.getFile());
@@ -74,33 +69,27 @@
 					readOnly: true
 				});
 				this.$.editor.getSession().on('change', function(){
-					localStorage.cachedCode = self.$.editor.getValue();
+					self.fire('code-changed', self.$.editor.getValue());
 				});
 				this.$.editor.$blockScrolling = Infinity;
-				if(this.loadCachedCode){
-					this.loadCached();
-				}
 			},
 			getFile: function() {
 				var blob = new Blob([this.$.editor.getValue()], {type: this.mimeType });
 				blob.name = this.filename;
 				return blob;
 			},
+			setValue: function(text){
+				this.$.editor.getSession().setValue(text);
+			},
 			setFile: function(f) {
-				if(this.loadCachedCode && localStorage.cachedCode){
-					return;
-				}
 				var that = this;
 				var fr = new FileReader();
 				fr.onload = function(e) {
-					that.$.editor.getSession().setValue(e.target.result);
+					that.setValue(e.target.result);
 				};
 				fr.readAsText(f);
 				this.mimeType = f.type;
 				this.filename = f.name;
-			},
-			loadCached: function(){
-				this.$.editor.getSession().setValue(localStorage.cachedCode);
 			},
 			_languageChanged: function(){
 				if(this.language){
