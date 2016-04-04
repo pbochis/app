@@ -1,0 +1,67 @@
+<link rel="import" href="test-stats-console.html">
+
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="run-submit-console">
+	<style include="iron-flex">
+		:host{
+			display: block;
+			height: 100%;
+			overflow-x: auto;
+		}
+		#normalCode {
+			font-family: 'Lucida Console', Monaco, monospace;
+			white-space: pre-wrap;
+		}
+	</style>
+	<template>
+		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
+		<p id="normalCode" style$="{{normalCodeStyle}}">{{normalConsoleText}}</p>
+		<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
+	</template>
+	<script>
+		Polymer({
+			is: 'run-submit-console',
+			properties: {
+				task: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				normalCodeStyle: {
+					value: 'display: none;'
+				}
+			},
+			_allTestsGreen: function(){
+				this.fire('all-tests-green');
+			},
+			runLoading: function(){
+				this.$$('#console').hide();
+				this.normalCodeStyle = '';
+				this.normalConsoleText = 'Loading...';
+			},
+			submitLoading: function(){
+				this.normalConsoleText = '';
+				this.normalCodeStyle = 'display: none;';
+				this.$$('#console').show();
+				this.$$('#console').loading();
+			},
+			setResult: function(data){
+				if(data.error){
+					this.normalConsoleText = '';
+					this.normalCodeStyle = 'display: none;';
+					this.$$('#console').show();
+					this.$$('#console').stopLoading();
+					this.$.toast.show();
+					return;
+				}
+				if(data.Test){
+					this.$$('#console').setOutput(data);
+				}else{
+					this.normalConsoleText = data.Stdout + '\n\n' + data.Stderr;
+				}
+			}
+		});
+	</script>
+</dom-module>

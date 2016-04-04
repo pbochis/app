@@ -1,4 +1,4 @@
-<link rel="import" href="/elements/coder/code-editor/consoles/test-stats-console.html">
+<link rel="import" href="/elements/coder/code-editor/consoles/run-submit-console.html">
 <link rel="import" href="/elements/coder/code-editor/language-selector.html">
 <link rel="import" href="/elements/coder/challenge/tasks/task-display.html">
 <link rel="import" href="/elements/coder/code-editor/code-editor-with-actions.html">
@@ -28,7 +28,6 @@
 		width: calc(100% - 24px);
 		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 	}
-
 	.right {
 		margin: 16px 16px 8px 8px;
 		width: calc(100% - 24px);
@@ -54,11 +53,6 @@
 		width: calc(100% - 24px);
 		height: calc(100% - 98px);
 	}
-	#topRightCard>h2{
-		height: 40px;
-		margin: 0;
-		padding-left: 16px;
-	}
 	#topRightCard{
 		overflow: auto;
 		margin: 16px 16px 16px 8px;
@@ -76,9 +70,9 @@
 		margin: 16px 16px 16px 8px;
 		@apply(--layout-horizontal);
 	}
-	#consoleWrapper{
+	#console{
 		margin: 8px 16px 16px 16px;
-		height: calc(100% - 24px);
+		height: calc(100% - 85px);
 	}
 	#buttons>paper-icon-button{
 		padding: 5px;
@@ -88,7 +82,6 @@
 		padding: 5px;
 		margin: 0;
 	}
-
 	#inputViewRightCard {
 		margin: 8px 16px 16px 8px;
 		width: calc(100% - 24px);
@@ -97,7 +90,6 @@
 </style>
 	<template>
 		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
-		<paper-toast id="toast" text="There was a problem when running your code. Please try again later."></paper-toast>
 
 		<div id="componentWrapper">
 			<div class="flex">
@@ -134,11 +126,7 @@
 							<span class="flex"></span>
 							<paper-button class="self-center" raised noink on-click="runTests">Run tests</paper-button>
 						</div>
-						<div id="consoleWrapper">
-							<!-- TODO extend test stats console -->
-							<p style="font-family: 'Lucida Console', Monaco, monospace;white-space: pre-wrap;">{{normalConsoleText}}</p>
-							<test-stats-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></test-stats-console>
-						</div>
+						<run-submit-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></run-submit-console>
 					</paper-material>
 				</template>
 			</div>
@@ -214,19 +202,7 @@
 				}, 5000);
 			},
 			_onMessage: function(m){
-				var detail = JSON.parse(m.detail);
-				if(detail.error){
-					this.normalConsoleText = '';
-					this.$$('#console').show();
-					this.$$('#console').stopLoading();
-					this.$.toast.show();
-					return;
-				}
-				if(detail.Test){
-					this.$$('#console').setOutput(detail);
-				}else{
-					this.normalConsoleText = detail.Stdout + '\n\n' + detail.Stderr;
-				}
+				this.$$('#console').setResult(JSON.parse(m.detail));
 			},
 			_allTestsGreen: function(){
 				this.fire('level-completed');
@@ -237,14 +213,11 @@
 			},
 			runCode: function(){
 				this.$$('#codeEditor').run();
-				this.$$('#console').hide();
-				this.normalConsoleText = 'Loading...';
+				this.$$('#console').runLoading();
 			},
 			runTests: function(){
-				this.normalConsoleText = '';
-				this.$$('#console').show();
 				this.$$('#codeEditor').submit();
-				this.$$('#console').loading();
+				this.$$('#console').submitLoading();
 			},
 			finishTask: function(){
 				clearInterval(this.intervalId);
