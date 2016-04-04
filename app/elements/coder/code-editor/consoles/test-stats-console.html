@@ -90,14 +90,14 @@
 				this.$.getTestsRequest.generateRequest();
 			},
 			setOutput: function(result){
-				if(result.Test){
+				if(result.test){
 					this.appendTestStats(result);
 				}else{
-					this.stderr = result.Stdout;
+					this.stderr = result.stdout;
 					this.dataStyle = 'display: none';
 				}
-				if (result.Stderr) {
-					this.stderr = result.Stderr;
+				if (result.stderr) {
+					this.stderr = result.stderr;
 					this.dataStyle = 'display: none';
 				}
 			},
@@ -139,14 +139,14 @@
 				console.log(err);
 			},
 			appendTestStats: function(result){
-				if(result.Failed === undefined){
-					result.Failed = true;
+				if(result.failed === undefined){
+					result.failed = true;
 				}
-				this.testStats[result.Test] = !result.Failed;
+				this.testStats[result.test] = !result.failed;
 				this._testAllGreen();
-				var element = this.$$('#test' + result.Test);
+				var element = this.$$('#test' + result.test);
 				if(!!element){
-					element.setFailed(result.Failed);
+					element.setFailed(result.failed);
 					element.stopLoading();
 				}
 			},
