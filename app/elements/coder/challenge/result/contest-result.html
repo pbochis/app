@@ -1,0 +1,75 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/elements/common/leaderboard/challenge-leaderboard.html">
+
+<dom-module id="contest-result">
+	<style include="iron-flex">
+		:host {
+			display: block;
+			height: 100%;
+		}
+
+		.squareCard {
+			width: calc(50% - 58px);
+			height: calc(50% - 60px);
+		}
+
+		#topLeftCard{
+			overflow: auto;
+			margin: 16px 8px 8px 16px;
+		}
+		#topRightCard{
+			overflow: auto;
+			margin: 16px 16px 8px 8px;
+		}
+
+		#botLeftCard{
+			overflow: auto;
+			margin: 8px 8px 16px 16px;
+		}
+
+		#botRightCard{
+			overflow: auto;
+			margin: 8px 16px 16px 8px;
+		}
+
+		paper-material{
+			display: inline-block;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="getMyResult"
+			auto
+			method="GET"
+			handle-as="json"
+			with-credentials="true"
+			last-response="{{result}}"
+			on-error="_onError">
+		</iron-ajax>
+
+		<paper-material id="topLeftCard" class="card squareCard">
+			<h3>Leaderboard</h3>
+			<challenge-leaderboard id="leaderboard" challenge-id="{{challengeId}}"></challenge-leaderboard>
+		</paper-material>
+		<paper-material id="topRightCard" class="card squareCard">
+			<h3>My ranking</h3>
+		</paper-material>
+		<paper-material id="botLeftCard" class="card squareCard">
+			<h3>My result</h3>
+		</paper-material>
+		<paper-material id="botRightCard" class="card squareCard">
+			<h3>Other</h3>
+		</paper-material>
+	</template>
+	<script>
+		Polymer({
+			is: 'contest-result',
+			properties: {
+				challengeId: {
+					type: String,
+					notify: true
+				}
+			}
+		});
+	</script>
+</dom-module>

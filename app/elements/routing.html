@@ -168,6 +168,14 @@ window.addEventListener('WebComponentsReady', function() {
 		});
 	});
 
+	page('/contest/:id/result', function(ctx) {
+		Polymer.Base.importHref('/elements/coder/challenge/result/contest-result.html', function(){
+			var page = document.createElement('contest-result');
+			page.challengeId = ctx.params.id;
+			app.swapContent(page);
+		});
+	});
+
 	page({
 		hashbang: true
 	});
