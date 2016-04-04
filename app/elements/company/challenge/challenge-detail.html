@@ -3,7 +3,6 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="/elements/common/services/challenge-service.html">
-<link rel="import" href="/elements/common/services/result-service.html">
 <link rel="import" href="/elements/common/services/invitation-service.html">
 <link rel="import" href="/elements/common/description-list/description-list.html">
 <link rel="import" href="/elements/common/description-list/description-list-item.html">
@@ -41,7 +40,6 @@
 	</style>
 	<template>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
-		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
 		<invitation-service id="invitationService" invitations="{{invitations}}"></invitation-service>
 		<invite-candidates id="inviteCandidates"></invite-candidates>
 
@@ -83,7 +81,7 @@
 					</table>
 				</paper-material>
 			<paper-material class="card">
-				<challenge-leaderboard leaderboard="{{leaderboard}}"></challenge-leaderboard>
+				<challenge-leaderboard challenge-id="{{challengeId}}"></challenge-leaderboard>
 			</paper-material>
 		</div>
 	</template>
@@ -109,7 +107,6 @@
 			},
 			_challengeIdChanged: function(){
 				this.$.challengeService.getById(this.challengeId);
-				this.$.resultService.getLeaderboard(this.challengeId);
 				this.$.invitationService.getByChallengeId(this.challengeId);
 			},
 			_formatDate: function(date){

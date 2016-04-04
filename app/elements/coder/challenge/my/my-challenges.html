@@ -66,6 +66,10 @@
 			},
 			_goToChallenge: function(e){
 				var item = e.model.__data__.item;
+				if(item.status === 'COMPLETED'){
+					page('/contest/' + item.challenge.id + '/result');
+					return;
+				}
 				page('/contest/' + item.challenge.id);
 			},
 			_formatDate: function(date){

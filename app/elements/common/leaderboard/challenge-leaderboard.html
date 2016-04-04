@@ -1,4 +1,4 @@
-<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="challenge-leaderboard">
 	<template>
@@ -20,6 +20,14 @@
 				padding: 5px;
 			}
 		</style>
+		<iron-ajax
+			id="getLeaderboard"
+			method="GET"
+			handle-as="json"
+			with-credentials="true"
+			last-response="{{leaderboard}}"
+			on-error="_onError">
+		</iron-ajax>
 		<div class="leaderboard">
 			<div class="header row">
 				<div>User</div>
@@ -43,14 +51,32 @@
 			properties: {
 				leaderboard: {
 					type: Array,
-					notify: true
+					notify: true,
+					value: []
+				},
+				challengeId: {
+					type: String,
+					observer: '_challengeIdChanged'
 				}
+			},
+			refresh: function(){
+				if(!this.challengeId){
+					return;
+				}
+				this.$.getLeaderboard.url = util.build('/challenge/' + this.challengeId + '/leaderboard');
+				this.$.getLeaderboard.generateRequest();
+			},
+			_challengeIdChanged: function(){
+				this.refresh();
 			},
 			_formatDate: function(date){
 				if (!!date){
 					return util.formatDate(date);
 				}
 				return '-';
+			},
+			_onError: function(err){
+				util.error(err);
 			}
 		});
 	</script>

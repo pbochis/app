@@ -4,7 +4,6 @@
 <link rel="import" href="/elements/coder/code-editor/code-editor-with-actions.html">
 <link rel="import" href="/elements/coder/input-view/input-view.html">
 <link rel="import" href="/elements/common/leaderboard/challenge-leaderboard.html">
-<link rel="import" href="/elements/common/services/result-service.html">
 
 <link rel="import" href="/bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
@@ -89,8 +88,6 @@
 	}
 </style>
 	<template>
-		<result-service id="resultService" leaderboard="{{leaderboard}}"></result-service>
-
 		<div id="componentWrapper">
 			<div class="flex">
 				<paper-tabs selected="{{leftTab}}" align-bottom="true" no-ink="true" class="header left">
@@ -101,7 +98,7 @@
 				<paper-material id="leftCard" elevation="1">
 					<iron-pages selected="{{leftTab}}">
 						<task-display task="{{task}}"></task-display>
-						<challenge-leaderboard leaderboard="{{leaderboard}}"></challenge-leaderboard>
+						<challenge-leaderboard id="leaderboard" challenge-id="{{challengeId}}"></challenge-leaderboard>
 					</iron-pages>
 				</paper-material>
 			</div>
@@ -197,7 +194,7 @@
 				var that = this;
 				this.intervalId = setInterval(function(){
 					if (that.leftTab === 1){
-						that.$.resultService.getLeaderboard(that.challengeId);
+						that.$.leaderboard.refresh();
 					}
 				}, 5000);
 			},
@@ -209,7 +206,7 @@
 			},
 			afterPropertiesSet: function(){
 				this.selected = 1;
-				this.$.resultService.getLeaderboard(this.challengeId);
+				this.$.leaderboard.refresh();
 			},
 			runCode: function(){
 				this.$$('#codeEditor').run();
