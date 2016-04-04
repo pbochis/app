@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+		<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../bower_components/web-component-tester/browser.js"></script>
+
+		<link rel="import" href="../elements/company/task/task-detail.html">
+	</head>
+	<body>
+
+		<test-fixture id="task-detail-fixture">
+			<template>
+				<task-detail></task-detail>
+			</template>
+		</test-fixture>
+
+		<script src="../scripts/util.js"></script>
+		<script>
+			/*global fixture:false, assert:false, suite:false, setup:false, test:false */
+			suite('<task-detail>', function() {
+				var myEl;
+				var task = {name: 'name', description: 'description', instructions: 'instructions', duration: 14400};
+
+				setup(function() {
+					myEl = fixture('task-detail-fixture');
+					myEl.task = task;
+				});
+
+				test('displays the "task" property', function() {
+					assert.equal(myEl.task.name, task.name);
+					assert.equal(myEl.task.description, task.description);
+					assert.equal(myEl.task.instructions, task.instructions);
+					assert.equal(myEl.duration, util.computeDuration(task.duration));
+				});
+
+			});
+		</script>
+	</body>
+</html>
