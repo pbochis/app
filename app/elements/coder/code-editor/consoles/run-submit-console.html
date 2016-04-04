@@ -56,10 +56,10 @@
 					this.$.toast.show();
 					return;
 				}
-				if(data.Test){
+				if(data.test){
 					this.$$('#console').setOutput(data);
 				}else{
-					this.normalConsoleText = data.Stdout + '\n\n' + data.Stderr;
+					this.normalConsoleText = data.stdout + '\n\n' + data.stderr;
 				}
 			}
 		});
