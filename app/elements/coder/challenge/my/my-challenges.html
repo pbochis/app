@@ -1,17 +1,82 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="my-challenges">
-	<style>
+	<style include="iron-flex">
 		:host {
 			display: block;
 			height: 100%;
 		}
+		table, th, td {
+			border: 1px solid black;
+			border-collapse: collapse;
+		}
+		th, td {
+			padding: 5px;
+		}
 	</style>
 	<template>
-		<p>My challenges</p>
+		<iron-ajax
+			id="getMyChallengesRequest"
+			method="GET"
+			handle-as="json"
+			last-response="{{challenges}}"
+			with-credentials="true"
+			on-error="_onError">
+		</iron-ajax>
+
+		<paper-material class="card mainContent">
+			<h3>My challenges</h3>
+			<table style="width:100%">
+				<tr>
+					<th>Name</th>
+					<th>Start date</th>
+					<th>End date</th>
+					<th>Status</th>
+				</tr>
+				<template is="dom-repeat" items="{{challenges}}">
+					<tr on-click="_goToChallenge" style="cursor: pointer"	>
+						<td>{{item.challenge.name}}</td>
+						<td>{{_formatDate(item.challenge.startDate)}}</td>
+						<td>{{_formatDate(item.challenge.endDate)}}</td>
+						<td>{{_textForStatus(item.status)}}</td>
+					</tr>
+				</template>
+			</table>
+		</paper-material>
 	</template>
 	<script>
 		Polymer({
-			is: 'my-challenges'
+			is: 'my-challenges',
+			ready: function(){
+				this.$.getMyChallengesRequest.url = util.build('/user/challenges');
+				this.$.getMyChallengesRequest.generateRequest();
+			},
+			_textForStatus: function(status){
+				switch (status) {
+					case 'INVITED':
+						return 'invited';
+					case 'COMPLETED':
+						return 'completed';
+					case 'IN_PROGRESS':
+						return 'in progress';
+					default:
+						return '';
+				}
+			},
+			_goToChallenge: function(e){
+				var item = e.model.__data__.item;
+				page('/contest/' + item.challenge.id);
+			},
+			_formatDate: function(date){
+				if(!date){
+					return '';
+				}
+				return util.formatDate(date);
+			},
+			_onError: function(err){
+				util.error(err);
+			}
 		});
 	</script>
 </dom-module>
