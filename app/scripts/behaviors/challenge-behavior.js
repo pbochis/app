@@ -36,23 +36,33 @@ Behaviors.ChallengeBehavior = {
 	observers: [
 		'afterPropertiesSet(challenge, result)'
 	],
-	afterPropertiesSet: function() {
-		this.taskIndex = -1;
-		if(this.result.startTimes){
-			for(var i=0; i<this.challenge.tasks.length; i++){
-				if(new Date(this.result.startTimes[i]).getTime()>0){
-					this.taskIndex = i;
-				}
+	afterPropertiesSet: function(){
+		this.taskIndex = 0;
+		if(!this.result.taskResults || this.result.taskResults.length === 0){
+			this.startTask();
+			this.startChallenge();
+			return;
+		}
+		var taskResults = {};
+		var i = 0;
+		for(i=0; i<this.result.taskResults.length; i++){
+			taskResults[this.result.taskResults[i].task.id] = this.result.taskResults[i];
+		}
+		for(i=0; i<this.challenge.tasks.length; i++){
+			var taskResult = taskResults[this.challenge.tasks[i]];
+			if(!taskResult){
+				continue;
+			}
+			if(taskResult.task.id === this.challenge.tasks[i] && taskResult.startTime){
+				this.taskIndex = i;
+			}
+			if(i === 0){
+				this.challengeStartTime = new Date(taskResult.startTime).getTime();
 			}
 		}
-		this.challengeStartTime = new Date(this.result.startTimes[0]).getTime();
-		this.taskStartTime = new Date(this.result.startTimes[this.taskIndex]).getTime();
-		if(this.taskIndex !== -1){
-			this.getTask();
-		}else{
-			this.taskIndex = 0;
-			this.startTask();
-		}
+		this.taskStartTime = new Date(taskResults[this.challenge.tasks[this.taskIndex]].task.startTime).getTime();
+
+		this.getTask();
 		this.startChallenge();
 	},
 	startTask: function(){
