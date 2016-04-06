@@ -18,7 +18,7 @@
 		<iron-ajax
 			id="getOne"
 			method="GET"
-			handle-as="text"
+			handle-as="json"
 			with-credentials="true"
 			on-response="_onGetOne"
 			on-error="_onError">
@@ -46,7 +46,7 @@
 				this.$.download.generateRequest();
 			},
 			_onGetOne: function(r){
-				this.download(r.detail.response);
+				this.download(r.detail.response[0]);
 			},
 			_onTemplate: function(r) {
 				this.template = r.detail.response;
