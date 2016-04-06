@@ -82,7 +82,7 @@
 				}
 				this.testStats[result.test] = result.successful;
 				this._testAllGreen();
-				var testInput = this.$$('#' + this._inputId(testResult.testId));
+				var testInput = this.$$('#' + this._inputId(result.testId));
 				testInput.testResult = result.successful;
 			},
 			_afterPropertiesSet: function(){
