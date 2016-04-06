@@ -47,7 +47,7 @@
 					<paper-dropdown-menu class="self-center" id="tasks" label="Task" selected-item="{{selectedTask}}" required>
 						<paper-menu class="dropdown-content">
 							<template is="dom-repeat" items="{{tasks}}">
-								<option value="{{item.id}}">{{item.name}}</option><br>
+								<option value="{{item.id}}">{{item.canonicalName}}</option><br>
 							</template>
 						</paper-menu>
 					</paper-dropdown-menu>
