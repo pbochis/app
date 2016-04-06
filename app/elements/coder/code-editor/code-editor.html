@@ -97,23 +97,21 @@
 				}
 			},
 			_setMode: function(lang){
-				var mode;
-				switch (lang) {
-					case 'java':
-						mode = 'java';
-						break;
-					case 'py':
-						mode = 'python';
-						break;
-					case 'c':
-						mode = 'c_cpp';
-						break;
-					case 'cpp':
-						mode = 'c_cpp';
-						break;
-					default:
-						mode = 'text';
-						break;
+				var languageModeMap = {
+					'c': 'c_cpp',
+					'cpp': 'c_cpp',
+					'csharp': 'csharp',
+					'java': 'java',
+					'js': 'javascript',
+					'py': 'python',
+					'go': 'golang',
+					'scala': 'scala',
+					'groovy': 'groovy',
+					'php': 'php'
+				};
+				var mode = languageModeMap[lang];
+				if(!mode){
+					mode = 'text';
 				}
 				this.$.editor.getSession().setMode('ace/mode/' + mode);
 			}

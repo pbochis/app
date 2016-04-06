@@ -59,7 +59,13 @@
 				if(data.test){
 					this.$$('#console').setOutput(data);
 				}else{
-					this.normalConsoleText = data.stdout + '\n\n' + data.stderr;
+					this.normalConsoleText = '';
+					if(data.stdout){
+						this.normalConsoleText = data.stdout + '\n\n';
+					}
+					if(data.stderr){
+						this.normalConsoleText = this.normalConsoleText + data.stderr;
+					}
 				}
 			}
 		});
