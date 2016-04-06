@@ -1,0 +1,48 @@
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<dom-module id="challenge-ended">
+	<style include="iron-flex">
+		:host{
+			display: block;
+		}
+		paper-material {
+			background: white;
+			width: 35%;
+			margin: 16px;
+			span: 16px;
+		}
+
+		#wrapper {
+			@apply(--layout-horizontal);
+		}
+
+		span {
+			@apply(--layout-flex);
+		}
+	</style>
+	<template>
+		<div id="wrapper">
+			<span></span>
+			<paper-material elevation="1">
+				<h2>Challenge finished</h2>
+				<h4>You will soon be redirected to your results</h4>
+			</paper-material>
+			<span></span>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'challenge-ended',
+			properties: {
+				challengeId: {
+					observer: '_challengeIdChanged'
+				}
+			},
+			_challengeIdChanged: function(){
+				var self = this;
+				setTimeout(function(){
+					page('/contest/' + self.challengeId + '/result');
+				}, 3000);
+			}
+		});
+	</script>
+</dom-module>

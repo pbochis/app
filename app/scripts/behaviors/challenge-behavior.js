@@ -113,9 +113,7 @@ Behaviors.ChallengeBehavior = {
 		this.$.getResultRequest.url = util.build('/results/' + this.result.id);
 		this.$.getResultRequest.generateRequest();
 
-		this._importAndReplaceContent('/elements/coder/challenge/info/challenge-finished.html', 'challenge-finished');
-
-		app.finishChallenge();
+		this._challengeEnded();
 	},
 	_replaceContent: function(element){
 		this.contentStyle = '';
@@ -125,6 +123,14 @@ Behaviors.ChallengeBehavior = {
 	_importAndReplaceContent: function(importPath, elementName){
 		this.importHref(importPath, function(){
 			this._replaceContent(document.createElement(elementName));
+		});
+	},
+	_challengeEnded: function(){
+		var self = this;
+		this.importHref('/elements/coder/challenge/info/challenge-ended.html', function(){
+			var webInterface = document.createElement('challenge-ended');
+			webInterface.challengeId = self.challengeId;
+			self._replaceContent(webInterface);
 		});
 	}
 };

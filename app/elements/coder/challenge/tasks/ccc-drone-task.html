@@ -199,8 +199,12 @@
 				}, 5000);
 			},
 			_onMessage: function(m){
-				this.$$('#inputView').setResult(JSON.parse(m.detail));
-				this.$$('#console').setResult(JSON.parse(m.detail));
+				var result = JSON.parse(m.detail);
+				var inputView = this.$$('#inputView');
+				if(inputView){
+					inputView.setResult(result);
+				}
+				this.$$('#console').setResult(result);
 			},
 			_allTestsGreen: function(){
 				this.fire('level-completed');
