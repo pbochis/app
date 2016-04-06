@@ -113,12 +113,12 @@
 			},
 			_languageChanged: function(){
 				if(this.language){
-					this._setValue('');
 					var cachedCode = this._getCachedCode();
 					if(cachedCode){
 						this._setValue(cachedCode);
 						return;
 					}
+					this._setValue('');
 					if(!this.task || !this.task.templates || !this.language){
 						return;
 					}
