@@ -1,4 +1,5 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -14,6 +15,10 @@
 		paper-icon-button  {
 			@apply(--layout-self-center);
 		}
+		paper-spinner {
+			@apply(--layout-self-center);
+			margin-right: 25px;
+		}
 	</style>
 	<template>
 		<input type="file" name="inputToTest" id="inputToTest" on-change="setInput" style="display: none;">
@@ -21,6 +26,7 @@
 			<p>Test <span>{{counter}}</counter></p>
 			<textarea id="input" type="text" style$="{{inputStyle}}" value="{{inputValue::input}}"></textarea>
 			<paper-icon-button id="uploadButton" icon="file-upload" on-click="addInputFile"></paper-icon-button>
+			<paper-spinner id="spinner" alt="Loading"></paper-spinner>
 		</div>
 	</template>
 	<script>
@@ -39,10 +45,12 @@
 					type: String,
 					reflectToAttribute: true,
 					notify: true
-				},
-				testResult: {
-					type: Boolean,
-					observer: '_resultSet'
+				}
+			},
+			startLoading: function(){
+				if (!!this.inputValue){
+					this.$.spinner.active = true;
+					this.disable();
 				}
 			},
 			disable: function(){
@@ -53,8 +61,9 @@
 				this.$.input.disabled = false;
 				this.$.uploadButton.disabled = false;
 			},
-			_resultSet: function(){
-				if (this.testResult){
+			setResult: function(result){
+				this.$.spinner.active = false;
+				if (result){
 					this.disable();
 					this.green();
 				}else{
