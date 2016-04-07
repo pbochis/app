@@ -15,14 +15,12 @@
 		}
 	</style>
 	<template>
-		<h4>Stdout</h4>
+		<h4>Standard output</h4>
 		<p>{{result.stdout}}</p>
-		<h4>Stderr</h4>
+		<h4>Standard error</h4>
 		<p class="stderr">{{result.stderr}}</p>
 		<h4>Status</h4>
 		<p>{{result.status}}</p>
-		<h4>Failure</h4>
-		<p class="stderr">{{result.failure}}</p>
 		<paper-spinner id="spinner" alt="Loading results"></paper-spinner>
 	</template>
 	<script>
