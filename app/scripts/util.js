@@ -10,7 +10,7 @@ var util = {
 
 		return prefix + suffix;
 	},
-	getWSUrl: function(suffix){
+	getWSUrl: function(suffix) {
 		var prefix = 'wss://ws.cod.uno:8080';
 
 		if (location.origin.indexOf('localhost') !== -1) {
@@ -19,7 +19,7 @@ var util = {
 
 		return prefix + suffix;
 	},
-	getSockWSUrl: function(suffix){
+	getSockWSUrl: function(suffix) {
 		var prefix = 'https://platform.cod.uno';
 
 		if (location.origin.indexOf('localhost') !== -1) {
@@ -61,11 +61,15 @@ var util = {
 		app.error = error;
 		page.redirect('/error');
 	},
-	getFormatedTime: function(d){
+	getFormatedTime: function(d) {
 		var h = Math.floor(d / 3600) % 24;
 		var m = Math.floor(d / 60 % 60);
 		var s = Math.floor(d % 60);
 		return ('0' + h).slice(-2) + ':' + ('0' + m).slice(-2) + ':' + ('0' + s).slice(-2);
+	},
+	padTime: function(i) {
+		var str = String(i);
+		return '00'.substring(0, 2 - str.length) + str;
 	},
 	formatDate: function(date, omitTime) {
 		if (!(date instanceof Date)) {
@@ -73,12 +77,13 @@ var util = {
 		}
 
 		var result = date.toISOString();
-		
+		result = result.substring(0, result.indexOf('T'));
+
 		if (omitTime) {
-			result = result.substring(0, result.indexOf('T'));
+			return result + ' UTC';
 		}
-		
-		return result;
+
+		return result + ' ' + util.padTime(date.getUTCHours()) + ':' + util.padTime(date.getUTCMinutes()) + ' UTC';
 	},
 	languages: [
 		'java',
