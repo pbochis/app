@@ -24,6 +24,10 @@
 				this.startSocket();
 			},
 			startSocket: function(){
+				if(this.reconnectTries > 10){
+					console.log('We tried to reconnect 10 times and nothing happened. Please try again later');
+					return;
+				}
 				this.reconnectTries++;
 				this.socket = new WebSocket(this.url);
 				this.socket.onerror = this.onError.bind(this);
@@ -34,15 +38,14 @@
 			onClose: function (data) {
 				console.log('connection closed');
 				console.log(data);
+				if(!data.wasClean){
+					this.startSocket();
+				}
 			},
 			onError: function (error) {
 				console.log('connection error');
 				console.log(error);
 				this.fire('ws-error', error);
-				if(this.reconnectTries > 10){
-					console.log('We tried to reconnect 10 times and nothing happened. Please try again later');
-					return;
-				}
 				this.startSocket();
 			},
 			onOpen: function (event) {
