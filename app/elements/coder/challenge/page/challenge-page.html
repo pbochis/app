@@ -48,9 +48,13 @@
 			</paper-material>
 		</div>
 	</template>
+	<script type="application/javascript" src="/scripts/behaviors/loading-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'challenge-page',
+			behaviors: [
+				Behaviors.LoadingBehavior
+			],
 			properties: {
 				challengeId: {
 					type: Object,
@@ -84,6 +88,7 @@
 				if(!this.challenge.startDate || ((this.challenge.startDate * 1000) - new Date().getTime()) <= 0){
 					this._displayChallengeTemplate();
 				}else{
+					this.stopAppLoading();
 					this.remainingTimeStyle = '';
 				}
 			},
@@ -92,6 +97,7 @@
 					localStorage.result = this.result.id;
 					this.replaceContent();
 				}else{
+					this.stopAppLoading();
 					this.contentStyle = '';
 				}
 			},
@@ -99,12 +105,12 @@
 				this.$.resultService.getMyResultByChallengeId(this.challengeId);
 			},
 			_displayChallengeTemplate: function(){
-				this.contentStyle = '';
 				this.remainingTimeStyle = 'display: none;';
 				this.$.timeUntilChallenge.innerHTML = '';
 				this.$.challengeTemplateService.getByScheduledChallengeId(this.challengeId);
 			},
 			afterPropertiesSet: function(){
+				this.startAppLoading();
 				this.$.challengeService.getById(this.challengeId);
 				return;
 			},

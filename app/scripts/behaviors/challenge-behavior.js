@@ -38,6 +38,7 @@ Behaviors.ChallengeBehavior = {
 	],
 	afterPropertiesSet: function(){
 		this.taskIndex = 0;
+		console.log(this.result);
 		if(!this.result.taskResults || this.result.taskResults.length === 0){
 			this.startTask();
 			this.startChallenge();
@@ -58,10 +59,8 @@ Behaviors.ChallengeBehavior = {
 				this.taskIndex = i;
 				hasEndTime = !!taskResult.endTime;
 			}
-			if(i === 0){
-				this.challengeStartTime = new Date(taskResult.startTime).getTime();
-			}
 		}
+		this.challengeStartTime = new Date(this.result.started * 1000).getTime();
 		this.taskStartTime = new Date(taskResults[this.challenge.tasks[this.taskIndex]].task.startTime).getTime();
 		if(hasEndTime){
 			this.taskIndex++;
@@ -105,6 +104,8 @@ Behaviors.ChallengeBehavior = {
 			});
 
 			this._replaceContent(webInterface);
+			element.contentWrapperStyle = '';
+			element.stopAppLoading();
 		});
     this.elementTaskChanged();
 	},
