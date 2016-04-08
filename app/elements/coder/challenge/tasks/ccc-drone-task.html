@@ -74,7 +74,7 @@
 
 				<paper-material id="leftCard" elevation="1">
 					<iron-pages selected="{{leftTab}}">
-						<tabbed-console id="console" task="{{task}}" on-all-green="_allTestsGreen"></tabbed-console>
+						<tabbed-console id="console" task="{{task}}"></tabbed-console>
 						<challenge-leaderboard id="leaderboard" challenge-id="{{challengeId}}"></challenge-leaderboard>
 					</iron-pages>
 				</paper-material>
@@ -172,14 +172,15 @@
 			},
 			_onMessage: function(m){
 				var result = JSON.parse(m.detail);
+				if(result && result.levelState === 'completed' && this.task.id === result.task){
+					this.fire('level-completed');
+					return;
+				}
 				var inputView = this.$$('#inputView');
 				if(inputView){
 					inputView.setResult(result);
 				}
 				this.$$('#console').setResult(result);
-			},
-			_allTestsGreen: function(){
-				this.fire('level-completed');
 			},
 			afterPropertiesSet: function(){
 				this.selected = 1;

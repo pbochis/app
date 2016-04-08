@@ -31,12 +31,14 @@
 	</style>
 	<template>
 		<task-service id="taskService" task="{{task}}" on-task-started="onTaskStarted"></task-service>
-		<ccc-nav id="coolNav" total-tasks="{{challenge.tasks.length}}" task-index="{{taskIndex}}"
-			challenge-duration="{{challenge.duration}}" challenge-start-time="{{challengeStartTime}}"
-			task-ids="{{challenge.tasks}}">
-		</ccc-nav>
+		<div id="contentWrapper" class=fullHeight style$="{{contentWrapperStyle}}">
+			<ccc-nav id="coolNav" total-tasks="{{challenge.tasks.length}}" task-index="{{taskIndex}}"
+				challenge-duration="{{challenge.duration}}" challenge-start-time="{{challengeStartTime}}"
+				task-ids="{{challenge.tasks}}">
+			</ccc-nav>
 
-		<div id="content" style$="{{contentStyle}}">
+			<div id="content" style$="{{contentStyle}}">
+			</div>
 		</div>
 		<iron-ajax
 			id="getResultRequest"
@@ -47,14 +49,21 @@
 		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/challenge-behavior.js"></script>
+	<script type="application/javascript" src="/scripts/behaviors/loading-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'ccc-challenge',
 			behaviors: [
-				Behaviors.ChallengeBehavior
+				Behaviors.ChallengeBehavior,
+				Behaviors.LoadingBehavior
 			],
 			properties: {
 				contentStyle:{
+					type: String,
+					notify: true,
+					value: 'display: none;'
+				},
+				contentWrapperStyle:{
 					type: String,
 					notify: true,
 					value: 'display: none;'
@@ -62,15 +71,10 @@
 			},
 			listeners: {
 				'challenge-timeout': '_challengeTimeout',
-				'server-finished-task': '_serverFinishedTask',
 				'level-completed': '_levelCompleted'
 			},
 			startChallenge: function() {
-				this.contentStyle = '';
 				this.$.coolNav.start();
-			},
-			_serverFinishedTask: function(){
-				this._nextTask();
 			},
 			_challengeTimeout: function(){
 				this._challengeEnded();
