@@ -7,7 +7,7 @@ Behaviors.ChallengeBehavior = {
 			notify: true,
 			value: 0
 		},
-		challenge: {
+		challengeTemplate: {
 			type: Object,
 			notify: true
 		},
@@ -34,7 +34,7 @@ Behaviors.ChallengeBehavior = {
 		}
 	},
 	observers: [
-		'afterPropertiesSet(challenge, result)'
+		'afterPropertiesSet(challengeTemplate, result)'
 	],
 	afterPropertiesSet: function(){
 		this.taskIndex = 0;
@@ -50,18 +50,24 @@ Behaviors.ChallengeBehavior = {
 		for(i=0; i<this.result.taskResults.length; i++){
 			taskResults[this.result.taskResults[i].task.id] = this.result.taskResults[i];
 		}
-		for(i=0; i<this.challenge.tasks.length; i++){
-			var taskResult = taskResults[this.challenge.tasks[i]];
+		for(i=0; i<this.challengeTemplate.tasks.length; i++){
+			var taskResult = taskResults[this.challengeTemplate.tasks[i]];
 			if(!taskResult){
 				continue;
 			}
-			if(taskResult.task.id === this.challenge.tasks[i] && taskResult.startTime){
+			if(taskResult.task.id === this.challengeTemplate.tasks[i] && taskResult.startTime){
 				this.taskIndex = i;
 				hasEndTime = !!taskResult.endTime;
 			}
 		}
-		this.challengeStartTime = new Date(this.result.started * 1000).getTime();
-		this.taskStartTime = new Date(taskResults[this.challenge.tasks[this.taskIndex]].task.startTime).getTime();
+		if(this.challenge.startDate && this.challenge.endDate){
+			this.challengeStartTime = new Date(this.challenge.startDate * 1000).getTime();
+			this.challengeDuration = (new Date(this.challenge.endDate * 1000).getTime() - this.challengeStartTime) / 1000;
+		}else{
+			this.challengeDuration = -1;
+		}
+
+		this.taskStartTime = new Date(taskResults[this.challengeTemplate.tasks[this.taskIndex]].task.startTime).getTime();
 		if(hasEndTime){
 			this.taskIndex++;
 			this.startTask();
@@ -73,11 +79,11 @@ Behaviors.ChallengeBehavior = {
 		this.startChallenge();
 	},
 	startTask: function(){
-		var task = this.challenge.tasks[this.taskIndex];
+		var task = this.challengeTemplate.tasks[this.taskIndex];
 		this.$.taskService.startTask(this.result.id, task);
 	},
 	getTask: function(){
-		var task = this.challenge.tasks[this.taskIndex];
+		var task = this.challengeTemplate.tasks[this.taskIndex];
 		this.$.taskService.getById(task);
 	},
 	onTaskStarted: function(){
@@ -113,7 +119,7 @@ Behaviors.ChallengeBehavior = {
 		this.taskStartTime = 0;
 
 		this.taskIndex++;
-		if(this.taskIndex < this.challenge.tasks.length){
+		if(this.taskIndex < this.challengeTemplate.tasks.length){
 			this.startTask();
 			return;
 		}
