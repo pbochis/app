@@ -74,8 +74,7 @@
 			<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language}}" on-code-changed="_setCachedCode"></code-editor>
 			<div id="actions">
 				<paper-fab mini on-click="_goToInstructions" icon="chrome-reader-mode"></paper-fab>
-				<!-- enable when itwill be available -->
-				<!-- <paper-fab mini on-click="_download" icon="file-download"></paper-fab> -->
+				<paper-fab mini on-click="_download" icon="file-download"></paper-fab>
 				<paper-fab mini on-click="_addFile" icon="file-upload"></paper-fab>
 				<paper-fab mini on-click="submit" icon="av:play-arrow"></paper-fab>
 			</div>
@@ -111,7 +110,7 @@
 				window.open(this.task.instructions, '', '_blank');
 			},
 			_download: function(){
-				alert('simulator.jar is not yet available');
+				window.open(this.task.description, '', '_blank');
 			},
 			run: function(){
 				this.fire('start-loading');
