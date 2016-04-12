@@ -73,7 +73,8 @@
 					type: Number
 				},
 				taskIndex: {
-					type: Number
+					type: Number,
+					value: -1
 				},
 				taskNavHeaderStyle: {
 					type: String,
@@ -104,6 +105,7 @@
 						this.fire('task-switch', this.index);
 					};
 					this.$.tabElements.appendChild(element);
+					this._taskDataChanged();
 				}
 			},
 			start: function(){

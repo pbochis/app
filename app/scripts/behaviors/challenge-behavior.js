@@ -38,7 +38,6 @@ Behaviors.ChallengeBehavior = {
 	],
 	afterPropertiesSet: function(){
 		this.taskIndex = 0;
-		console.log(this.result);
 		if(!this.result.taskResults || this.result.taskResults.length === 0){
 			this.startTask();
 			this.startChallenge();
@@ -74,7 +73,6 @@ Behaviors.ChallengeBehavior = {
 			this.startChallenge();
 			return;
 		}
-
 		this.getTask();
 		this.startChallenge();
 	},

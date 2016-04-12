@@ -32,9 +32,12 @@
 	<template>
 		<task-service id="taskService" task="{{task}}" on-task-started="onTaskStarted"></task-service>
 		<div id="contentWrapper" class=fullHeight style$="{{contentWrapperStyle}}">
-			<ccc-nav id="coolNav" total-tasks="{{challenge.tasks.length}}" task-index="{{taskIndex}}"
-				challenge-duration="{{challengeDuration}}" challenge-start-time="{{challengeStartTime}}"
-				task-ids="{{challenge.tasks}}">
+			<ccc-nav id="coolNav"
+					 task-ids="{{challengeTemplate.tasks}}"
+					 total-tasks="{{challengeTemplate.tasks.length}}"
+					 task-index="{{taskIndex}}"
+					 challenge-duration="{{challengeDuration}}"
+					 challenge-start-time="{{challengeStartTime}}">
 			</ccc-nav>
 
 			<div id="content" style$="{{contentStyle}}">
