@@ -41,7 +41,7 @@
 	<template>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
 		<invitation-service id="invitationService" invitations="{{invitations}}"></invitation-service>
-		<invite-candidates id="inviteCandidates"></invite-candidates>
+		<invite-candidates id="inviteCandidates" challenge="{{challenge}}"></invite-candidates>
 
 		<div id="wrapper" class="grid mainContent">
 				<paper-material class="card" elevation="1">
@@ -115,7 +115,6 @@
 				}
 			},
 			_inviteCandidates: function(){
-				this.$.inviteCandidates.challenges = [this.challenge];
 				this.$.inviteCandidates.toggle();
 			}
 		});

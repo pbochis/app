@@ -3,6 +3,7 @@
 
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 
@@ -21,7 +22,9 @@
 		#dialog {
 			position: fixed;
 			top: 10%;
-			max-height: 60%;
+		}
+		paper-dialog-scrollable {
+			height: 100%;
 		}
 	</style>
 	<template>
@@ -31,12 +34,15 @@
 			<h2>Invite candidates</h2>
 
 			<p>The address format must be: Name (first and last name or a combination) &lt;email address&gt;</p>
+			<paper-dialog-scrollable>
+				<form is="iron-form" id="form">
+					<template is="dom-repeat" items="{{candidates}}">
+						<invite-candidate-input name="inviteCandidateInput" candidate="{{item}}" required></invite-candidate-input>
+					</template>
 
-			<form is="iron-form" id="form">
-				<template is="dom-repeat" items="{{candidates}}">
-					<invite-candidate-input name="inviteCandidateInput" challenges="{{challenges}}" candidate="{{item}}" required></invite-candidate-input>
-				</template>
-				<div id="addCandidate" on-click="_addCandidate">
+				</form>
+			</paper-dialog-scrollable>
+			<div id="addCandidate" on-click="_addCandidate">
 					<iron-icon icon="add"></iron-icon>
 					<span>Add another candidate</span>
 				</div>
@@ -45,7 +51,7 @@
 					<paper-button class="primary" raised on-click="inviteCandidates">Invite
 					</paper-button>
 				</div>
-			</form>
+
 		</paper-dialog>
 		<paper-toast id="toast" text="Candidates invited."></paper-toast>
 	</template>
@@ -53,8 +59,8 @@
 		Polymer({
 			is: 'invite-candidates',
 			properties: {
-				challenges: {
-					type: Array,
+				challenge: {
+					type: Object,
 					notify: true
 				},
 				candidates: {
@@ -86,11 +92,7 @@
 				this.$.dialog.close();
 			},
 			_addCandidate: function () {
-				if (this.challenges.length === 1) {
-					this.push('candidates', {'challengeId': this.challenges[0].id});
-				} else {
-					this.push('candidates', {});
-				}
+				this.push('candidates', {'challengeId': this.challenge.id});
 			},
 			_removeCandidate: function(event){
 				var index = this.candidates.indexOf(event.detail);
@@ -98,10 +100,6 @@
 			},
 			_clearCandidates: function () {
 				this.candidates = [];
-				var el;
-				while ((el = document.querySelector('invite-candidate-input')) !== null) {
-					el.remove();
-				}
 			},
 			_userInvited: function(){
 				this.$.toast.show();
