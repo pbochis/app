@@ -14,24 +14,6 @@
 			@apply(--layout-self-center);
 		}
 
-		#challenges {
-			width: 200px;
-			margin-left: 15px;
-			@apply(--layout-self-center);
-		}
-		option {
-			width: 200px;
-		}
-		paper-menu {
-			background-color: white;
-		}
-		#challenge {
-			max-width: 200px;
-			overflow: hidden;
-			position: relative;
-			bottom: -25px;
-			margin-left: 15px;
-		}
 		iron-icon {
 			position: relative;
 			bottom: -5px;
@@ -39,31 +21,20 @@
 			cursor: pointer;
 			@apply(--layout-self-center);
 		}
-		#wrapper {
+		#row {
 			@apply(--layout-horizontal)
 		}
 	</style>
 	<template>
-		<div id="wrapper">
+		<div id="row">
 			<paper-input
 				id="address"
 				label="person@example.com"
 				value="{{candidate.email}}"
 				type="email"
 				error-message="Address should match the example above"
-				required></paper-input>
-			<template is="dom-if" if="{{isSingleChallenge}}">
-				<p id="challenge">{{challenges.0.Name}}</p>
-			</template>
-			<template is="dom-if" if="{{!isSingleChallenge}}">
-				<paper-dropdown-menu  id="challenges" label="Challenge" selected-item="{{selectedChallenge}}" required>
-					<paper-menu class="dropdown-content">
-						<template is="dom-repeat" items="{{challenges}}">
-							<option value="{{item.Key}}">{{item.Name}}</option><br>
-						</template>
-					</paper-menu>
-				</paper-dropdown-menu>
-			</template>
+				required>
+			</paper-input>
 			<iron-icon icon="remove" on-click="_removeItem"></iron-icon>
 		</div>
 	</template>
@@ -75,34 +46,14 @@
 				Polymer.IronValidatableBehavior
 			],
 			properties: {
-				challenges: {
-					type: Array
-				},
-				selectedChallenge: {
-					type: Object,
-					notify: true,
-					observer: '_selectedChallengeChanged'
-				},
 				candidate: {
 					type: Object,
 					reflectToAttribute: true,
 					notify: true
-				},
-				isSingleChallenge: {
-					type: Boolean,
-					computed: '_isSingleChallenge(challenges)'
 				}
 			},
 			validate: function(){
-				return this.$.address.validate() && (this.isSingleChallenge || this.$$('#challenges').validate());
-			},
-			_isSingleChallenge: function(challenges){
-				return challenges.length === 1;
-			},
-			_selectedChallengeChanged: function () {
-				if (!!this.selectedChallenge){
-					this.candidate.challengeId = this.selectedChallenge.value;
-				}
+				return this.$.address.validate();
 			},
 			_removeItem: function () {
 				this.fire('candidate-removed', this.candidate);

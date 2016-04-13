@@ -62,7 +62,7 @@
 				page('/challenge/template/'+ this.challengeTemplate.id + '/create');
 			},
 			_inviteCandidates: function (e) {
-				this.$.inviteCandidatesModal.challenges = [e.model.__data__.item];
+				this.$.inviteCandidatesModal.challenge = e.model.__data__.item;
 				this.$.inviteCandidatesModal.toggle();
 			},
 			_formatDate: function(date){
