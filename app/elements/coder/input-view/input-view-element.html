@@ -87,6 +87,7 @@
 					var fr = new FileReader();
 					fr.onload = function(e) {
 						self.$.input.value = e.target.result;
+						self.inputValue = e.target.result;
 					};
 					fr.readAsText(files[0]);
 				}
