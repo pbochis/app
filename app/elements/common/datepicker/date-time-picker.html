@@ -54,6 +54,9 @@
 				}
 			},
 			_dateTimeSet: function(){
+				if (!this.dateTime){
+					return;
+				}
 				if (!(this.dateTime instanceof Date)){
 					var date = new Date(this.dateTime);
 					this.$.datePicker.date = date;

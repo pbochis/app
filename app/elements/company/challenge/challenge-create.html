@@ -17,8 +17,7 @@
 		}
 
 		.buttonGroup {
-			margin: 16px;
-			float: right;
+			margin: 16px 0;
 		}
 	</style>
 	<template>
@@ -31,7 +30,9 @@
 					<paper-checkbox id="inviteOnly" value="{{challenge.inviteOnly}}" checked>Invite only</paper-checkbox>
 					<date-time-picker id="startDate" label="Fixed start date" date-time="{{challenge.startDate}}"></date-time-picker>
 				</form>
-				<paper-button raised on-click="_saveChallenge">Save</paper-button>
+				<div class="buttonGroup">
+					<paper-button raised on-click="_saveChallenge">Saved</paper-button>
+				</div>
 			</paper-material>
 		</div>
 	</template>
@@ -47,7 +48,6 @@
 					value: {}
 				},
 				savedChallenge: {
-					type: Object,
 					observer: '_savedChallengeChanged'
 				}
 			},
@@ -59,11 +59,8 @@
 				this.challenge.templateId = this.challengeTemplate;
 				this.$.challengeService.save(this.challenge);
 			},
-			_clearChallenge: function(){
-				this.challengeTemplateToSave = {};
-			},
 			_savedChallengeChanged: function(){
-				this.challenge = {};
+				this.set('challenge', {});
 				page('/challenges/' + this.savedChallenge);
 			}
 		});
