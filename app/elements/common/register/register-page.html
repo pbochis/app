@@ -4,8 +4,10 @@
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-input/all-imports.html">
+<link rel="import" href="/bower_components/gold-email-input/gold-email-input.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/iron-form/iron-form.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <dom-module id="register-page">
@@ -24,8 +26,8 @@ paper-material {
 	width: 70%;
 	background-color: white;
 
-	/* three times the width of iron-icon.huge */
-	max-width: 432px;
+	/* four times the width of iron-icon.huge */
+	max-width: 576px;
 
 	/* places this in the middle */
 	margin: auto;
@@ -38,7 +40,7 @@ paper-material > div {
 paper-material > div:first-child {
 	height: 15%;
 	max-height: 248px;
-	padding: 10%;
+	padding: 5%;
 	background: #373b50;
 	color: white;
 
@@ -65,7 +67,7 @@ span {
 }
 	</style>
 	<template>
-		<user-service id="userService" user={{savedUser}}></user-service>
+		<user-service id="userService" on-response="_onResponse" on-error="_onError"></user-service>
 		<paper-material elevation="1">
 			<div>
 				<div>
@@ -73,11 +75,40 @@ span {
 				</div>
 			</div>
 			<div>
-				<paper-input type="text" label="Name <e-mail>" value="{{user.Address}}" autofocus="true" on-keydown="onKeydown"></paper-input>
-				<paper-input type="text" label="Username" value="{{user.Nick}}" autofocus="true" on-keydown="onKeydown"></paper-input>
-				<paper-input type="password" label="Password" value="{{user.Password}}" autofocus="true" on-keydown="onKeydown"></paper-input>
-				<paper-input type="password" label="Repeat password" value="{{repeatedPassword}}" autofocus="true" on-keydown="onKeydown"></paper-input>
-				<paper-button class$="{{empty}}" flat colorful on-change="checkEmpty" on-click="register">Register</paper-button>
+				<form is="iron-form" id="userForm">
+					<gold-email-input
+						label="Email"
+						value="{{user.email}}"
+						autofocus="true"
+						on-keydown="onKeydown"
+						error-message="Please enter a valid email"
+						required>
+					</gold-email-input>
+					<paper-input
+						type="text"
+						label="Username"
+						value="{{user.nick}}"
+						autofocus="true"
+						minLength="5"
+						maxLength="60"
+						on-keydown="onKeydown"
+						error-message="Username must be between 5 and 60 characters and only contain alphanumerical characters."
+						required>
+					</paper-input>
+					<paper-input
+						type="password"
+						label="Password"
+						value="{{user.password}}"
+						autofocus="true"
+						on-keydown="onKeydown"
+						minLength="6"
+						maxLength="40"
+						error-message="Password must be between 6 and 40 characters."
+						required>
+					</paper-input>
+					<paper-input type="password" label="Repeat password" value="{{repeatedPassword}}" autofocus="true" on-keydown="onKeydown" required></paper-input>
+				</form>
+				<paper-button flat colorful on-change="checkEmpty" on-click="register">Register</paper-button>
 			</div>
 			<div class="horizontal layout">
 				<span class="flex"></span>
@@ -100,33 +131,38 @@ Polymer({
 		user: {
 			type: Object,
 			value: {}
-		},
-		savedUser: {
-			type: Object,
-			observer: '_savedUserChanged'
 		}
 	},
 	behaviors: [
 		Polymer.NeonAnimatableBehavior
 	],
-	_savedUserChanged: function(savedUser){
-		page('/login?address=' + savedUser.Address);
+	_onResponse: function(){
+		console.log('resp');
+		page('/login');
 	},
 	register: function() {
-		if(this.user.Password !== this.repeatedPassword){
+		if (!this.$.userForm.validate()){
+			return;
+		}
+		if(this.user.password !== this.repeatedPassword){
 			this.$.toast.text = 'Passwords do not match';
 			this.$.toast.show();
 			return;
 		}
 		this.$.userService.save(this.user);
 	},
-	checkEmpty: function() {
-		this.empty = this.email === '' ? 'empty' : '';
-	},
 	onKeydown: function(e) {
 		if (e.keyCode === 13) {
 			this.register();
 		}
+	},
+	_onError: function(e, err){
+		if (err.detail.request.xhr.status === 409){
+			this.$.toast.text = 'Username/email already taken';
+			this.$.toast.show();
+			return;
+		}
+		util.error(err);
 	}
 });
 </script>

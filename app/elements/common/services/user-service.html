@@ -15,7 +15,7 @@
 			last-response="{{user}}"
 			with-credentials="true"
 			on-response="_onResponse"
-			on-error="_onError">
+			on-error="_onSaveError">
 		</iron-ajax>
 		<iron-ajax
 			id="getSingleUser"
@@ -103,6 +103,10 @@
 			_onError: function(err){
 				this.app.stopLoading();
 				util.error(err);
+			},
+			_onSaveError: function(err){
+				this.app.stopLoading();
+				this.fire('error', err);
 			}
 		});
 	</script>
