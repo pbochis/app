@@ -1,6 +1,4 @@
 <link rel="import" href="/elements/coder/challenge/sock-ws-element.html">
-<link rel="import" href="/elements/coder/challenge/ws-element.html">
-<link rel="import" href="/elements/common/services/user-submission-service.html">
 
 <dom-module id="code-editor">
 	<style>
@@ -15,8 +13,6 @@
 		}
 	</style>
 	<template>
-		<user-submission-service id="submissionService"></user-submission-service>
-		<ws-element url="{{wsUrl}}"></ws-element>
 		<div id="editor"></div>
 	</template>
 	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
@@ -26,14 +22,6 @@
 		Polymer({
 			is: 'code-editor',
 			properties: {
-				wsUrl: {
-					type: String,
-					notify: true
-				},
-				taskId: {
-					type: String,
-					reflectToAttribute: true
-				},
 				language: {
 					type: String,
 					reflectToAttribute: true,
@@ -41,12 +29,6 @@
 				},
 				filename: String,
 				mimeType: String
-			},
-			run: function() {
-				this.$.submissionService.run(this.taskId, this.language, this.getFile());
-			},
-			submit: function() {
-				this.$.submissionService.submit(this.taskId, this.language, this.getFile());
 			},
 			ready: function(){
 				this.wsUrl = util.getWSUrl('/ws');

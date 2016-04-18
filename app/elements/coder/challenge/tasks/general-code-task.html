@@ -1,11 +1,15 @@
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
-<link rel="import" href="/elements/coder/code-editor/code-editor.html">
-<link rel="import" href="/elements/coder/code-editor/language-selector.html">
-<link rel="import" href="task-display.html">
 <link rel="import" href="/bower_components/iron-flex-layout/classes/iron-flex-layout.html">
 <link rel="import" href="/bower_components/iron-icons/av-icons.html">
+
+<link rel="import" href="/elements/coder/code-editor/code-editor.html">
+<link rel="import" href="/elements/coder/code-editor/language-selector.html">
+<link rel="import" href="/elements/coder/challenge/ws-element.html">
+<link rel="import" href="/elements/common/services/user-submission-service.html">
+
+<link rel="import" href="task-display.html">
 
 <dom-module id="code-task">
 	<style>
@@ -68,6 +72,7 @@
 		}
 	</style>
 	<template>
+		<user-submission-service id="submissionService"></user-submission-service>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
@@ -77,7 +82,7 @@
 			<div class="flex">
 				<paper-material id="topRightCard" elevation="1">
 					<div id="codeEditorWrapper">
-						<code-editor id="codeEditor" task-id="{{task.id}}" language="{{language.value}}"></code-editor>
+						<code-editor id="codeEditor" language="{{language.value}}"></code-editor>
 					</div>
 				</paper-material>
 				<paper-material id="botRightCard" elevation="1">
@@ -116,14 +121,18 @@
 				languages: {
 					type: Array,
 					notify: true
+				},
+				language: {
+					type: Object,
+					notify: true
 				}
 			},
 			runCode: function(){
-				this.$.codeEditor.run();
+				this.$.submissionService.run(this.task.id, this.language.value, this.$.codeEditor.getFiles());
 				this.control.loading();
 			},
 			runTests: function(){
-				this.$.codeEditor.submit();
+				this.$.submissionService.submit(this.task.id, this.language.value, this.$.codeEditor.getFiles());
 				this.control.loading();
 			},
 			finishTask: function(){
