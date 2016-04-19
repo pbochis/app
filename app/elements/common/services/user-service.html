@@ -28,6 +28,16 @@
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
+			id="putUser"
+			method="PUT"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{user}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
 			id="getMultiUsers"
 			method="GET"
 			handle-as="json"
@@ -71,6 +81,12 @@
 				this.$.postUser.body = user;
 				this.$.postUser.url = util.build('/users');
 				this.$.postUser.generateRequest();
+			},
+			updateMe: function(user){
+				this.app.startLoading();
+				this.$.putUser.body = user;
+				this.$.putUser.url = util.build('/user');
+				this.$.putUser.generateRequest();
 			},
 			whoAmI: function(){
 				this.app.startLoading();
