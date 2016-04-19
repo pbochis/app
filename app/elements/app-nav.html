@@ -22,6 +22,9 @@
 				<div class="flex">
 					<paper-tabs id="bottomTabs" class="bottom indent" selected="{{selected}}" noink no-slide>
 						<span></span>
+						<template is="dom-if" if="{{isAdmin}}">
+							<paper-tab link><a href="/template/create" class="tablink">Create template</a></paper-tab>
+						</template>
 						<template is="dom-if" if="{{isCompany}}">
 							<paper-tab link><a href="/challengetemplates" class="tablink">Challenges</a></paper-tab>
 							<paper-tab link><a href="/tasks" class="tablink">Tasks</a></paper-tab>
@@ -35,7 +38,7 @@
 				<paper-menu-button horizontal-align="right">
 					<paper-icon-button icon="supervisor-account" class="dropdown-trigger"></paper-icon-button>
 					<paper-menu class="dropdown-content">
-						<paper-item><a href="/" style="color: #444444; text-decoration: none;">Settings</a></paper-item>
+						<paper-item><a href="/settings" style="color: #444444; text-decoration: none;">Settings</a></paper-item>
 						<paper-item><a href="/logout" style="color: #444444; text-decoration: none;">Logout</a></paper-item>
 					</paper-menu>
 				</paper-menu-button>
@@ -52,6 +55,10 @@
 					value: false
 				},
 				isCompany: {
+					type: Boolean,
+					value: false
+				},
+				isAdmin: {
 					type: Boolean,
 					value: false
 				},
@@ -88,6 +95,7 @@
 				this.isCompany = !!this.userInfo.organization;
 				this.isCoder = !!this.userInfo.user && !this.isCompany;
 				this.isLoggedIn = this.isCompany || this.isCoder;
+				this.isAdmin = this.userInfo.user.admin;
 			}
 		});
 	</script>

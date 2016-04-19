@@ -6,11 +6,16 @@ window.addEventListener('WebComponentsReady', function() {
 		if (app.userInfo.organization) {
 			page('/challengetemplates');
 		} else if(app.userInfo.user){
-			// TODO add a default /home route
 			page('/mychallenges');
 		} else {
 			page('/login');
 		}
+	});
+
+	page('/settings', function() {
+		Polymer.Base.importHref('/elements/common/settings/settings-page.html', function(){
+			app.swapContent(document.createElement('settings-page'));
+		});
 	});
 
 	page('/register', function() {
@@ -27,7 +32,6 @@ window.addEventListener('WebComponentsReady', function() {
 
 	page('/login', function(ctx) {
 		app.initUserInfo = false;
-		app.route = 'login';
 		app.isLoggedIn = false;
 		Polymer.Base.importHref('/elements/common/login/login-wizard/login-wizard.html', function(){
 			var page = document.createElement('login-wizard');
@@ -140,7 +144,6 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/user/:userId/challenge/:challengeId', function(ctx){
-		app.route = 'userChallenge';
 		Polymer.Base.importHref('/elements/company/user/challenge/user-challenge-detail.html', function(){
 			var page = document.createElement('user-challenge-detail');
 			page.getData(ctx.ctx.userId, ctx.ctx.challengeId);
