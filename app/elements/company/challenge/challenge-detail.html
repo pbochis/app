@@ -41,7 +41,7 @@
 	<template>
 		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
 		<invitation-service id="invitationService" invitations="{{invitations}}"></invitation-service>
-		<invite-candidates id="inviteCandidates" challenge="{{challenge}}"></invite-candidates>
+		<invite-candidates id="inviteCandidates" challenge="{{challenge}}" on-invitation-sent="_onInvitationSent"></invite-candidates>
 
 		<div id="wrapper" class="grid mainContent">
 				<paper-material class="card" elevation="1">
@@ -106,6 +106,9 @@
 				}
 			},
 			_challengeIdChanged: function(){
+				this._refresh();
+			},
+			_refresh: function(){
 				this.$.challengeService.getById(this.challengeId);
 				this.$.invitationService.getByChallengeId(this.challengeId);
 			},
@@ -116,6 +119,9 @@
 			},
 			_inviteCandidates: function(){
 				this.$.inviteCandidates.toggle();
+			},
+			_onInvitationSent: function(){
+				this._refresh();
 			}
 		});
 	</script>
