@@ -4,6 +4,7 @@
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="/elements/common/services/user-service.html">
+<link rel="import" href="change-password-dialog.html">
 
 <dom-module id="settings-page">
 	<style include="iron-flex iron-flex-reverse">
@@ -70,20 +71,16 @@
 					<div>
 						<div class="list-item">
 							<div class="item-label">Password</div>
-							<paper-button class="primary">Change password</paper-button>
+							<paper-button class="primary" on-click="_showChangePasswordDialog">Change password</paper-button>
 						</div>
 					</div>
-					<!-- <editable-field labe	l="Password" value="Never updated">
-						<paper-input label="Current" value="{{password.old}}"></paper-input>
-						<paper-input label="New" value="{{password.new}}"></paper-input>
-						<paper-input label="Re-type new" value="{{password.newRetyped}}"></paper-input>
-					</editable-field> -->
 				</div>
 				<div class="aligned-item">
 					<paper-button raised on-click="_saveUser" class="success">Save</paper-button>
 				</div>
 			</div>
 		</paper-material>
+		<change-password-dialog id="changePasswordDialog"></change-password-dialog>
 	</template>
 </dom-module>
 
@@ -108,6 +105,9 @@
 		},
 		_saveUser: function(){
 			this.$.userService.updateMe(this.user);
+		},
+		_showChangePasswordDialog: function(){
+			this.$.changePasswordDialog.toggle();
 		},
 		_getFullName: function(firstName, lastName){
 			var name = '';

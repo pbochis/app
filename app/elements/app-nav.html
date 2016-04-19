@@ -95,7 +95,9 @@
 				this.isCompany = !!this.userInfo.organization;
 				this.isCoder = !!this.userInfo.user && !this.isCompany;
 				this.isLoggedIn = this.isCompany || this.isCoder;
-				this.isAdmin = this.userInfo.user.admin;
+				if(this.userInfo && this.userInfo.user){
+					this.isAdmin = this.userInfo.user.admin;
+				}
 			}
 		});
 	</script>
