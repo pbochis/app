@@ -1,19 +1,40 @@
-<link rel="import" href="/elements/coder/challenge/sock-ws-element.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="file-explorer/file-explorer.html">
 
 <dom-module id="code-editor">
-	<style>
+	<style include="iron-flex">
 		:host {
 			display: block;
 			height: 100%;
 		}
 
 		#editor {
-			height: 100%;
+			height: calc(100% - 36px);
 			z-index:0;
+		}
+		.container {
+			height: 100%;
+			@apply(--layout-horizontal);
+		}
+		.editor-container {
+			@apply(--layout-flex);
+			height: 100%;
+			@apply(--layout-vertical);
 		}
 	</style>
 	<template>
-		<div id="editor"></div>
+		<div class="container">
+			<file-explorer id="fileExplorer"></file-explorer>
+			<div class="editor-container">
+				<div>
+					<paper-icon-button icon="{{toggleIcon}}" on-click="toggle"></paper-icon-button>
+				</div>
+				<div id="editor"></div>
+			</div>
+		</div>
 	</template>
 	<script src="/bower_components/ace-min-noconflict/ace.js" type="application/javascript"></script>
 	<script src="/bower_components/ace-min-noconflict/ext-language_tools.js" type="application/javascript"></script>
@@ -27,11 +48,27 @@
 					reflectToAttribute: true,
 					observer: '_languageChanged'
 				},
+				toggleIcon: {
+					type: String,
+					notify: true
+				},
+				menuOpened: {
+					type: Boolean
+				},
 				filename: String,
 				mimeType: String
 			},
 			ready: function(){
-				this.wsUrl = util.getWSUrl('/ws');
+				document.addEventListener('click', function(e){
+					if (!util.clickInsideElement(e, 'context-menu')){
+						if (util.clickInsideElement(e, 'explorer-folder')){
+							return;
+						}
+						document.querySelector('context-menu').hideMenu();
+					}
+				});
+				this.toggleIcon = 'chevron-left';
+				this.menuOpened = true;
 				ace.require('ace/ext/language_tools');
 				this.$.editor = ace.edit(this.$.editor);
 				this.$.editor.setTheme('ace/theme/chrome');
@@ -42,7 +79,7 @@
 				this.$.editor.commands.addCommand({
 					name: 'run',
 					bindKey: {
-						win: 'Ctrl-Enter',
+						win: 'Ctrl-Enter'
 					},
 					exec: function(){
 						self.runCodeNormal();
@@ -54,6 +91,10 @@
 					self.fire('code-changed', self.$.editor.getValue());
 				});
 				this.$.editor.$blockScrolling = Infinity;
+			},
+			toggle: function(){
+				this.toggleIcon = this.toggleIcon === 'chevron-left' ? 'chevron-right' : 'chevron-left';
+				this.$.fileExplorer.toggle();
 			},
 			getFile: function() {
 				var blob = new Blob([this.$.editor.getValue()], {type: this.mimeType });

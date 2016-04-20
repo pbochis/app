@@ -1,0 +1,108 @@
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+
+<link rel="import" href="explorer-file.html">
+
+<dom-module id="explorer-folder">
+	<template>
+		<style include="iron-flex">
+			.folder-wrapper:hover {
+				background-color: lightgray;
+				cursor: pointer;
+			}
+			.folder-wrapper {
+				@apply(--layout-horizontal);
+				padding: 3px;
+			}
+			#folder-name {
+				margin-left: 2px;
+			}
+			paper-input {
+				height: 30px;
+			}
+			input {
+				width: calc(100% - 26px);
+			}
+		</style>
+		<div id="wrapper" class="folder-wrapper">
+			<iron-icon icon="folder" ></iron-icon>
+			<template is="dom-if" if="{{editMode}}">
+				<input type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
+			</template>
+			<template is="dom-if" if="{{!editMode}}">
+				<div id="folder-name">{{meta.name}}</div>
+			</template>
+		</div>
+		<template is="dom-repeat" items="{{children}}">
+			<template is="dom-if" if="{{item.isFolder}}">
+				<explorer-folder meta="{{item}}"></explorer-folder>
+			</template>
+			<template is="dom-if" if="{{!item.isFolder}}">
+				<explorer-file meta="{{item}}"></explorer-file>
+			</template>
+		</template>
+		<paper-toast id="toast"></paper-toast>
+	</template>
+	<script type="application/javascript" src="/scripts/behaviors/file-explorer-item-behavior.js"></script>
+	<script>
+		Polymer({
+			is: 'explorer-folder',
+			behaviors: [
+				Behaviors.FileExplorerItemBehavior
+			],
+			properties: {
+				children: {
+					type: Array,
+					notify: true
+				}
+			},
+			addFolder: function(){
+				if (!this.children){
+					this.children = [];
+				}
+				this.push('children', {
+					'name': this.findFirstAvailableName('newfolder', true),
+					'isFolder': true,
+					'order': this.meta.order + 1,
+					'parent': this
+				});
+				console.log(this.children);
+			},
+			addFile: function(){
+				if (!this.children){
+					this.children = [];
+				}
+				this.push('children', {
+					'name': this.findFirstAvailableName('newfile', false),
+					'isFolder': false,
+					'order': this.meta.order + 1,
+					'parent': this
+				});
+			},
+			findFirstAvailableName(name, isFolder){
+				var ok = false;
+				var tries = 0;
+				var searchName = name;
+				while(!ok){
+					ok = true;
+					for (var i = 0; i < this.children.length; i++){
+						if (this.children[i].name === searchName && this.children[i].isFolder === isFolder){
+							tries++;
+							searchName = name + '(' + tries + ')';
+							ok = false;
+						}
+					}
+				}
+				return searchName;
+			},
+			deleteChild: function(meta){
+				var index = this.children.indexOf(meta);
+				if (index < 0){
+					return;
+				}
+				this.splice('children', index, 1);
+			}
+		});
+	</script>
+</dom-module>
