@@ -2,7 +2,8 @@
 <link rel="import" href="/bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="file-explorer/file-explorer.html">
+<link rel="import" href="file-explorer/explorer-folder.html">
+<link rel="import" href="file-explorer/context-menu.html">
 
 <dom-module id="code-editor">
 	<style include="iron-flex">
@@ -10,7 +11,6 @@
 			display: block;
 			height: 100%;
 		}
-
 		#editor {
 			height: calc(100% - 36px);
 			z-index:0;
@@ -24,13 +24,19 @@
 			height: 100%;
 			@apply(--layout-vertical);
 		}
+		.explorer-container {
+			width: 200px;
+		}
 	</style>
 	<template>
+		<context-menu id="contextMenu"></context-menu>
 		<div class="container">
-			<file-explorer id="fileExplorer"></file-explorer>
+			<div class="explorer-container" style$="{{explorerStyle}}">
+				<explorer-folder id="rootFolder" meta="{{rootFolder}}"></explorer-folder>
+			</div>
 			<div class="editor-container">
 				<div>
-					<paper-icon-button icon="{{toggleIcon}}" on-click="toggle"></paper-icon-button>
+					<paper-icon-button icon="{{toggleExplorerIcon}}" on-click="_toggle"></paper-icon-button>
 				</div>
 				<div id="editor"></div>
 			</div>
@@ -48,27 +54,32 @@
 					reflectToAttribute: true,
 					observer: '_languageChanged'
 				},
-				toggleIcon: {
+				toggleExplorerIcon: {
 					type: String,
+					notify: true,
+					value: 'chevron-left'
+				},
+				mimeType: String,
+				rootFolder: {
+					type: Object,
 					notify: true
 				},
-				menuOpened: {
-					type: Boolean
+				explorerStyle :{
+					type: String,
+					value: ''
 				},
-				filename: String,
-				mimeType: String
+				selectedFile: {
+					type: Object,
+					notify: true
+				}
+			},
+			listeners: {
+				'show-menu': '_showMenu',
+				'file-selected': '_fileSelected'
 			},
 			ready: function(){
-				document.addEventListener('click', function(e){
-					if (!util.clickInsideElement(e, 'context-menu')){
-						if (util.clickInsideElement(e, 'explorer-folder')){
-							return;
-						}
-						document.querySelector('context-menu').hideMenu();
-					}
-				});
-				this.toggleIcon = 'chevron-left';
-				this.menuOpened = true;
+				this._addContextMenuListener();
+				//initialize code editor
 				ace.require('ace/ext/language_tools');
 				this.$.editor = ace.edit(this.$.editor);
 				this.$.editor.setTheme('ace/theme/chrome');
@@ -76,43 +87,71 @@
 					enableBasicAutocompletion: true
 				});
 				var self = this;
-				this.$.editor.commands.addCommand({
-					name: 'run',
-					bindKey: {
-						win: 'Ctrl-Enter'
-					},
-					exec: function(){
-						self.runCodeNormal();
-						console.log('loading animation not started');
-					},
-					readOnly: true
-				});
 				this.$.editor.getSession().on('change', function(){
-					self.fire('code-changed', self.$.editor.getValue());
+					var content = self.$.editor.getValue();
+					self.selectedFile.setContent(content);
+					console.log('CODE CHANGED' + content);
+					self.fire('code-changed', self.rootFolder);
 				});
 				this.$.editor.$blockScrolling = Infinity;
+				this.clearFiles();
 			},
-			toggle: function(){
-				this.toggleIcon = this.toggleIcon === 'chevron-left' ? 'chevron-right' : 'chevron-left';
-				this.$.fileExplorer.toggle();
+			clearFiles: function(){
+				this.rootFolder = {
+					'name': 'root',
+					'isFolder': true,
+					'order': 0,
+					'isRoot': true
+				};
+				this.setValue('');
+				if (!!this.selectedFile){
+					this.selectedFile.markUnselected();
+					this.selectedFile = null;
+				}
 			},
-			getFile: function() {
-				var blob = new Blob([this.$.editor.getValue()], {type: this.mimeType });
-				blob.name = this.filename;
+			_fileSelected: function(e, detail){
+				if (!!this.selectedFile){
+					this.selectedFile.markUnselected();
+				}
+				this.selectedFile = detail;
+				this.selectedFile.markSelected();
+				this.setValue(this.selectedFile.getContent());
+			},
+			_toggle: function(){
+				if (this.toggleExplorerIcon === 'chevron-left'){
+					this.explorerStyle = 'display: none';
+					this.toggleExplorerIcon = 'chevron-right';
+				}else{
+					this.explorerStyle = '';
+					this.toggleExplorerIcon = 'chevron-left';
+				}
+			},
+			setFilesJson: function(rootFolder) {
+				this.rootFolder = rootFolder;
+			},
+			getFiles: function(){
+				var jsonFiles = this.$.rootFolder.getSquashedFilesAsJson();
+				var files = [];
+				for (var i = 0; i < jsonFiles.length; i++){
+					files.push(this.getFile(jsonFiles[i]));
+				}
+				return files;
+			},
+			getFile: function(jsonFile) {
+				var blob = new Blob([jsonFile.content]);
+				blob.name = jsonFile.name;
 				return blob;
 			},
 			setValue: function(text){
 				this.$.editor.getSession().setValue(text);
 			},
-			setFile: function(f) {
+			addFile: function(f) {
 				var that = this;
 				var fr = new FileReader();
 				fr.onload = function(e) {
-					that.setValue(e.target.result);
+					that.$.rootFolder.putSelectedFile(f.name, e.target.result);
 				};
 				fr.readAsText(f);
-				this.mimeType = f.type;
-				this.filename = f.name;
 			},
 			_languageChanged: function(){
 				if(this.language){
@@ -137,6 +176,19 @@
 					mode = 'text';
 				}
 				this.$.editor.getSession().setMode('ace/mode/' + mode);
+			},
+			_showMenu: function(event, data){
+				this.$.contextMenu.showMenu(data);
+			},
+			_addContextMenuListener: function(){
+				document.addEventListener('click', function(e){
+					if (!util.clickInsideElement(e, 'context-menu')){
+						if (util.clickInsideElement(e, 'explorer-folder')){
+							return;
+						}
+						document.querySelector('context-menu').hideMenu();
+					}
+				});
 			}
 		});
 	</script>

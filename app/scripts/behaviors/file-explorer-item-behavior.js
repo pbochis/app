@@ -51,22 +51,25 @@ Behaviors.FileExplorerItemBehavior = {
 				this.$.toast.show();
 				return;
 			}
-			if (this.newName !== this.meta.parent.findFirstAvailableName(this.newName, this.meta.isFolder)){
-				this.$.toast.text = this.meta.isFolder ? 'A folder with the same name exists' : 'A file with the same name exists';
-				this.$.toast.show();
-				return;
-			}
-			this.set('meta.name', this.newName);
-			this.editMode = false;
+			this.fire('rename', this);
 		}
 		else if (e.keyCode === 27){
 			this.editMode = false;
 		}
 	},
+	finishRename: function(conflict){
+		if (conflict){
+			this.$.toast.text = this.meta.isFolder ? 'A folder with the same name exists' : 'A file with the same name exists';
+			this.$.toast.show();
+			return;
+		}
+		this.set('meta.name', this.newName);
+		this.editMode = false;
+	},
 	delete: function(){
 		if (this.meta.name === 'root' && this.meta.isFolder){
 			return;
 		}
-		this.meta.parent.deleteChild(this.meta);
+		this.fire('delete', this.meta);
 	}
 };

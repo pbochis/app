@@ -28,8 +28,8 @@
 			<template is="dom-if" if="{{!editMode}}">
 				<div id="file-name">{{meta.name}}</div>
 			</template>
-
 		</div>
+		<paper-toast id="toast"></paper-toast>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/file-explorer-item-behavior.js"></script>
 	<script>
@@ -37,7 +37,44 @@
 			is: 'explorer-file',
 			behaviors: [
 				Behaviors.FileExplorerItemBehavior
-			]
+			],
+			observers: [
+				'_afterMetaSet(meta)'
+			],
+			listeners: {
+				'click': 'selectFile'
+			},
+			_afterMetaSet: function(){
+				if (this.meta.selected){
+					this.selectFile();
+				}
+			},
+			selectFile: function(e){
+				this.fire('file-selected', this);
+			},
+			getFullName: function(){
+				var parent = this.meta.parent.meta;
+				var fullName = this.meta.name;
+				while(!parent.isRoot){
+					fullName = parent.name + '/' + fullName;
+					parent = parent.parent.meta;
+				}
+				return fullName;
+			},
+			markSelected: function(){
+				this.$.wrapper.style.backgroundColor = 'lightgray';
+				this.meta.selected = true;
+			},
+			markUnselected: function(){
+				this.$.wrapper.style.backgroundColor = '';
+				this.meta.selected = false;
+			},
+			getContent: function(){
+				return this.meta.content;
+			},
+			setContent: function(content){
+				this.meta.content = content;
+			}
 		});
 	</script>
 </dom-module>

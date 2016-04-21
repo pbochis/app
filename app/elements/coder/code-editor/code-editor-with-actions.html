@@ -73,7 +73,7 @@
 				<span></span>
 				<paper-icon-button on-click="_maximize" icon="{{maximizeIcon}}"></paper-icon-button>
 			</div>
-			<code-editor id="codeEditor" language="{{language}}" on-code-changed="_setCachedCode"></code-editor>
+			<code-editor id="codeEditor" on-code-changed="_setCachedCode"></code-editor>
 			<div id="actions">
 				<paper-fab mini on-click="_goToInstructions" icon="chrome-reader-mode"></paper-fab>
 				<paper-fab mini on-click="_download" icon="file-download"></paper-fab>
@@ -119,13 +119,14 @@
 				window.open(this.task.description, '', '_blank');
 			},
 			run: function(){
+				//todo: submission service
 				this.fire('start-loading');
-				var files = this.$$('#codeEditor').getFiles();
+				var files = this.$codeEditor.getFiles();
 				this.$.submissionService.run(this.task.id, this.language, files);
 			},
 			submit: function(){
 				this.fire('start-loading');
-				var files = this.$$('#codeEditor').getFiles();
+				var files = this.$codeEditor.getFiles();
 				this.$.submissionService.submit(this.task.id, this.language, files);
 			},
 			ready: function(){
@@ -151,13 +152,13 @@
 				if(!this.language){
 					return;
 				}
-				localStorage.setItem('cachedCode.' + this.language, code);
+				localStorage.setItem(this.language, JSON.stringify(code));
 			},
 			_getCachedCode: function(){
 				if(!this.language){
 					return undefined;
 				}
-				return localStorage.getItem('cachedCode.' + this.language);
+				return JSON.parse(localStorage.getItem(this.language));
 			},
 			_languageOptionChanged: function(){
 				if(!this.languageOption){
@@ -167,12 +168,14 @@
 			},
 			_languageChanged: function(){
 				if(this.language){
+					this.$.codeEditor.getFiles();
+					this.$.codeEditor.language = this.language;
 					var cachedCode = this._getCachedCode();
 					if(cachedCode){
-						this._setValue(cachedCode);
+						this.$.codeEditor.setFilesJson(cachedCode);
 						return;
 					}
-					this._setValue('');
+					this.$.codeEditor.clearFiles();
 					if(!this.task || !this.task.templates || !this.language){
 						return;
 					}
@@ -186,7 +189,7 @@
 			},
 			_templateChanged: function(){
 				if(this.template && !this._getCachedCode()){
-					this.$$('#codeEditor').setFile(this.template);
+					this.$codeEditor.addFile(this.template);
 				}
 			},
 			_filesUploaded: function() {

@@ -28,24 +28,25 @@
 					type: Boolean,
 					value: true
 				},
-				contextStyle: {
-					type: String,
-					notify: true,
-					value: 'display: none'
-				},
 				contentStyle :{
 					type: String,
 					value: ''
+				},
+				selectedFile: {
+					type: Object,
+					notify: true
 				}
 			},
 			listeners: {
-				'show-menu': '_showMenu'
+				'show-menu': '_showMenu',
+				'file-selected': '_fileSelected'
 			},
 			ready: function(){
 				this.rootFolder = {
 					'name': 'root',
 					'isFolder': true,
-					'order': 0
+					'order': 0,
+					'isRoot': true
 				};
 			},
 			_showMenu: function(event, data){
@@ -58,6 +59,19 @@
 					this.contentStyle = '';
 				}
 				this.visible = !this.visible;
+			},
+			_fileSelected: function(e, detail){
+				if (!!this.selectedFile){
+					this.selectedFile.markUnselected();
+				}
+				this.selectedFile = detail;
+				this.selectedFile.markSelected();
+			},
+			fileContentChanged: function(content){
+				this.selectedFile.setContent(content);
+			},
+			getFiles: function(){
+				return this.rootFolder;
 			}
 		});
 	</script>
