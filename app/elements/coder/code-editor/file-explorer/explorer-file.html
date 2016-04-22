@@ -51,11 +51,11 @@
 			},
 			markSelected: function(){
 				this.$.wrapper.style.backgroundColor = 'lightgray';
-				this.meta.selected = true;
+				this.set('meta.selected', true);
 			},
 			markUnselected: function(){
 				this.$.wrapper.style.backgroundColor = '';
-				this.meta.selected = false;
+				this.set('meta.selected', false);
 			},
 			getContent: function(){
 				return this.meta.content;

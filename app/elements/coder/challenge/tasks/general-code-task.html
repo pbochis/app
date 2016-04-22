@@ -6,8 +6,6 @@
 
 <link rel="import" href="/elements/coder/code-editor/code-editor.html">
 <link rel="import" href="/elements/coder/code-editor/language-selector.html">
-<link rel="import" href="/elements/coder/challenge/ws-element.html">
-<link rel="import" href="/elements/common/services/user-submission-service.html">
 
 <link rel="import" href="task-display.html">
 
@@ -72,7 +70,6 @@
 		}
 	</style>
 	<template>
-		<user-submission-service id="submissionService"></user-submission-service>
 		<div id="componentWrapper" class="horizontal layout">
 			<div class="flex">
 				<paper-material id="leftCard" elevation="1">
@@ -128,12 +125,10 @@
 				}
 			},
 			runCode: function(){
-				this.$.submissionService.run(this.task.id, this.language.value, this.$.codeEditor.getFiles());
-				this.control.loading();
+				//todo(vbalan): I am deprecated. Please fix me
 			},
 			runTests: function(){
-				this.$.submissionService.submit(this.task.id, this.language.value, this.$.codeEditor.getFiles());
-				this.control.loading();
+				//todo(vbalan): I am deprecated. Please fix me
 			},
 			finishTask: function(){
 				this.fire('task-finished');

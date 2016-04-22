@@ -88,7 +88,6 @@
 				this.$.editor.getSession().on('change', function(){
 					var content = self.$.editor.getValue();
 					self.selectedFile.setContent(content);
-					console.log('CODE CHANGED' + content);
 					self.fire('code-changed', self.rootFolder);
 				});
 				this.$.editor.commands.addCommand({
@@ -188,9 +187,10 @@
 				this.$.contextMenu.showMenu(data);
 			},
 			_addContextMenuListener: function(){
+				var self = this;
 				document.addEventListener('click', function(e){
-					if (!this._clickInsideElement(e, 'context-menu')){
-						if (this._clickInsideElement(e, 'explorer-folder')){
+					if (!self._clickInsideElement(e, 'context-menu')){
+						if (self._clickInsideElement(e, 'explorer-folder')){
 							return;
 						}
 						document.querySelector('context-menu').hideMenu();

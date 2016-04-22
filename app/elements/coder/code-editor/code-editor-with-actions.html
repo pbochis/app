@@ -126,7 +126,7 @@
 			},
 			submit: function(){
 				this.fire('start-loading');
-				var files = this.$codeEditor.getFiles();
+				var files = this.$.codeEditor.getFiles();
 				this.$.submissionService.submit(this.task.id, this.language, files);
 			},
 			ready: function(){
