@@ -10,10 +10,10 @@
 		<style include="iron-flex explorer-item"></style>
 		<div id="wrapper" class="item-wrapper">
 			<iron-icon icon="folder" ></iron-icon>
-			<template is="dom-if" if="{{editMode}}">
-				<input type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
+			<template is="dom-if" if="{{meta.editMode}}">
+				<input id="nameInput" type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
 			</template>
-			<template is="dom-if" if="{{!editMode}}">
+			<template is="dom-if" if="{{!meta.editMode}}">
 				<div class="item-name">{{meta.name}}</div>
 			</template>
 		</div>
@@ -34,49 +34,41 @@
 			behaviors: [
 				Behaviors.FileExplorerItemBehavior
 			],
-			addFolder: function(folderName){
+			addFolder: function(){
 				if (!this.meta.children){
 					this.set('meta.children', []);
 				}
 				var newFolder = {
 					'isFolder': true,
-					'order': this.meta.order + 1
+					'order': this.meta.order + 1,
+					'editMode': true,
+					'name': ''
 				};
-				newFolder.name = !!folderName ? folderName : this.findFirstAvailableName('newfolder', true);
 				this.push('meta.children', newFolder);
 			},
-			addFile: function(fileName, content, selected){
+			addFile: function(){
 				if (!this.meta.children){
 					this.set('meta.children', []);
 				}
 				var newFile = {
 					'isFolder': false,
-					'order': this.meta.order + 1
+					'order': this.meta.order + 1,
+					'editMode': true,
+					'name': ''
 				};
-				newFile.name = !!fileName ? fileName : this.findFirstAvailableName('newfile', false);
-				newFile.content = !!content ? content : '';
-				newFile.selected = !!selected;
 				this.push('meta.children', newFile);
 			},
 			_checkRename: function(e, el){
-				var conflict = this.findFirstAvailableName(el.newName, el.meta.isFolder) !== el.newName;
+				var conflict = this.isRenameConflict(el.newName, el.meta.isFolder);
 				el.finishRename(conflict);
 			},
-			findFirstAvailableName: function(name, isFolder){
-				var ok = false;
-				var tries = 0;
-				var searchName = name;
-				while(!ok){
-					ok = true;
-					for (var i = 0; i < this.meta.children.length; i++){
-						if (this.meta.children[i].name === searchName && this.meta.children[i].isFolder === isFolder){
-							tries++;
-							searchName = name + '(' + tries + ')';
-							ok = false;
-						}
+			isRenameConflict: function(name, isFolder){
+				for (var i = 0; i < this.meta.children.length; i++){
+					if (this.meta.children[i].name === name && this.meta.children[i].isFolder === isFolder){
+						return true;
 					}
 				}
-				return searchName;
+				return false;
 			},
 			getSquashedFilesAsJson: function(){
 				if (!this.meta.children){
@@ -120,26 +112,42 @@
 				this.splice('meta.children', index, 1);
 			},
 			putSelectedFile: function(filePath, content){
-				var separator = filePath.indexOf('/');
-				if (separator === -1){
-					this.addFile(filePath, content);
-					return;
-				}
 				if (!this.meta.children){
 					this.set('meta.children', []);
 				}
-				var folderName;
-				var parentFolder = this.meta;
-				var newFolder;
+				var separator = filePath.indexOf('/');
+				if (separator === -1){
+					this.push('meta.children', {
+						'name': filePath,
+						'content': content,
+						'selected': true,
+						'isFolder': false,
+						'order': this.meta.order + 1
+					});
+					return;
+				}
+
+				var folderName = filePath.substring(0, separator);
+				var firstChild = {
+					'name': folderName,
+					'isFolder': true,
+					'order': this.meta.order + 1,
+					'children': []
+				};
+				filePath = filePath.substring(separator + 1, filePath.length);
+				separator = filePath.indexOf('/');
+				var parent = firstChild;
+
 				while (separator !== -1){
 					folderName = filePath.substring(0, separator);
-					newFolder = {
+					var childFolder = {
 						'name': folderName,
 						'isFolder': true,
-						'order': parentFolder.order + 1
+						'order': parent.order + 1,
+						'children': []
 					};
-					this.push('meta.children', newFolder);
-					parentFolder = newFolder;
+					parent.children.push(childFolder);
+					parent = childFolder;
 					filePath = filePath.substring(separator + 1, filePath.length);
 					separator = filePath.indexOf('/');
 				}
@@ -147,10 +155,11 @@
 					'name': filePath,
 					'content': content,
 					'isFolder': false,
-					'order': parentFolder.order + 1,
+					'order': parent.order + 1,
 					'selected': true
 				};
-				this.push('meta.children', newFile);
+				parent.children.push(newFile);
+				this.push('meta.children', firstChild);
 			}
 		});
 	</script>

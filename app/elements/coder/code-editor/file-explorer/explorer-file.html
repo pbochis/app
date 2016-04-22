@@ -9,10 +9,10 @@
 		<style include="iron-flex explorer-item"></style>
 		<div id="wrapper" class="item-wrapper">
 			<iron-icon icon="assignment"></iron-icon>
-			<template is="dom-if" if="{{editMode}}">
-				<input type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
+			<template is="dom-if" if="{{meta.editMode}}">
+				<input id="nameInput" type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
 			</template>
-			<template is="dom-if" if="{{!editMode}}">
+			<template is="dom-if" if="{{!meta.editMode}}">
 				<div class="item-name">{{meta.name}}</div>
 			</template>
 		</div>

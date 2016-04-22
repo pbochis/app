@@ -11,7 +11,7 @@ Behaviors.FileExplorerItemBehavior = {
 		editMode: {
 			type: Boolean,
 			notify: true,
-			value: false
+			value: true
 		},
 		newName: {
 			type: String,
@@ -37,7 +37,7 @@ Behaviors.FileExplorerItemBehavior = {
 	},
 	rename: function(){
 		this.newName = this.meta.name;
-		this.editMode = true;
+		this.set('meta.editMode', true);
 	},
 	_confirmRename: function(e){
 		if (e.keyCode === 13){
@@ -64,7 +64,7 @@ Behaviors.FileExplorerItemBehavior = {
 			return;
 		}
 		this.set('meta.name', this.newName);
-		this.editMode = false;
+		this.set('meta.editMode', false);
 	},
 	delete: function(){
 		if (this.meta.name === 'root' && this.meta.isFolder){

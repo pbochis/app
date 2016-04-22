@@ -76,19 +76,5 @@ var util = {
 		}
 
 		return result + ' ' + util.padTime(date.getUTCHours()) + ':' + util.padTime(date.getUTCMinutes()) + ' UTC';
-	},
-	clickInsideElement: function(e, elName){
-		elName = elName.toLowerCase();
-		var el = e.srcElement || e.target;
-		if (el.tagName.toLowerCase() === elName){
-			return el;
-		}else{
-			while (!!(el = el.parentNode)){
-				if (!!el.tagName && el.tagName.toLowerCase() === elName){
-					return el;
-				}
-			}
-		}
-		return false;
 	}
 };
