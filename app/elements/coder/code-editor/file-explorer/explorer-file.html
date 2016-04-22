@@ -2,31 +2,18 @@
 <link rel="import" href="/bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="explorer-item.html">
+
 <dom-module id="explorer-file">
 	<template>
-		<style include="iron-flex">
-			.file-wrapper:hover {
-				background-color: lightgray;
-				cursor: pointer;
-			}
-			.file-wrapper {
-				@apply(--layout-horizontal);
-				padding: 3px;
-			}
-			#file-name {
-				margin-left: 2px;
-			}
-			input {
-				width: calc(100% - 26px);
-			}
-		</style>
-		<div id="wrapper" class="file-wrapper">
+		<style include="iron-flex explorer-item"></style>
+		<div id="wrapper" class="item-wrapper">
 			<iron-icon icon="assignment"></iron-icon>
 			<template is="dom-if" if="{{editMode}}">
 				<input type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
 			</template>
 			<template is="dom-if" if="{{!editMode}}">
-				<div id="file-name">{{meta.name}}</div>
+				<div class="item-name">{{meta.name}}</div>
 			</template>
 		</div>
 		<paper-toast id="toast"></paper-toast>
@@ -49,8 +36,9 @@
 					this.selectFile();
 				}
 			},
-			selectFile: function(e){
+			selectFile: function(){
 				this.fire('file-selected', this);
+				this.markSelected();
 			},
 			getFullName: function(){
 				var parent = this.meta.parent.meta;

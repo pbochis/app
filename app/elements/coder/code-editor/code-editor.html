@@ -59,7 +59,6 @@
 					notify: true,
 					value: 'chevron-left'
 				},
-				mimeType: String,
 				rootFolder: {
 					type: Object,
 					notify: true
@@ -79,7 +78,6 @@
 			},
 			ready: function(){
 				this._addContextMenuListener();
-				//initialize code editor
 				ace.require('ace/ext/language_tools');
 				this.$.editor = ace.edit(this.$.editor);
 				this.$.editor.setTheme('ace/theme/chrome');
@@ -92,6 +90,16 @@
 					self.selectedFile.setContent(content);
 					console.log('CODE CHANGED' + content);
 					self.fire('code-changed', self.rootFolder);
+				});
+				this.$.editor.commands.addCommand({
+						name: 'run',
+						bindKey: {
+							win: 'Ctrl-Enter'
+						},
+						exec: function(){
+								self.fire('run-code');
+						},
+						readOnly: true
 				});
 				this.$.editor.$blockScrolling = Infinity;
 				this.clearFiles();
@@ -114,7 +122,6 @@
 					this.selectedFile.markUnselected();
 				}
 				this.selectedFile = detail;
-				this.selectedFile.markSelected();
 				this.setValue(this.selectedFile.getContent());
 			},
 			_toggle: function(){

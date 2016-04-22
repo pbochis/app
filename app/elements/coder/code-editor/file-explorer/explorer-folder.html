@@ -3,35 +3,18 @@
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="explorer-file.html">
+<link rel="import" href="explorer-item.html">
 
 <dom-module id="explorer-folder">
 	<template>
-		<style include="iron-flex">
-			.folder-wrapper:hover {
-				background-color: lightgray;
-				cursor: pointer;
-			}
-			.folder-wrapper {
-				@apply(--layout-horizontal);
-				padding: 3px;
-			}
-			#folder-name {
-				margin-left: 2px;
-			}
-			paper-input {
-				height: 30px;
-			}
-			input {
-				width: calc(100% - 26px);
-			}
-		</style>
-		<div id="wrapper" class="folder-wrapper">
+		<style include="iron-flex explorer-item"></style>
+		<div id="wrapper" class="item-wrapper">
 			<iron-icon icon="folder" ></iron-icon>
 			<template is="dom-if" if="{{editMode}}">
 				<input type="text" value="{{newName::input}}" on-keyup="_confirmRename" autofocus>
 			</template>
 			<template is="dom-if" if="{{!editMode}}">
-				<div id="folder-name">{{meta.name}}</div>
+				<div class="item-name">{{meta.name}}</div>
 			</template>
 		</div>
 		<template is="dom-repeat" items="{{meta.children}}">
@@ -79,7 +62,7 @@
 				var conflict = this.findFirstAvailableName(el.newName, el.meta.isFolder) !== el.newName;
 				el.finishRename(conflict);
 			},
-			findFirstAvailableName(name, isFolder){
+			findFirstAvailableName: function(name, isFolder){
 				var ok = false;
 				var tries = 0;
 				var searchName = name;
@@ -107,7 +90,6 @@
 							'name': el.name,
 							'content': el.content
 						});
-						console.log(files);
 					}else{
 						var cFiles = [];
 						this._getSquashedFilesForFolder(el, cFiles, '');
@@ -126,7 +108,7 @@
 						files.push({
 							'name': cPrefix + el.name,
 							'content': el.content
-						})
+						});
 					}
 				}
 			},
@@ -136,13 +118,6 @@
 					return;
 				}
 				this.splice('meta.children', index, 1);
-			},
-			selectFile: function(){
-				var file = this.$$('explorer-file');
-				console.log(file);
-				if (!!file){
-					file.selectFile();
-				}
 			},
 			putSelectedFile: function(filePath, content){
 				var separator = filePath.indexOf('/');

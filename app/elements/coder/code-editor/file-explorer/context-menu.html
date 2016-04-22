@@ -76,13 +76,10 @@
 				this.selectedItem = data.element;
 				this.notifyPath('selectedItem.meta.isFolder', this.selectedItem.meta.isFolder);
 				this.isRoot = this.selectedItem.meta.isFolder && this.selectedItem.meta.name === 'root';
-				console.log(this.isRoot);
 				this._updatePosition(data);
 			},
 			_updatePosition: function(data){
-				if (!this.pos){
-					this.pos = {};
-				}
+				this.pos = {};
 				this.pos.x = data.x;
 				this.pos.y = data.y;
 				this.$.contextMenuHost.style.left = data.x + 'px';

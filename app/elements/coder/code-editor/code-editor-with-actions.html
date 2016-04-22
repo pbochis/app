@@ -168,7 +168,6 @@
 			},
 			_languageChanged: function(){
 				if(this.language){
-					this.$.codeEditor.getFiles();
 					this.$.codeEditor.language = this.language;
 					var cachedCode = this._getCachedCode();
 					if(cachedCode){
