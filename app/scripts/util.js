@@ -1,6 +1,15 @@
 /* exported util */
 
 var util = {
+	baseUrl: function() {
+		var prefix = 'https://platform.cod.uno';
+
+		if (location.origin.indexOf('localhost') !== -1) {
+			prefix = 'http://localhost:8080';
+		}
+
+		return prefix;
+	},
 	build: function(suffix) {
 		var prefix = 'https://platform.cod.uno';
 

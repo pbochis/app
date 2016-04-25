@@ -1,8 +1,8 @@
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="/elements/common/data-providers/team-provider.html">
-<link rel="import" href="/elements/common/data-providers/user-provider.html">
+<link rel="import" href="/elements/common/data-providers/team/teams-for-user-provider.html">
+<link rel="import" href="/elements/common/data-providers/user/user-by-username-provider.html">
 <link rel="import" href="/elements/common/skill/skill-polygon.html">
 
 <dom-module id="profile-page">
@@ -52,8 +52,8 @@
 		}
 	</style>
 	<template>
-		<user-provider username="{{username}}" data="{{user}}" with-mocked-skills></user-provider>
-		<team-provider user-id="{{user.id}}" data="{{teams}}"></team-provider>
+		<user-by-username-provider username="{{username}}" data="{{user}}" with-mocked-skills></user-by-username-provider>
+		<teams-for-user-provider user-id="{{user.id}}" data="{{teams}}"></teams-for-user-provider>
 		<div id="wrapper">
 			<paper-material id="top" class="mainContent" elevation="1">
 				<div id="userInfo">

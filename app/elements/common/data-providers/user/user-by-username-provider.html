@@ -1,0 +1,50 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="user-by-username-provider">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="request"
+			auto
+			method="GET"
+			url="{{url}}"
+			handle-as="json"
+			last-response="{{data}}"
+			with-credentials="true">
+		</iron-ajax>
+	</template>
+	<script type="application/javascript" src="/scripts/behaviors/providers/general-provider-behavior.js"></script>
+	<script type="application/javascript" src="/scripts/behaviors/providers/user-provider-behavior.js"></script>
+	<script>
+		Polymer({
+			is: 'user-by-username-provider',
+			behaviors: [
+				Behaviors.Providers.General,
+				Behaviors.Providers.User
+			],
+			properties: {
+				withMockedSkills: {
+					type: Boolean
+				}
+			},
+			observers: [
+				'_dataLoaded(data)',
+				'_usernameChanged(username)'
+			],
+			_usernameChanged: function(username){
+				this.url = this.baseUrl + '/users/' + username;
+			},
+			_dataLoaded: function(){
+				this.set('data._fullName', this._getFullName(this.data));
+				this.set('data._initialLetter', this._getInitialLetter(this.data));
+				if(this.withMockedSkills){
+					this.set('data._mockedSkills', this._getMockedSkills());
+				}
+			}
+		});
+	</script>
+</dom-module>
