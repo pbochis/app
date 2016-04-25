@@ -1,4 +1,3 @@
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
@@ -16,65 +15,32 @@
 		#content{
 			height: calc(100% - 40px);
 		}
-		#startChallengeCard{
-			width:35%;
-		}
-		#taskNavHeader{
-			height: 40px;
-			background: white;
-			margin: 0;
-			padding: 0;
-		}
-		#leftProgressFlex{
-			margin-right: 50px;
-		}
 	</style>
 	<template>
 		<task-service id="taskService" task="{{task}}" on-task-started="onTaskStarted"></task-service>
-		<div id="contentWrapper" class=fullHeight style$="{{contentWrapperStyle}}">
+		<div id="wrapper" class=fullHeight >
 			<ccc-nav id="coolNav"
-					 task-ids="{{challengeTemplate.tasks}}"
-					 total-tasks="{{challengeTemplate.tasks.length}}"
-					 task-index="{{taskIndex}}"
-					 challenge-duration="{{challengeDuration}}"
-					 challenge-start-time="{{challengeStartTime}}">
+					challenge="{{challenge}}"
+					challenge-template="{{challengeTemplate}}"
+					task-index="{{taskIndex}}">
 			</ccc-nav>
-
-			<div id="content" style$="{{contentStyle}}">
+			<div id="content">
 			</div>
 		</div>
-		<iron-ajax
-			id="getResultRequest"
-			handle-as="json"
-			method="GET"
-			with-credentials="true"
-			>
-		</iron-ajax>
 	</template>
 	<script type="application/javascript" src="/scripts/behaviors/challenge-behavior.js"></script>
-	<script type="application/javascript" src="/scripts/behaviors/loading-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'ccc-challenge',
 			behaviors: [
-				Behaviors.ChallengeBehavior,
-				Behaviors.LoadingBehavior
+				Behaviors.ChallengeBehavior
 			],
-			properties: {
-				contentStyle:{
-					type: String,
-					notify: true,
-					value: 'display: none;'
-				},
-				contentWrapperStyle:{
-					type: String,
-					notify: true,
-					value: 'display: none;'
-				}
-			},
 			listeners: {
 				'challenge-timeout': '_challengeTimeout',
 				'level-completed': '_levelCompleted'
+			},
+			ready: function(){
+				this._hideContent();
 			},
 			startChallenge: function() {
 				this.$.coolNav.start();
