@@ -2,6 +2,10 @@
 
 <dom-module id="tabbed-console-element">
 	<style>
+		:host {
+			display: block;
+			height: 100%;
+		}
 		p {
 			font-family: 'Lucida Console', Monaco, monospace;
 			white-space: pre-wrap;
@@ -11,17 +15,21 @@
 			color: red;
 		}
 		paper-spinner {
-			margin: auto auto 50% 50%;
+			position: absolute;
+			left: 50%;
+			top: 40%;
 		}
 	</style>
 	<template>
-		<h4>Standard output</h4>
-		<p>{{result.stdout}}</p>
-		<h4>Standard error</h4>
-		<p class="stderr">{{result.stderr}}</p>
-		<h4>Status</h4>
-		<p>{{result.status}}</p>
-		<paper-spinner id="spinner" alt="Loading results"></paper-spinner>
+		<div class="fullHeight">
+			<h4>Standard output</h4>
+			<p>{{result.stdout}}</p>
+			<h4>Standard error</h4>
+			<p class="stderr">{{result.stderr}}</p>
+			<h4>Status</h4>
+			<p>{{result.status}}</p>
+			<paper-spinner id="spinner" alt="Loading results"></paper-spinner>
+		</div>
 	</template>
 	<script>
 	 Polymer({
