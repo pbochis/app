@@ -11,10 +11,6 @@ Behaviors.ChallengeBehavior = {
 			type: Object,
 			notify: true
 		},
-		challengeId: {
-			type: Number,
-			notify: true
-		},
 		result: {
 			type: Object,
 			notify: true
@@ -23,79 +19,53 @@ Behaviors.ChallengeBehavior = {
 			type: Object,
 			notify: true,
 			observer: '_taskChanged'
-		},
-		challengeStartTime: {
-			type: Number,
-			value: 0
-		},
-		taskStartTime: {
-			type: Number,
-			value: 0
 		}
 	},
 	observers: [
 		'afterPropertiesSet(challengeTemplate, result)'
 	],
-	afterPropertiesSet: function(){
+	afterPropertiesSet: function(challengeTemplate, result){
 		this.taskIndex = 0;
-		if(!this.result.taskResults || this.result.taskResults.length === 0){
+		if(!result.taskResults || result.taskResults.length === 0){
 			this.startTask();
 			this.startChallenge();
 			return;
 		}
-		var taskResults = {};
-		var i = 0;
 		var hasEndTime = false;
-		for(i=0; i<this.result.taskResults.length; i++){
-			taskResults[this.result.taskResults[i].task.id] = this.result.taskResults[i];
-		}
-		for(i=0; i<this.challengeTemplate.tasks.length; i++){
-			var taskResult = taskResults[this.challengeTemplate.tasks[i]];
-			if(!taskResult){
-				continue;
-			}
-			if(taskResult.task.id === this.challengeTemplate.tasks[i] && taskResult.startTime){
-				this.taskIndex = i;
+		var self = this;
+		result.taskResults.forEach(function(taskResult){
+			var index = challengeTemplate.tasks.indexOf(taskResult.task.id);
+			if(index >= self.taskIndex){
+				self.taskIndex = index;
 				hasEndTime = !!taskResult.endTime;
 			}
-		}
-		if(this.challenge.startDate && this.challenge.endDate){
-			this.challengeStartTime = new Date(this.challenge.startDate * 1000).getTime();
-			this.challengeDuration = (new Date(this.challenge.endDate * 1000).getTime() - this.challengeStartTime) / 1000;
-		}else{
-			this.challengeDuration = -1;
-		}
-
-		this.taskStartTime = new Date(taskResults[this.challengeTemplate.tasks[this.taskIndex]].task.startTime).getTime();
+		});
 		if(hasEndTime){
 			this.taskIndex++;
 			this.startTask();
-			this.startChallenge();
-			return;
+		}else{
+			this.getTask();
 		}
-		this.getTask();
 		this.startChallenge();
 	},
 	startTask: function(){
-		var task = this.challengeTemplate.tasks[this.taskIndex];
-		this.$.taskService.startTask(this.result.id, task);
+		this.$.taskService.startTask(this.result.id, this.challengeTemplate.tasks[this.taskIndex]);
 	},
 	getTask: function(){
-		var task = this.challengeTemplate.tasks[this.taskIndex];
-		this.$.taskService.getById(task);
+		this.$.taskService.getById(this.challengeTemplate.tasks[this.taskIndex]);
 	},
 	onTaskStarted: function(){
 		this.getTask();
 	},
 	// TODO abstract task listeners
-	_taskChanged: function(){
-		if(!this.task){
+	_taskChanged: function(task){
+		if(!task){
 			return;
 		}
-		this.importHref('/elements/coder/challenge/tasks/' + this.task.endpoint.component + '.html', function(){
+		this.importHref('/elements/coder/challenge/tasks/endpoints/' + task.endpoint.component + '.html', function(){
 			var webInterface = document.createElement(this.task.endpoint.component);
-			webInterface.task = this.task;
-			webInterface.challengeId = this.challengeId;
+			webInterface.task = task;
+			webInterface.challengeId = this.challenge.id;
 
 			var element = this;
 			webInterface.addEventListener('task-finished', function(){
@@ -108,42 +78,37 @@ Behaviors.ChallengeBehavior = {
 			});
 
 			this._replaceContent(webInterface);
-			element.contentWrapperStyle = '';
-			element.stopAppLoading();
+			element._showContent();
 		});
     this.elementTaskChanged();
 	},
 	_nextTask: function(){
-		this.taskStartTime = 0;
-
 		this.taskIndex++;
 		if(this.taskIndex < this.challengeTemplate.tasks.length){
 			this.startTask();
 			return;
 		}
 		this.$.coolNav.stop();
-		// This starts the result computing
-		this.$.getResultRequest.url = util.build('/results/' + this.result.id);
-		this.$.getResultRequest.generateRequest();
-
 		this._challengeEnded();
-	},
-	_replaceContent: function(element){
-		this.contentStyle = '';
-		this.$.content.innerHTML = '';
-		this.$.content.appendChild(element);
-	},
-	_importAndReplaceContent: function(importPath, elementName){
-		this.importHref(importPath, function(){
-			this._replaceContent(document.createElement(elementName));
-		});
 	},
 	_challengeEnded: function(){
 		var self = this;
 		this.importHref('/elements/coder/challenge/info/challenge-ended.html', function(){
 			var webInterface = document.createElement('challenge-ended');
-			webInterface.challengeId = self.challengeId;
+			webInterface.challengeId = self.challenge.id;
 			self._replaceContent(webInterface);
 		});
+	},
+	// CONTENT RELATED
+	_replaceContent: function(element){
+		this._showContent();
+		this.$.content.innerHTML = '';
+		this.$.content.appendChild(element);
+	},
+	_showContent: function(){
+		this.$.wrapper.style.display = '';
+	},
+	_hideContent: function(){
+		this.$.wrapper.style.display = 'none';
 	}
 };

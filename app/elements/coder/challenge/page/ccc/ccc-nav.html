@@ -45,7 +45,7 @@
 	</style>
 	<template>
 		<task-service id="taskService" task="{{clickedTask}}"></task-service>
-		<paper-material id="taskNavHeader" elevation="1" style$="{{taskNavHeaderStyle}}">
+		<paper-material id="taskNavHeader" elevation="1">
 			<div class="timer"></div>
 			<span class="flex"></span>
 			<div id="tabElements"></div>
@@ -61,52 +61,42 @@
 			// TODO(victorbalan): Refactor component and split logic and refactor requests.
 			is: 'ccc-nav',
 			properties: {
-				challengeDuration: {
-					type: Number,
-					reflectToAttribute: true
-				},
-				challengeStartTime: {
-					type: Number,
-					reflectToAttribute: true
-				},
-				totalTasks: {
-					type: Number
-				},
 				taskIndex: {
 					type: Number,
 					value: -1
 				},
-				taskNavHeaderStyle: {
-					type: String,
-					value: 'display: none'
-				},
 				clickedTask: {
 					type: Object,
 					observer: '_clickedTaskChanged'
-				},
-				taskIds: {
-					type: Array
 				}
 			},
 			observers: [
-				'afterPropertiesSet(totalTasks)',
+				'_afterPropertiesSet(challenge, challengeTemplate)',
 				'_taskDataChanged(taskIndex)'
 			],
 			listeners: {
 				'task-switch': '_onTaskSwitch'
 			},
-			afterPropertiesSet: function(){
-				for(var i = 0; i<this.totalTasks;i++){
+			_afterPropertiesSet: function(challenge, challengeTemplate){
+				this._initializeLevelElements(challengeTemplate.tasks.length);
+				if(challenge.startDate && challenge.endDate){
+					var challengeStartTime = new Date(challenge.startDate * 1000).getTime();
+					this.challengeDuration = (new Date(challenge.endDate * 1000).getTime() - challengeStartTime) / 1000;
+				}else{
+					this.challengeDuration = -1;
+				}
+			},
+			_initializeLevelElements: function(totalTasks){
+				for(var i = 0; i<totalTasks;i++){
 					var element = document.createElement('nav-level-element');
 					element.id = 'nav' + i;
 					element.index = i;
-					element.state = 'default';
-					element.onclick = function(){
-						this.fire('task-switch', this.index);
-					};
 					this.$.tabElements.appendChild(element);
 					this._taskDataChanged();
 				}
+			},
+			ready: function(){
+				this._hide();
 			},
 			start: function(){
 				this._show();
@@ -133,14 +123,14 @@
 				}
 			},
 			_show: function(){
-				this.taskNavHeaderStyle = '';
+				this.$.taskNavHeader.style.display = '';
 			},
 			_hide: function(){
-				this.taskNavHeaderStyle = 'display: none';
+				this.$.taskNavHeader.style.display = 'none';
 			},
 			_onTaskSwitch: function(e, taskIndex){
 				if(taskIndex < this.taskIndex){
-					this.$.taskService.getById(this.taskIds[taskIndex]);
+					this.$.taskService.getById(this.challengeTemplate.tasks[taskIndex]);
 				}else if(taskIndex > this.taskIndex){
 					alert('You must finish all levels to this level');
 				}
@@ -149,6 +139,5 @@
 				this.$.dialog.toggle();
 			}
 		});
-
 	</script>
 </dom-module>

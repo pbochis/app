@@ -31,7 +31,7 @@
 		}
 	</style>
 	<template>
-		<div class="wrapper">
+		<div class="wrapper" on-click="_onClick">
 			<div class$="{{divClass}}">
 				<span class="empty"></span>
 			</div>
@@ -45,7 +45,13 @@
 				 type: String,
 				 notify: true,
 				 value: 'circle gray'
+			 },
+			 state: {
+				 value: 'default'
 			 }
+		 },
+		 _onClick: function(){
+			 this.fire('task-switch', this.index);
 		 },
 		 setState: function(state){
 			 if(state === 'completed'){

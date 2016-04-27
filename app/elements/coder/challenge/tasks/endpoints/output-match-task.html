@@ -1,7 +1,8 @@
 <link rel="import" href="general-code-task.html">
 <link rel="import" href="/elements/coder/code-editor/consoles/test-stats-console.html">
 
-<dom-module id="coder-javaut-task">
+<!-- @deprecated -->
+<dom-module id="output-match-task">
 	<style>
 		:host{
 			display: block;
@@ -10,21 +11,17 @@
 	</style>
 	<template>
 		<code-task task="{{task}}" control="{{control}}" finished-button-class="{{finishButtonClass}}">
-			<test-stats-console task="{{task}}" id="console"></test-stats-console>
+			<test-stats-console id="console" task="{{task}}"></test-stats-console>
 		</code-task>
 	</template>
 	<script>
 		Polymer({
-			is: 'coder-javaut-task',
+			is: 'output-match-task',
 			properties: {
 				task: {
 					type: Object,
 					notify: true,
 					reflectToAttribute: true
-				},
-				control: {
-					type: Object,
-					notify: true
 				},
 				finishButtonClass:{
 					type: String,
@@ -37,7 +34,13 @@
 			listeners: {
 				'ws-onerror': '_onWsError',
 				'ws-onmessage': '_onWsMessage',
-				'ws-onopen': '_onWsOpen'
+				'ws-onopen': '_onWsOpen',
+				'ws-message': '_onMessage'
+			},
+			_onMessage: function(m){
+				var detail = JSON.parse(m.detail);
+				console.log(detail);
+				this.$.console.setOutput(detail);
 			},
 			_onWsOpen: function(){
 				// default action
@@ -48,8 +51,8 @@
 				console.log(err);
 			},
 			_onWsMessage: function(data){
+				//default implementation
 				this.$.console.setOutput(JSON.parse(data.detail));
-				this.finishButtonClass = this.$.console.allGreen() ? 'success' : 'error';
 			},
 			afterPropertiesSet: function(){
 				this.control = {};
