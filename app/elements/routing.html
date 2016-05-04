@@ -6,7 +6,7 @@ window.addEventListener('WebComponentsReady', function() {
 		if (app.user.activeOrganization) {
 			page('/challengetemplates');
 		} else if(app.user){
-			page('/mychallenges');
+			page('/u/' + app.user.username);
 		} else {
 			page('/login');
 		}
@@ -171,12 +171,6 @@ window.addEventListener('WebComponentsReady', function() {
 	page('/token/:token', function(ctx) {
 		app.initUserInfo = false;
 		app.inviteByToken(ctx.params.token);
-	});
-
-	page('/mychallenges', function() {
-		Polymer.Base.importHref('/elements/coder/challenge/my/my-challenges.html', function(){
-			app.swapContent(document.createElement('my-challenges'));
-		});
 	});
 
 	page('/contest/:id', function(ctx) {
