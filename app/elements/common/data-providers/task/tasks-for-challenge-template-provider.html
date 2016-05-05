@@ -1,0 +1,37 @@
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="tasks-for-challenge-template-provider">
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+	<template>
+		<iron-ajax
+			id="request"
+			method="GET"
+			url="[[baseUrl]]/challenges/templates/[[challengeTemplateId]]/tasks"
+			handle-as="json"
+			last-response="{{data}}"
+			with-credentials="true">
+		</iron-ajax>
+	</template>
+	<script type="application/javascript" src="/scripts/behaviors/providers/general-provider-behavior.js"></script>
+	<script>
+		Polymer({
+			is: 'tasks-for-challenge-template-provider',
+			behaviors: [
+				Behaviors.Providers.General
+			],
+			observers: [
+				'_urlChanged(baseUrl, challengeTemplateId)'
+			],
+			_urlChanged: function(){
+				this.refresh();
+			},
+			refresh: function(){
+				this.$.request.generateRequest();
+			}
+		});
+	</script>
+</dom-module>
