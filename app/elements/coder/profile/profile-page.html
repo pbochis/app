@@ -13,6 +13,7 @@
 <link rel="import" href="/elements/coder/team/create-team-modal.html">
 <link rel="import" href="/elements/coder/team/user-teams-table.html">
 <link rel="import" href="/elements/coder/team/user-team-invitations-table.html">
+<link rel="import" href="/elements/coder/profile/user-challenges-table.html">
 
 <dom-module id="profile-page">
 	<style include="iron-flex iron-flex-reverse">
@@ -27,6 +28,7 @@
 			margin-bottom: 16px;
 			height: calc(50% - 16px);
 			background: white;
+			overflow: auto;
 			@apply(--layout-horizontal);
 		}
 		#bottom {
@@ -41,6 +43,7 @@
 			@apply(--layout-flex)
 		}
 		.right {
+			height: 100%;
 			margin-left: 8px;
 			background: white;
 			@apply(--layout-flex)
@@ -55,7 +58,8 @@
 			@apply(--layout-flex)
 		}
 		.card-header {
-			padding: 16px;
+			margin: 0px;
+			padding: 18px;
 		}
 		#teamsHeader {
 			height: 60px;
@@ -63,6 +67,9 @@
 		}
 		#teamsGrid {
 			height: calc(100% - 100px);
+		}
+		#userChallengesGrid {
+			height: calc(100% - 60px);
 		}
 		#teamsButtons{
 			height: 40px;
@@ -119,7 +126,13 @@
 				</template>
 			</paper-material>
 			<paper-material class="right" elevation="1">
-				<h3 class="card-header">Challenges</h3>
+				<template is="dom-if" if="[[isCurrentUser]]">
+					<h3 class="card-header">Challenges</h3>
+					<user-challenges-table id="userChallengesGrid"></user-challenges-table>
+				</template>
+				<template is="dom-if" if="[[!isCurrentUser]]">
+					<h3 class="card-header">Completed challenges</h3>
+			</template>
 			</paper-material>
 		</div>
 
