@@ -2,11 +2,11 @@
 <link rel="import" href="/bower_components/paper-material/paper-material.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+<link rel="import" href="/elements/common/data-providers/task/tasks-for-challenge-template-provider.html">
 <link rel="import" href="/elements/common/services/challenge-template-service.html">
-<link rel="import" href="/elements/common/services/task-service.html">
 <link rel="import" href="/elements/common/skill/skill-polygon.html">
-<link rel="import" href="/elements/company/task/task-card.html">
 <link rel="import" href="/elements/company/challenge/challenge-list.html">
+<link rel="import" href="/elements/company/task/tasks-table.html">
 
 <dom-module id="challenge-template-detail">
 	<style include="iron-flex">
@@ -25,7 +25,7 @@
 
 		.grid-row {
 			margin: 16px;
-			width: calc(100% - 64px);
+			width: calc(100%);
 		}
 
 		#wrapper {
@@ -36,13 +36,11 @@
 			@apply(--layout-horizontal);
 		}
 		#tasks {
-			@apply(--layout-horizontal);
-			@apply(--layout-wrap);
 		}
 	</style>
 	<template>
 		<challenge-template-service id="challengeTemplateService" challenge-template="{{challengeTemplate}}"></challenge-template-service>
-		<task-service id="taskService" task="{{task}}"></task-service>
+		<tasks-for-challenge-template-provider challenge-template-id="[[challengeTemplate.id]]" data="{{tasks}}"></tasks-for-challenge-template-provider>
 
 		<div id="wrapper" class="grid mainContent">
 			<div id="descriptionWrapper">
@@ -65,11 +63,9 @@
 
 			<challenge-list challenge-template="{{challengeTemplate}}"></challenge-list>
 
-			<div id="tasks" class="grid-row">
-				<template is="dom-repeat" items="{{challengeTemplate.tasks}}">
-					<task-card task-id="{{item}}" no-select></task-card>
-				</template>
-			</div>
+			<paper-material class="grid-row" elevation="1">
+				<tasks-table tasks="[[tasks]]"></tasks-table>
+			</paper-material>
 		</div>
 	</template>
 	<script>
@@ -79,11 +75,6 @@
 				challengeTemplate: {
 					type: Object,
 					notify: true
-				},
-				task: {
-					type: Object,
-					notify: true,
-					observer: '_taskChanged'
 				},
 				duration: {
 					type: String,
@@ -96,9 +87,6 @@
 			},
 			_challengeTemplateIdChanged: function(){
 				this.$.challengeTemplateService.getById(this.challengeTemplateId);
-			},
-			_taskChanged: function(){
-				this.push('tasks', this.task);
 			},
 			computeDuration: function (challengeTemplate) {
 				if (!!challengeTemplate){
