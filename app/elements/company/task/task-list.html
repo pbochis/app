@@ -1,6 +1,6 @@
 <link rel="import" href="task-card.html">
 <link rel="import" href="/elements/company/challenge-template/challenge-template-modal.html">
-<link rel="import" href="/elements/common/services/task-service.html">
+<link rel="import" href="/elements/common/data-providers/task/tasks-for-active-organization-provider.html">
 
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -45,7 +45,7 @@
 		}
 	</style>
 	<template>
-		<task-service id="taskService" tasks="{{tasks}}"></task-service>
+		<tasks-for-active-organization-provider data="{{tasks}}"></tasks-for-active-organization-provider>
 
 		<template is="dom-if" if="{{displayHeader}}">
 			<div id="header">
@@ -99,9 +99,6 @@
 				'taskDetail': '_taskDetail',
 				'task-removed': '_removeTask',
 				'task-added': '_addTask'
-			},
-			ready: function(){
-				this.$.taskService.getAll();
 			},
 			createChallenge: function () {
 				this.$.challengeModal.toggle();
