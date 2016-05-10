@@ -1,0 +1,102 @@
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="endpoints-table.html">
+<link rel="import" href="runners-table.html">
+<link rel="import" href="tasks-table.html">
+<link rel="import" href="languages-table.html">
+
+<dom-module id="admin-page">
+	<style import="iron-flex">
+		:host {
+			height: 100%;
+			display: block;
+		}
+		paper-material {
+			margin: 0px 0px 16px 0px;
+			background: white;
+		}
+		h3 {
+			margin: 0;
+		}
+		span {
+			@apply(--layout-flex);
+		}
+		.card-header {
+			padding: 10px;
+			@apply(--layout-horizontal);
+		}
+		paper-icon-button {
+			@apply(--layout-self-center);
+		}
+		.layout-horizontal {
+			@apply(--layout-horizontal);
+		}
+		.layout-vertical {
+			@apply(--layout-vertical);
+		}
+		.layout-flex {
+			@apply(--layout-flex);
+		}
+		.left {
+			margin: 0px 8px 8px 0px;
+		}
+		.right {
+			margin: 0px 0px 8px 8px;
+		}
+		.middle {
+			margin: 0px 8px 8px 8px;
+		}
+		.item {
+			margin: 0px 0px 16px 0px;
+		}
+		#wrapper {
+			margin: 0px 16px;
+			width: calc(100% - 32px);
+		}
+	</style>
+	<template>
+		<div id="wrapper" class="layout-vertical">
+			<paper-material elevation="1" class="item">
+				<div class="card-header">
+					<h3>Tasks</h3>
+					<span></span>
+					<paper-icon-button icon="add"></paper-icon-button>
+				</div>
+				<tasks-table id="tasksTable"></tasks-table>
+			</paper-material>
+			<div class="layout-horizontal">
+				<paper-material elevation="1" class="layout-flex left">
+					<div class="card-header">
+						<h3>Endpoints</h3>
+						<span></span>
+						<paper-icon-button icon="add"></paper-icon-button>
+					</div>
+					<endpoints-table id="endpointsTable"></endpoints-table>
+				</paper-material>
+				<paper-material elevation="1" class="layout-flex middle">
+					<div class="card-header">
+						<h3>Runners</h3>
+						<span></span>
+						<paper-icon-button icon="add"></paper-icon-button>
+					</div>
+					<runners-table id="runnersTable"></runners-table>
+				</paper-material>
+				<paper-material elevation="1" class="layout-flex right">
+					<div class="card-header">
+						<h3>Languages</h3>
+						<span></span>
+						<paper-icon-button icon="add"></paper-icon-button>
+					</div>
+					<languages-table id="languagesTable"></languages-table>
+				</paper-material>
+			</div>
+		</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'admin-page'
+		});
+	</script>
+</dom-module>

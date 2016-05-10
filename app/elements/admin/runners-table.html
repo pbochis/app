@@ -1,0 +1,69 @@
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="/elements/common/data-providers/runner/runners-provider.html">
+
+<dom-module id="runners-table">
+	<style include="iron-flex">
+		:host {
+			display: block;
+			height: 100%;
+		}
+		paper-icon-button {
+			@apply(--layout-self-center);
+		}
+	</style>
+	<template>
+		<runners-provider data="{{runners}}"></runners-provider>
+		<vaadin-grid id="runnersTable" class="fullHeight" items="[[runners]]" visible-rows="5">
+			<table>
+				<thead>
+					<tr>
+						<th>Path</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+				<colgroup>
+					<col name="path"/>
+					<col name="id" width="120"/>
+				</colgroup>
+			</table>
+		</vaadin-grid>
+	</template>
+	<script>
+		Polymer({
+			is: 'runners-table',
+			observers: [
+				'_dataChanged(runners)'
+			],
+			_dataChanged: function(){
+				var element = this;
+				this.$.runnersTable.columns[1].renderer = function(cell){
+					var team = cell.row.data;
+					cell.element.innerHTML = '';
+					cell.element.appendChild(element._createIconButton('editor:mode-edit', function(){
+						var dialog = element.$.editTeamDialog;
+						dialog.team = team;
+						dialog.toggle();
+						element.clickedOnOption = true;
+					}));
+					cell.element.appendChild(element._createIconButton('delete', function(){
+						var dialog = element.$.deleteTeamDialog;
+						dialog.team = team;
+						dialog.toggle();
+						element.clickedOnOption = true;
+					}));
+				};
+			},
+			_createIconButton: function(icon, clickListener){
+				var button = document.createElement('paper-icon-button');
+				button.icon = icon;
+				button.addEventListener('click', clickListener);
+				return button;
+			}
+		});
+	</script>
+</dom-module>

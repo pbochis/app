@@ -76,6 +76,12 @@ window.addEventListener('WebComponentsReady', function() {
 			app.swapContent(page);
 		});
 	});
+	// admin
+	page('/admin', function() {
+		Polymer.Base.importHref('/elements/admin/admin-page.html', function(){
+			app.swapContent(document.createElement('admin-page'));
+		});
+	});
 
 	// COMPANY
 	page('/challenge/create', function() {
@@ -90,14 +96,6 @@ window.addEventListener('WebComponentsReady', function() {
 		Polymer.Base.importHref('/elements/company/challenge/challenge-detail.html', function(){
 			var page = document.createElement('challenge-detail');
 			page.challengeId = ctx.params.id;
-			app.swapContent(page);
-		});
-	});
-
-	page('/challenge/template/:templateId/create', function(ctx) {
-		Polymer.Base.importHref('/elements/company/challenge/challenge-create.html', function(){
-			var page = document.createElement('challenge-create');
-			page.challengeTemplate = ctx.params.templateId;
 			app.swapContent(page);
 		});
 	});

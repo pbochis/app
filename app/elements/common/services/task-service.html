@@ -93,7 +93,7 @@
 			},
 			getAll: function(){
 				this.app.startLoading();
-				this.$.getMultiTasks.url = util.build('/tasks');
+				this.$.getMultiTasks.url = util.build('/user/organizations/active/tasks');
 				this.$.getMultiTasks.generateRequest();
 			},
 			finishTask: function(resultKey, taskIndex, lastSubmissionKey){
