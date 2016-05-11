@@ -1,11 +1,14 @@
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="/bower_components/iron-icons/social-icons.html">
+<link rel="import" href="/bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="/bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="/elements/common/data-providers/challenge/challenges-provider.html"/>
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="available-challenges-table">
 	<style include="iron-flex">
@@ -18,6 +21,14 @@
 		}
 	</style>
 	<template>
+		<iron-ajax id="registerRequest"
+			method="PUT"
+			handle-as="text"
+			content-type="application/json"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
 		<challenges-provider data="{{challenges}}"></challenges-provider>
 		<vaadin-grid id="availableChallengesGrid" class="fullHeight" items="[[challenges]]">
 			<table>
@@ -27,18 +38,21 @@
 						<th>Organization</th>
 						<th>Start date</th>
 						<th>End date</th>
+						<th>Status</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
 				<colgroup>
-					<col name="name"/>
-					<col name="organization.name"/>
-					<col name="startDate"/>
-					<col name="endDate"/>
-					<col name="id"/>
+					<col name="challenge.name"/>
+					<col name="challenge.organization.name"/>
+					<col name="challenge.startDate"/>
+					<col name="challenge.endDate"/>
+					<col name="status"/>
+					<col name="challenge.canonicalName"/>
 				</colgroup>
 			</table>
 		</vaadin-grid>
+		<paper-toast id="toast" text="{{toastText}}"></paper-toast>
 	</template>
 	<script>
 		Polymer({
@@ -57,11 +71,38 @@
 				this.$.availableChallengesGrid.columns[3].renderer = element._formatDate;
 				this.$.availableChallengesGrid.columns[4].renderer = function(cell){
 					cell.element.innerHTML = '';
+					cell.element.appendChild(element._createIconButton(element._iconForStatus(cell.data)));
+				};
+				this.$.availableChallengesGrid.columns[5].renderer = function(cell){
+					cell.element.innerHTML = '';
+					var dto = cell.row.data;
+					if(dto.status !== 'OPEN'){
+						return;
+					}
 					cell.element.appendChild(element._createButton('Register', function(){
-						console.log('register to challenge');
+						element._registerTo(dto.challenge.canonicalName);
 					}));
 				};
 				this.$.availableChallengesGrid.refreshItems();
+			},
+			_iconForStatus: function(status){
+				switch(status){
+					case 'OPEN':
+						return 'radio-button-unchecked';
+					case 'INVITED':
+						return 'communication:mail-outline';
+					case 'REGISTERED':
+						return 'notification:event-available';
+					case 'IN_PROGRESS':
+						return 'hourglass-empty';
+					case 'COMPLETED':
+						return 'done-all';
+				}
+				return '';
+			},
+			_registerTo: function(canonicalName){
+				this.$.registerRequest.url = util.build('/challenges/' + canonicalName + '/register');
+				this.$.registerRequest.generateRequest();
 			},
 			_formatDate: function(cell){
 				if(!cell.data){
@@ -75,6 +116,24 @@
 				button.addEventListener('click', clickListener);
 				button.raised = true;
 				return button;
+			},
+			_createIconButton: function(icon, clickListener){
+				var button = document.createElement('paper-icon-button');
+				button.icon = icon;
+				button.addEventListener('click', clickListener);
+				return button;
+			},
+			_onResponse: function(){
+				this.toastText = 'You registered successfully.';
+				this.$.toast.show();
+				this.$$('challenges-provider').refresh();
+			},
+			_onError: function(e, r){
+				this.toastText = 'An error occured when processing your request.';
+				if(!!r.request.xhr.responseText){
+					this.toastText = r.request.xhr.responseText;
+				}
+				this.$.toast.show();
 			}
 		});
 	</script>

@@ -72,16 +72,10 @@
 				cell.element.innerHTML = util.formatDate(cell.data);
 			},
 			_textForStatus: function(status){
-				switch (status) {
-					case 'INVITED':
-						return 'invited';
-					case 'COMPLETED':
-						return 'completed';
-					case 'IN_PROGRESS':
-						return 'in progress';
-					default:
-						return '';
+				if(!status){
+					return '';
 				}
+				return status.replace('_', ' ').toLowerCase();
 			},
 		});
 	</script>
