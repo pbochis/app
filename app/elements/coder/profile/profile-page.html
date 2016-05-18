@@ -13,7 +13,6 @@
 <link rel="import" href="/elements/coder/team/create-team-modal.html">
 <link rel="import" href="/elements/coder/team/user-teams-table.html">
 <link rel="import" href="/elements/coder/team/user-team-invitations-table.html">
-<link rel="import" href="/elements/coder/profile/user-challenges-table.html">
 
 <dom-module id="profile-page">
 	<style include="iron-flex iron-flex-reverse">
@@ -126,13 +125,6 @@
 				</template>
 			</paper-material>
 			<paper-material class="right" elevation="1">
-				<template is="dom-if" if="[[isCurrentUser]]">
-					<h3 class="card-header">Challenges</h3>
-					<user-challenges-table id="userChallengesGrid"></user-challenges-table>
-				</template>
-				<template is="dom-if" if="[[!isCurrentUser]]">
-					<h3 class="card-header">Completed challenges</h3>
-			</template>
 			</paper-material>
 		</div>
 

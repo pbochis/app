@@ -59,7 +59,7 @@
 						<span></span>
 					</paper-tabs>
 				</div>
-				<template is="dom-if" if="showOrganizationSwitch">
+				<template is="dom-if" if="{{showOrganizationSwitch}}">
 					<paper-dropdown-menu selected-item="{{loggedInAs}}">
 						<paper-menu id="loginAsMenu" class="dropdown-content">
 							<template is="dom-repeat" items="{{loginAsOptions}}">
