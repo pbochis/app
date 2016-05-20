@@ -11,7 +11,7 @@
 			id="request"
 			auto
 			method="GET"
-			url="[[baseUrl]]/user/organizations/active/tasks"
+			url="[[baseUrl]]/tasks?organization=[[activeOrganization]]"
 			handle-as="json"
 			last-response="{{data}}"
 			with-credentials="true">
@@ -24,6 +24,12 @@
 			behaviors: [
 				Behaviors.Providers.General
 			],
+			properties: {
+				activeOrganization: {
+					type: String,
+					value: localStorage.activeOrganization
+				}
+			},
 			refresh: function(){
 				this.$.request.generateRequest();
 			}
