@@ -6,6 +6,7 @@
 <link rel="import" href="runners-table.html">
 <link rel="import" href="tasks-table.html">
 <link rel="import" href="languages-table.html">
+<link rel="import" href="import-catcoder-input.html">
 
 <dom-module id="admin-page">
 	<style import="iron-flex">
@@ -92,6 +93,12 @@
 					<languages-table id="languagesTable"></languages-table>
 				</paper-material>
 			</div>
+			<paper-material elevation="1" class="item">
+				<div class="card-header">
+					<h3>Import catcoder game</h3>
+				</div>
+				<import-catcoder-input></import-catcoder-input>
+			</paper-material>
 		</div>
 	</template>
 	<script>
