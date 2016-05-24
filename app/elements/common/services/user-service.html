@@ -115,6 +115,7 @@
 			},
 			_onResponse: function(){
 				this.app.stopLoading();
+				this.fire('response');
 			},
 			_onError: function(err){
 				this.app.stopLoading();
