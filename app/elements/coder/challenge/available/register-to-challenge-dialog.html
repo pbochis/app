@@ -85,7 +85,7 @@
 				this.unshift('teams', {canonicalName: '', name: 'No team'});
 			},
 			_register: function(){
-				this.$.registerRequest.body = {team: this.selectedTeam.value};
+				this.$.registerRequest.body = {team: this.selectedTeam ? this.selectedTeam.value : ''};
 				this.$.registerRequest.url = util.build('/challenges/' + this.challenge.canonicalName + '/register');
 				this.$.registerRequest.generateRequest();
 			},
