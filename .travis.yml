@@ -8,12 +8,14 @@ notifications:
 before_install:
 - $(! $TRAVIS_SECURE_ENV_VARS) || openssl aes-256-cbc -K $encrypted_afa9cea1b82d_key -iv $encrypted_afa9cea1b82d_iv
   -in service-account.json.enc -out service-account.json -d
-- npm install --global bower jshint
+- npm install --global bower jshint gulp-cli
 - bower install
+- npm install
+- gulp
 - rm -rf bower_components/prism/tests
 
 script:
-- find . -path ./bower_components -prune -o -print | egrep "(html|js|json)$" | xargs jshint --extract=auto
+- find app -regextype posix-extended -type d -regex 'app/bower_components' -prune -o -type f -regex '.*(html|js|json)' -print | xargs jshint --extract=auto
 
 after_success: ./git-lfs.sh
 
