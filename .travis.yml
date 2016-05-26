@@ -1,4 +1,5 @@
 language: node_js
+
 node_js:
   - "4"
 
@@ -14,9 +15,7 @@ install:
 - bower install
 - npm install
 
-script:
-- find app -regextype posix-extended -type d -regex 'app/bower_components' -prune -o -type f -regex '.*(html|js|json)' -print | xargs jshint --extract=auto
-- gulp
+script: gulp
 
 after_success:
 - ./git-lfs.sh
