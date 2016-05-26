@@ -61,7 +61,7 @@
 				if(!this.clickedOnOption && !!selected && selected.length > 0){
 					var dto = this.challenges[selected[0]];
 					if(dto.status === 'REGISTERED'||dto.status === 'IN_PROGRESS'||dto.status === 'INVITED'){
-						page('/contest/' + dto.challenge.id);
+						page('/contest/' + dto.challenge.canonicalName);
 					}
 					return;
 				}

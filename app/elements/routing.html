@@ -86,9 +86,9 @@ window.addEventListener('WebComponentsReady', function() {
 		app.swapContent(page);
 	});
 
-	page('/challenges/:id', function(ctx) {
+	page('/challenges/:canonicalName', function(ctx) {
 		var page = document.createElement('challenge-detail');
-		page.challengeId = ctx.params.id;
+		page.canonicalName = ctx.params.canonicalName;
 		app.swapContent(page);
 	});
 
@@ -138,9 +138,9 @@ window.addEventListener('WebComponentsReady', function() {
 		app.swapContent(document.createElement('available-challenges-page'));
 	});
 
-	page('/contest/:id', function(ctx) {
+	page('/contest/:canonicalName', function(ctx) {
 		var page = document.createElement('challenge-page');
-		page.challengeId = ctx.params.id;
+		page.canonicalName = ctx.params.canonicalName;
 		app.swapContent(page);
 	});
 

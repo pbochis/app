@@ -30,6 +30,7 @@
 	</template>
 	<script type="application/javascript" src="../../../scripts/behaviors/service-behavior.js"></script>
 	<script>
+		// @deprecated. will be removed soon
 		Polymer({
 			is: 'challenge-service',
 			behaviors: [
@@ -47,11 +48,6 @@
 				this.$.postChallenge.url = util.build('/challenges');
 				this.$.postChallenge.body = challenge;
 				this.$.postChallenge.generateRequest();
-			},
-			getById: function(challengeId){
-				this.app.startLoading();
-				this.$.getChallenge.url = util.build('/challenges/' + challengeId);
-				this.$.getChallenge.generateRequest();
 			},
 			_onResponse: function(){
 				this.app.stopLoading();

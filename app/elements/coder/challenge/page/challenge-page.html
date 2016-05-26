@@ -25,9 +25,10 @@
 		}
 	</style>
 	<template>
-		<challenge-template-service id="challengeTemplateService" challenge-template="{{challengeTemplate}}"></challenge-template-service>
+		<challenge-by-canonical-name-provider canonical-name="[[canonicalName]]" data="{{challenge}}"></challenge-by-canonical-name-provider>
+		<challenge-template-by-challenge-canonical-name-provider canonical-name="[[canonicalName]]" data="{{challengeTemplate}}"></challenge-template-by-challenge-canonical-name-provider>
 		<result-service id="resultService" result="{{result}}"></result-service>
-		<challenge-service id="challengeService" challenge="{{challenge}}"></challenge-service>
+
 		<div id="timeUntilChallenge" style="{{remainingTimeStyle}}">
 			<span class="flex"></span>
 			<time-until-challenge class="self-center" challenge="{{challenge}}" on-start-challenge="_displayChallengeTemplate"></time-until-challenge>
@@ -50,10 +51,6 @@
 				Behaviors.LoadingBehavior
 			],
 			properties: {
-				challengeId: {
-					type: Object,
-					reflectToAttribute: true
-				},
 				result: {
 					type: Object,
 					observer: '_resultLoaded'
@@ -76,7 +73,7 @@
 				}
 			},
 			observers: [
-				'afterPropertiesSet(challengeId)'
+				'afterPropertiesSet(canonicalName)'
 			],
 			_challengeLoaded: function(){
 				if(!this.challenge.startDate || ((this.challenge.startDate * 1000) - new Date().getTime()) <= 0){
@@ -96,20 +93,18 @@
 				}
 			},
 			_challengeTemplateLoaded: function(){
-				this.$.resultService.getMyResultByChallengeId(this.challengeId);
+				this.$.resultService.getMyResultByChallengeId(this.challenge.id);
 			},
 			_displayChallengeTemplate: function(){
 				this.remainingTimeStyle = 'display: none;';
 				this.$.timeUntilChallenge.innerHTML = '';
-				this.$.challengeTemplateService.getByScheduledChallengeId(this.challengeId);
+				this.$$('challenge-template-by-challenge-canonical-name-provider').refresh();
 			},
 			afterPropertiesSet: function(){
 				this.startAppLoading();
-				this.$.challengeService.getById(this.challengeId);
-				return;
 			},
 			startChallenge: function() {
-				this.$.resultService.post(this.challengeId);
+				this.$.resultService.post(this.challenge.id);
 			},
 			replaceContent: function(){
 				var webInterface = document.createElement(this.challengeTemplate.endpoint.component);

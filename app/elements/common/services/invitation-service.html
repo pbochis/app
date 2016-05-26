@@ -32,11 +32,6 @@
 					reflectToAttribute: true
 				}
 			},
-			getByChallengeId: function(challengeId){
-				this.app.startLoading();
-				this.$.getMultiple.url = util.build('/challenges/' + challengeId + '/invitations');
-				this.$.getMultiple.generateRequest();
-			},
 			_onResponse: function(){
 				this.app.stopLoading();
 			},
