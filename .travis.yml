@@ -9,11 +9,7 @@ notifications:
 before_install:
 - $(! $TRAVIS_SECURE_ENV_VARS) || openssl aes-256-cbc -K $encrypted_afa9cea1b82d_key -iv $encrypted_afa9cea1b82d_iv
   -in service-account.json.enc -out service-account.json -d
-
-install:
-- npm install --global bower gulp-cli
-- bower install
-- npm install
+- npm install --global gulp-cli
 
 script: gulp
 
