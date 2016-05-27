@@ -11,8 +11,7 @@ before_install:
   -in service-account.json.enc -out service-account.json -d
 
 install:
-- npm install --global bower gulp-cli
-- bower install
+- npm install --global gulp-cli
 - npm install
 
 script: gulp

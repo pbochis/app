@@ -29,7 +29,8 @@
     "vulcanize": ">= 1.4.2",
     "web-component-tester": "^4.0.0",
     "jshint": "~2.9.2",
-    "gulp-jshint": "~2.0.1"
+    "gulp-jshint": "~2.0.1",
+    "bower": "^1.7.9"
   },
   "scripts": {
     "test": "gulp test:local",
@@ -37,5 +38,8 @@
   },
   "engines": {
     "node": ">=0.10.0"
+  },
+  "scripts": {
+    "postinstall": "node_modules/.bin/bower install"
   }
 }
