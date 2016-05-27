@@ -8,8 +8,8 @@ var util = {
 			prefix = 'http://localhost:8080';
 		}
 
-		if (location.origin.indexOf('coduno-staging') !== -1) {
-			prefix = 'https://platform-dot-coduno-staging.appspot.com';
+		if (location.origin.indexOf('coduno-lab') !== -1) {
+			prefix = 'https://platform-dot-coduno-lab.appspot.com';
 		}
 
 		return prefix;
