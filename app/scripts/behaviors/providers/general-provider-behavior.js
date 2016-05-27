@@ -19,6 +19,10 @@ Behaviors.Providers.General = {
 			prefix = 'http://localhost:8080';
 		}
 
+		if (location.origin.indexOf('coduno-lab') !== -1) {
+			prefix = 'https://platform-dot-coduno-lab.appspot.com';
+		}
+
 		this.baseUrl = prefix;
 	}
 };
