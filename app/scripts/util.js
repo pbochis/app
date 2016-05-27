@@ -8,16 +8,14 @@ var util = {
 			prefix = 'http://localhost:8080';
 		}
 
+		if (location.origin.indexOf('coduno-staging') !== -1) {
+			prefix = 'https://platform-dot-coduno-staging.appspot.com';
+		}
+
 		return prefix;
 	},
 	build: function(suffix) {
-		var prefix = 'https://platform.cod.uno';
-
-		if (location.origin.indexOf('localhost') !== -1) {
-			prefix = 'http://localhost:8080';
-		}
-
-		return prefix + suffix;
+		return util.baseUrl() + suffix;
 	},
 	getWSUrl: function(suffix) {
 		var prefix = 'wss://ws.cod.uno:8080';
