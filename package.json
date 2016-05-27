@@ -33,13 +33,12 @@
     "bower": "^1.7.9"
   },
   "scripts": {
-    "test": "gulp test:local",
-    "start": "gulp serve"
+    "postinstall": "node_modules/.bin/bower install",
+    "build": "node_modules/.bin/gulp",
+    "test": "node_modules/.bin/gulp test:local",
+    "start": "node_modules/.bin/gulp serve"
   },
   "engines": {
     "node": ">=0.10.0"
-  },
-  "scripts": {
-    "postinstall": "node_modules/.bin/bower install"
   }
 }
