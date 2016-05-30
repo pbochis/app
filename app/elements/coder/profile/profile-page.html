@@ -146,7 +146,7 @@
 				return isCurrentUser && selectedTab === 1;
 			},
 			createTeam: function(){
-				this.$.createTeamDialog.toggle();
+				this.$.createTeamDialog.open();
 			},
 			_refreshTeams: function(){
 				this.$$('#teamsGrid').refresh();

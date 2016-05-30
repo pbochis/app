@@ -3,15 +3,14 @@
 <dom-module id="coduno-iron-ajax">
 	<template>
 		<iron-ajax
-		  id="ajaxRequest"
-		  method="{{method}}"
-		  content-type="{{contentType}}"
-		  handle-as="{{handleAs}}"
-		  last-response="{{lastResponse}}"
-		  headers="{{headers}}"
-		  url="{{url}}"
+			id="ajaxRequest"
+		  	method="{{method}}"
+		  	content-type="{{contentType}}"
+		  	handle-as="{{handleAs}}"
+		  	last-response="{{lastResponse}}"
+		  	headers="{{headers}}"
 			body="{{body}}"
-		  debounce-duration="{{debounceDuration}}"
+		  	debounce-duration="{{debounceDuration}}"
 			on-response="_onResponse"
 			on-error="_onError"
 			with-credentials="true">
@@ -21,20 +20,19 @@
 		Polymer({
 			is: 'coduno-iron-ajax',
 			properties: {
-				body: {
+				response: {
 					type: Object,
 					notify: true,
-					reflectToAttrbute: true
+					reflectToAttribute: true
 				},
-				method: {
+				error: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
+				},
+				suffix: {
 					type: String,
-					notify: true,
-					reflectToAttrbute: true
-				},
-				lastResponse: {
-					type: Object,
-					notify: true,
-					reflectToAttrbute: true
+					notify: true
 				},
 				contentType: {
 					type: String,
@@ -45,30 +43,34 @@
 					type: String,
 					notify: true,
 					value: 'json'
-				},
-				headers: {
-					type: Object,
-					notify: true,
-					value: {}
-				},
-				url: {
-					type: String,
-					notify: true
-				},
-				debounceDuration: {
-					type: Number,
-					notify: true,
-					value: 0
 				}
 			},
 			generateRequest: function(){
+				console.log(this.suffix);
+				this.$.ajaxRequest.url = this._buildUrl();
 				this.$.ajaxRequest.generateRequest();
 			},
 			_onResponse: function(r){
+				this.error = null;
+				this.response = r.detail.response;
 				this.fire('response', r);
 			},
-			_onError: function(err){
-				this.fire('error', err);
+			_onError: function(e){
+				this.error = {
+					'status': e.detail.request.xhr.status,
+					'error': e.detail.request.xhr.response
+				};
+				if (this.error.status === 500 || this.error.status === 404 || this.error.status === 403){
+					util.error(this.error);
+					return;
+				}
+				if (this.error.status === 401){
+					page('/login');
+				}
+				this.fire('error', e);
+			},
+			_buildUrl: function(){
+				return util.build(this.suffix);
 			}
 		});
 	</script>
