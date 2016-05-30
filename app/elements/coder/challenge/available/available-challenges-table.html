@@ -60,9 +60,7 @@
 				var selected = this.$.availableChallengesGrid.selection.selected();
 				if(!this.clickedOnOption && !!selected && selected.length > 0){
 					var dto = this.challenges[selected[0]];
-					if(dto.status === 'REGISTERED'||dto.status === 'IN_PROGRESS'||dto.status === 'INVITED'){
-						page('/contest/' + dto.challenge.canonicalName);
-					}
+					page('/contest/' + dto.challenge.canonicalName + '/info');
 					return;
 				}
 				this.clickedOnOption = false;
@@ -100,6 +98,8 @@
 						return 'hourglass-empty';
 					case 'COMPLETED':
 						return 'done-all';
+					case 'ENDED':
+						return 'clear';
 				}
 				return '';
 			},

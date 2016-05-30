@@ -144,6 +144,12 @@ window.addEventListener('WebComponentsReady', function() {
 		app.swapContent(page);
 	});
 
+	page('/contest/:canonicalName/info', function(ctx) {
+		var page = document.createElement('challenge-info-page');
+		page.canonicalName = ctx.params.canonicalName;
+		app.swapContent(page);
+	});
+
 	page('/contest/:id/result', function(ctx) {
 		Polymer.Base.importHref('/elements/coder/challenge/result/contest-result.html', function(){
 			var page = document.createElement('contest-result');
