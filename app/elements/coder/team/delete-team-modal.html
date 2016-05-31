@@ -7,6 +7,9 @@
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 
+<link rel="import" href="../../common/coduno-iron-ajax.html">
+<link rel="import" href="../../common/error/errors-display.html">
+
 <dom-module id="delete-team-modal">
 	<style include="iron-flex">
 		.fieldList {
@@ -17,14 +20,16 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="deleteTeamRequest"
 			method="DELETE"
-			with-credentials="true"
-			on-response="_onResponse"
+			path="/team/[[team.canonicalName]]"
+			on-request-finished="_onResponse"
+			error="{{error}}"
 			on-error="_onError">
-		</iron-ajax>
+		</coduno-iron-ajax>
 		<paper-dialog id="inviteDialog" modal>
+			<errors-display error="{{error}}"></errors-display>
 			<h4>Are you sure?</h4>
 			<p><b>This action cannot be undone.</b> It will permanently delete the /t/[[team.canonicalName]] team.</p>
 			<p>Please type the name of the team to continue</p>
@@ -58,24 +63,17 @@
 				if(this.team.name !== this.teamName){
 					return;
 				}
-				this.$.deleteTeamRequest.url = util.build('/teams/' + this.team.canonicalName);
 				this.$.deleteTeamRequest.generateRequest();
 				this.team = {};
 			},
 			_nameChanged: function(){
 				this.deleteDisabled = this.team.name !== this.teamName;
 			},
-			_onResponse: function(){
+			_onResponse: function(e){
+				e.stopEventPropagation();
 				this.toastText = 'Team successfully deleted.';
 				this.$.toast.show();
 				this.fire('team-deleted');
-			},
-			_onError: function(e, r){
-				this.toastText = 'An error occured when processing your request.';
-				if(!!r.request.xhr.responseText){
-					this.toastText = r.request.xhr.responseText;
-				}
-				this.$.toast.show();
 			}
 		});
 	</script>

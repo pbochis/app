@@ -16,10 +16,10 @@
 			id="postGame"
 			method="POST"
 			body="{{body}}"
-			suffix="/contestgameupload"
+			path="/contestgameupload"
 			content-type=""
 			response="{{savedTemplate}}"
-			on-response="_onResponse"
+			on-request-finished="_onRequestFinished"
 			on-error="_onError">
 		</coduno-iron-ajax>
 
@@ -38,7 +38,6 @@
 					notify: true
 				}
 			},
-
 			_upload: function(){
 				if (this.$.input.files.length === 0){
 					this.toastText = 'You must upload a zip file.';
@@ -53,10 +52,10 @@
 				this.$.uploadButton.disabled = true;
 				this.$.postGame.generateRequest();
 			},
-			_onResponse: function(event, r){
+			_onRequestFinished: function(e){
+				e.stopPropagation();
 				this.$.uploadButton.disabled = false;
 				app.stopLoading();
-				console.log(this.savedTemplate);
 				page('/challenges/template/' + this.savedTemplate);
 			},
 			_onError: function(e, req) {
