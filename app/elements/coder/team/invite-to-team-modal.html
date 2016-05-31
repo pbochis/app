@@ -7,6 +7,9 @@
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 
+<link rel="import" href="../../common/coduno-iron-ajax.html">
+<link rel="import" href="../../common/error/errors-display.html">
+
 <dom-module id="invite-to-team-modal">
 	<style include="iron-flex">
 		.fieldList {
@@ -17,16 +20,17 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="inviteRequest"
 			method="POST"
-			handle-as="text"
-			content-type="application/json"
-			with-credentials="true"
-			on-response="_onResponse"
+			path="/teams/[[team.canonicalName]]/invitations"
+			body="[[invitation]]"
+			on-request-finished="_onResponse"
+			error="{{error}}"
 			on-error="_onError">
-		</iron-ajax>
+		</coduno-iron-ajax>
 		<paper-dialog id="inviteDialog" modal>
+			<errors-display error="{{error}}"></errors-display>
 			<h4>Invite to <span>{{team.name}}</span></h4>
 			<div class="fieldList">
 				<form is="iron-form" id="form">
@@ -65,8 +69,6 @@
 				if(!this.$.form.validate()){
 					return;
 				}
-				this.$.inviteRequest.body = this.invitation;
-				this.$.inviteRequest.url = util.build('/teams/' + this.team.canonicalName + '/invitations');
 				this.$.inviteRequest.generateRequest();
 				this.team = {};
 			},
@@ -75,13 +77,6 @@
 			},
 			_onResponse: function(){
 				this.toastText = 'Invitation successfully sent.';
-				this.$.toast.show();
-			},
-			_onError: function(e, r){
-				this.toastText = 'An error occured when sending your invitation.';
-				if(!!r.request.xhr.responseText){
-					this.toastText = r.request.xhr.responseText;
-				}
 				this.$.toast.show();
 			}
 		});

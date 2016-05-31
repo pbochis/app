@@ -24,9 +24,9 @@
 			id="createTeamRequest"
 			method="POST"
 			body="{{team}}"
-			suffix="/teams"
+			path="/teams"
 			error="{{error}}"
-			on-response="_onResponse">
+			on-request-finished="_onResponse">
 		</coduno-iron-ajax>
 		<paper-dialog id="createTeamDialog" modal>
 			<h4>Create new team</h4>

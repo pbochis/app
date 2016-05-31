@@ -7,6 +7,9 @@
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 
+<link rel="import" href="../../common/coduno-iron-ajax.html">
+<link rel="import" href="../../common/error/errors-display.html">
+
 <dom-module id="edit-team-modal">
 	<style include="iron-flex">
 		.fieldList {
@@ -17,16 +20,15 @@
 		}
 	</style>
 	<template>
-		<iron-ajax
+		<coduno-iron-ajax
 			id="request"
 			method="PUT"
-			handle-as="text"
-			content-type="application/json"
-			with-credentials="true"
-			on-response="_onResponse"
-			on-error="_onError">
-		</iron-ajax>
+			path="/teams/[[team.canonicalName]]"
+			error="{{error}}"
+			on-request-finished="_onResponse">
+		</coduno-iron-ajax>
 		<paper-dialog id="dialog" modal>
+			<errors-display error="{{error}}"></errors-display>
 			<h4>Edit team</h4>
 			<div class="fieldList">
 				<form is="iron-form" id="form">
@@ -72,7 +74,6 @@
 					return;
 				}
 				this.$.request.body = this.updatedTeam;
-				this.$.request.url = util.build('/teams/' + this.team.canonicalName);
 				this.$.request.generateRequest();
 				this.team = {};
 			},
@@ -83,13 +84,6 @@
 				this.toastText = 'Team successfully update.';
 				this.$.toast.show();
 				this.fire('team-created');
-			},
-			_onError: function(e, r){
-				this.toastText = 'An error occured when updating the team.';
-				if(!!r.request.xhr.responseText){
-					this.toastText = r.request.xhr.responseText;
-				}
-				this.$.toast.show();
 			}
 		});
 	</script>

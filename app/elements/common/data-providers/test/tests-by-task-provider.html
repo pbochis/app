@@ -1,4 +1,4 @@
-<dom-module id="languages-provider">
+<dom-module id="tests-by-task-provider">
 	<style>
 		:host {
 			display: none;
@@ -9,7 +9,7 @@
 			id="request"
 			auto
 			method="GET"
-			url="[[baseUrl]]/languages"
+			url="[[baseUrl]]/tasks/[[task.id]]/tests"
 			handle-as="json"
 			with-credentials="true"
 			bubbles>
@@ -18,13 +18,10 @@
 	<script type="application/javascript" src="../../../../scripts/behaviors/providers/general-provider-behavior.js"></script>
 	<script>
 		Polymer({
-			is: 'languages-provider',
+			is: 'tests-by-task-provider',
 			behaviors: [
 				Behaviors.Providers.General
-			],
-			refresh: function(){
-				this.$.request.generateRequest();
-			}
+			]
 		});
 	</script>
 </dom-module>

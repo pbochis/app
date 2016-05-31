@@ -4,33 +4,28 @@
 	<template>
 		<iron-ajax
 			id="ajaxRequest"
-		  	method="{{method}}"
-		  	content-type="{{contentType}}"
-		  	handle-as="{{handleAs}}"
-		  	last-response="{{lastResponse}}"
-		  	headers="{{headers}}"
-			body="{{body}}"
-		  	debounce-duration="{{debounceDuration}}"
-			on-response="_onResponse"
-			on-error="_onError"
-			with-credentials="true">
+		  	method="[[method]]"
+		  	content-type="[[contentType]]"
+		  	handle-as="[[handleAs]]"
+		  	headers="[[headers]]"
+			body="[[body]]"
+		  	debounce-duration="[[debounceDuration]]"
+			url="[[baseUrl]]/[[path]]"
+			with-credentials="true"
+			bubbles>
 		</iron-ajax>
 	</template>
+	<script type="application/javascript" src="../../scripts/behaviors/requests/base-request-behavior.js"></script>
+	<script type="application/javascript" src="../../scripts/behaviors/requests/handler-request-behavior.js"></script>
 	<script>
 		Polymer({
 			is: 'coduno-iron-ajax',
+			behaviors: [
+				Behaviors.Requests.Base,
+				Behaviors.Requests.Handler
+			],
 			properties: {
-				response: {
-					type: Object,
-					notify: true,
-					reflectToAttribute: true
-				},
-				error: {
-					type: Object,
-					notify: true,
-					reflectToAttribute: true
-				},
-				suffix: {
+				path: {
 					type: String,
 					notify: true
 				},
@@ -46,31 +41,7 @@
 				}
 			},
 			generateRequest: function(){
-				console.log(this.suffix);
-				this.$.ajaxRequest.url = this._buildUrl();
 				this.$.ajaxRequest.generateRequest();
-			},
-			_onResponse: function(r){
-				this.error = null;
-				this.response = r.detail.response;
-				this.fire('response', r);
-			},
-			_onError: function(e){
-				this.error = {
-					'status': e.detail.request.xhr.status,
-					'error': e.detail.request.xhr.response
-				};
-				if (this.error.status === 500 || this.error.status === 404 || this.error.status === 403){
-					util.error(this.error);
-					return;
-				}
-				if (this.error.status === 401){
-					page('/login');
-				}
-				this.fire('error', e);
-			},
-			_buildUrl: function(){
-				return util.build(this.suffix);
 			}
 		});
 	</script>
