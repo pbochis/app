@@ -38,7 +38,7 @@
 					<date-time-picker id="startDate" label="Fixed start date" date-time="{{challenge.startDate}}"></date-time-picker>
 				</form>
 				<div class="buttonGroup">
-					<paper-button raised on-click="_saveChallenge">Saved</paper-button>
+					<paper-button raised on-click="_saveChallenge">Save</paper-button>
 				</div>
 			</paper-material>
 		</div>
@@ -53,9 +53,6 @@
 				challenge: {
 					type: Object,
 					value: {}
-				},
-				savedChallenge: {
-					observer: '_savedChallengeChanged'
 				}
 			},
 			_saveChallenge: function () {
@@ -64,10 +61,11 @@
 					return;
 				}
 				this.challenge.templateId = this.challengeTemplate;
+				this.$.saveChallenge.url = util.build('/challenges');
 				this.$.saveChallenge.generateRequest();
 			},
 			_onResponse: function(){
-				page('/challenges/' + this.savedChallenge.canonicalName);
+				page('/challenges/' + this.savedChallenge);
 			},
 			_onError: function(e){
 				util.error(err);
