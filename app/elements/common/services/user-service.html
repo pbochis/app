@@ -33,14 +33,14 @@
 			last-response="{{connections}}"
 			with-credentials="true"
 			on-response="_onResponse"
-			on-error="_onError">
+			on-error="onError">
 		</iron-ajax>
 		<iron-ajax
 			id="deleteSocialConnection"
 			method="DELETE"
 			with-credentials="true"
 			on-response="_onDeleteSocialConnectionResponse"
-			on-error="_onError">
+			on-error="onError">
 		</iron-ajax>
 		<iron-ajax
 			id="putUser"

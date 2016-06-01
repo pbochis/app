@@ -4,21 +4,29 @@
 
 	<template>
 		<style include="iron-flex">
-			.container {
-				@apply(--layout-vertical);
-			}
-			.container > div {
+			#container {
 				color: red;
-				margin-bottom: 15px;
+				margin: 15px 0 0;
 			}
 		</style>
-		<div class="container">
-			<div>{{error.error.message}}</div>
-		</div>
+		<div id="container">{{error.error.message}}</div>
 	</template>
 	<script>
 		Polymer({
-			is: 'errors-display'
+			is: 'errors-display',
+			observers: [
+				'_errorChanged(error)'
+			],
+			ready: function(){
+				this._errorChanged();
+			},
+			_errorChanged: function(){
+				if (!!this.error){
+					this.$.container.style.display = '';
+				}else{
+					this.$.container.style.display = 'none';
+				}
+			}
 		});
 	</script>
 </dom-module>

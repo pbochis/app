@@ -23,14 +23,13 @@
 			path="/teams/[[team.canonicalName]]/invitations"
 			body="[[invitation]]"
 			on-request-finished="_onResponse"
-			error="{{error}}"
-			on-error="_onError">
+			error="{{error}}">
 		</coduno-iron-ajax>
 		<paper-dialog id="inviteDialog" modal>
-			<errors-display error="{{error}}"></errors-display>
 			<h4>Invite to <span>{{team.name}}</span></h4>
 			<div class="fieldList">
 				<form is="iron-form" id="form">
+					<errors-display error="{{error}}"></errors-display>
 					<paper-input autofocus="true" label="Username" value="{{invitation.username}}"
 						required minlength="5" maxlength="40" auto-validate error-message="Must be between 5 and 40 chars."></paper-input>
 				</form>
@@ -67,12 +66,13 @@
 					return;
 				}
 				this.$.inviteRequest.generateRequest();
-				this.team = {};
 			},
 			_invitationChanged: function(){
 				this.saveDisabled = !this.$.form.validate();
 			},
 			_onResponse: function(){
+				this.team = {};
+				this.invitation = {};
 				this.toastText = 'Invitation successfully sent.';
 				this.$.inviteDialog.close();
 				this.$.toast.show();

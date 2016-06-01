@@ -71,12 +71,12 @@
 					return;
 				}
 				this.$.createTeamRequest.generateRequest();
-				this.team = {};
 			},
 			_teamChanged: function(){
 				this.saveDisabled = !this.$.form.validate();
 			},
 			_onResponse: function(){
+				this.team = {};
 				this.$.createTeamDialog.close();
 				this.toastText = 'Team successfully created.';
 				this.$.toast.show();
