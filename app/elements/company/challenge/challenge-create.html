@@ -40,9 +40,11 @@
 				<div class="buttonGroup">
 					<paper-button raised on-click="_saveChallenge">Save</paper-button>
 				</div>
+				<location-finder></location-finder>
 			</paper-material>
 		</div>
 	</template>
+	<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 	<script>
 		Polymer({
 			is: 'challenge-create',
