@@ -28,6 +28,23 @@
 			on-error="_onError">
 		</iron-ajax>
 		<iron-ajax
+			id="socialConnections"
+			method="GET"
+			handle-as="json"
+			content-type="application/json"
+			last-response="{{connections}}"
+			with-credentials="true"
+			on-response="_onResponse"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
+			id="deleteSocialConnection"
+			method="DELETE"
+			with-credentials="true"
+			on-response="_onDeleteSocialConnectionResponse"
+			on-error="_onError">
+		</iron-ajax>
+		<iron-ajax
 			id="putUser"
 			method="PUT"
 			handle-as="json"
@@ -71,6 +88,11 @@
 					type: Array,
 					notify: true,
 					reflectToAttribute: true
+				},
+				connections: {
+					type: Object,
+					notify: true,
+					reflectToAttribute: true
 				}
 			},
 			ready: function(){
@@ -108,6 +130,20 @@
 				this.$.inviteUser.url = util.build('/invite');
 				this.$.inviteUser.body = user;
 				this.$.inviteUser.generateRequest();
+			},
+			getSocialConnections: function(){
+				this.app.startLoading();
+				this.$.socialConnections.url = util.build('/connect');
+				this.$.socialConnections.generateRequest();
+			},
+			deleteSocialConnection: function(provider){
+				this.app.startLoading();
+				this.$.deleteSocialConnection.url = util.build('/connect/' + provider);
+				this.$.deleteSocialConnection.generateRequest();
+			},
+			_onDeleteSocialConnectionResponse: function() {
+				this.getSocialConnections();
+				this._onResponse();
 			},
 			_userInvited: function(){
 				this.app.stopLoading();
