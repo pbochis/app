@@ -1,8 +1,6 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
-
 <link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
-<link rel="import" href="../../common/data-providers/test/tests-by-task-provider.html">
 
 <dom-module id="input-view">
 	<style>
@@ -14,8 +12,7 @@
 	</style>
 	<template>
 		<tests-by-task-provider
-			id="testsProvider"
-			task="{{task}}"
+			task-id="[[task.id]]"
 			data="{{tests}}"
 			error="{{error}}"
 			on-request-failed="onTestsError">

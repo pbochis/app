@@ -2,9 +2,6 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 
-<link rel="import" href="../common/error/errors-display.html">
-<link rel="import" href="../common/coduno-iron-ajax.html">
-
 <dom-module id="import-catcoder-input">
 	<template>
 		<style>
@@ -15,7 +12,7 @@
 		<coduno-iron-ajax
 			id="postGame"
 			method="POST"
-			body="{{body}}"
+			body="[[body]]"
 			path="/contestgameupload"
 			content-type=""
 			response="{{savedTemplate}}"

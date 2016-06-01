@@ -12,6 +12,7 @@
 		  	debounce-duration="[[debounceDuration]]"
 			url="[[baseUrl]]/[[path]]"
 			with-credentials="true"
+			auto="[[auto]]"
 			bubbles>
 		</iron-ajax>
 	</template>
@@ -25,10 +26,6 @@
 				Behaviors.Requests.Handler
 			],
 			properties: {
-				path: {
-					type: String,
-					notify: true
-				},
 				contentType: {
 					type: String,
 					notify: true,

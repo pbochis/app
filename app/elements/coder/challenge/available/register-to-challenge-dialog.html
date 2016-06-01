@@ -8,9 +8,6 @@
 <link rel="import" href="../../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../../bower_components/paper-listbox/paper-listbox.html">
 
-<link rel="import" href="../../../common/coduno-iron-ajax.html">
-<link rel="import" href="../../../common/error/errors-display.html">
-
 <dom-module id="register-to-challenge-dialog">
 	<style include="iron-flex iron-flex-reverse">
 		.fieldList {
@@ -56,7 +53,7 @@
 					 head to your profile or click <a on-click="_goToCreateTeam">here</a> to create one. </p>
 			</template>
 			<div id="buttons">
-				<paper-button class="primary" raised dialog-confirm on-click="_register">Register</paper-button>
+				<paper-button class="primary" raised on-click="_register">Register</paper-button>
 				<paper-button class="secondary" dialog-dismiss>Cancel</paper-button>
 			</div>
 		</paper-dialog>
@@ -94,6 +91,7 @@
 			},
 			_onRequestFinished: function(e){
 				e.stopPropagation();
+				this.$.registerToChallengeModal.close();
 				this.toastText = 'Successfuly registered.';
 				this.$.toast.show();
 				this.fire('challenge-registered');

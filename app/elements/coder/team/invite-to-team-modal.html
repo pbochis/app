@@ -7,9 +7,6 @@
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 
-<link rel="import" href="../../common/coduno-iron-ajax.html">
-<link rel="import" href="../../common/error/errors-display.html">
-
 <dom-module id="invite-to-team-modal">
 	<style include="iron-flex">
 		.fieldList {
@@ -40,7 +37,7 @@
 			</div>
 			<div class="buttons">
 				<paper-button class="secondary" dialog-dismiss>Cancel</paper-button>
-				<paper-button on-click="_inviteUser" class="primary" dialog-confirm disabled="{{saveDisabled}}">Save</paper-button>
+				<paper-button on-click="_inviteUser" class="primary" disabled="{{saveDisabled}}">Save</paper-button>
 			</div>
 		</paper-dialog>
 		<paper-toast id="toast" text="{{toastText}}"></paper-toast>
@@ -77,6 +74,7 @@
 			},
 			_onResponse: function(){
 				this.toastText = 'Invitation successfully sent.';
+				this.$.inviteDialog.close();
 				this.$.toast.show();
 			}
 		});
