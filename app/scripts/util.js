@@ -53,10 +53,6 @@ var util = {
 	},
 	error: function(error) {
 		var app = document.querySelector('#app');
-		if (error.detail.request.xhr.status === 401) {
-			app.isLoggedIn = false;
-			return page.redirect('/login');
-		}
 		app.error = error;
 		page.redirect('/error');
 	},
@@ -77,11 +73,5 @@ var util = {
 		}
 
 		return result + ' ' + util.padTime(date.getUTCHours()) + ':' + util.padTime(date.getUTCMinutes()) + ' UTC';
-	},
-	languages: [
-		'java',
-		'py',
-		'c',
-		'js'
-	]
+	}
 };

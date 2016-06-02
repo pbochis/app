@@ -1,28 +1,24 @@
 var Behaviors = Behaviors || {};
 Behaviors.Providers = Behaviors.Providers || {};
 
-Behaviors.Providers.General = {
+var NewBehavior = {
 	properties: {
-		baseUrl: {
-			type: String
-		},
 		data: {
 			type: Object,
-			reflectToAttribute: true,
-			notify: true
+			notify: true,
+			reflectToAttribute: true
 		}
 	},
-	ready: function(){
-		var prefix = 'https://platform.cod.uno';
-
-		if (location.origin.indexOf('localhost') !== -1) {
-			prefix = 'http://localhost:8080';
-		}
-
-		if (location.origin.indexOf('coduno-lab') !== -1) {
-			prefix = 'https://platform-dot-coduno-lab.appspot.com';
-		}
-
-		this.baseUrl = prefix;
+	observers: [
+		'responseLoaded(response)'
+	],
+	responseLoaded: function(){
+		this.data = this.response;
 	}
 };
+
+Behaviors.Providers.General = [
+	Behaviors.Requests.Base,
+	Behaviors.Requests.Handler,
+	NewBehavior
+];
