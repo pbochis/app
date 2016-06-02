@@ -32,7 +32,7 @@
 			content-type="application/json"
 			last-response="{{connections}}"
 			with-credentials="true"
-			on-response="_onResponse"
+			on-response="onResponse"
 			on-error="onError">
 		</iron-ajax>
 		<iron-ajax
@@ -141,7 +141,7 @@
 			},
 			_onDeleteSocialConnectionResponse: function() {
 				this.getSocialConnections();
-				this._onResponse();
+				this.onResponse();
 			},
 			_userInvited: function(){
 				this.app.stopLoading();
