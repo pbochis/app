@@ -22,8 +22,7 @@ Behaviors.Requests.Handler = {
 	onResponse: function(e){
 		e.stopPropagation();
 		this.error = null;
-		this.response = e.detail.response;
-		this.fire('request-finished', this.data);
+		this.fire('request-finished', e.detail.response);
 	},
 	onError: function(e){
 		e.stopPropagation();
@@ -44,4 +43,3 @@ Behaviors.Requests.Handler = {
 		//request was sent
 	}
 };
-
