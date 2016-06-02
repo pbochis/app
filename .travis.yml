@@ -18,6 +18,7 @@ script: npm run build
 after_success:
 - ./git-lfs.sh
 - rm -rf node_modules app/bower_components
+- cat /dev/null > dist/bower_components/font-roboto/roboto.html
 
 deploy:
   - provider: gae
@@ -30,4 +31,3 @@ deploy:
     skip_cleanup: true
     on:
       branch: dev
-
