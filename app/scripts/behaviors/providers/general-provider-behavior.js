@@ -9,11 +9,11 @@ var NewBehavior = {
 			reflectToAttribute: true
 		}
 	},
-	observers: [
-		'responseLoaded(response)'
-	],
-	responseLoaded: function(){
-		this.data = this.response;
+	listeners: {
+		'request-finished': '_requestFinished'
+	},
+	_requestFinished: function(e, d){
+		this.data = d;
 	}
 };
 
