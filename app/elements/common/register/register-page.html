@@ -36,7 +36,7 @@ paper-input {
 }
 	</style>
 	<template>
-		<user-service id="userService" on-response="_onResponse" on-error="_onError"></user-service>
+		<user-service id="userService" on-user-saved="_onResponse" on-error="_onError"></user-service>
 		<cookie-service id="cookieService" on-user-error="_onUserError" on-user-ok="_userOk"></cookie-service>
 		<base-wizard show-back-button="[[externalWidget]]" on-back="prev">
 					<form is="iron-form" id="form">
@@ -131,9 +131,6 @@ Polymer({
 		}
 	},
 	register: function() {
-		if (!this.$.userForm.validate()){
-			return;
-		}
 		if(this.user.password !== this.repeatedPassword){
 			this.$.toast.text = 'Passwords do not match';
 			this.$.toast.show();

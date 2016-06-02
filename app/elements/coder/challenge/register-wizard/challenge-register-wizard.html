@@ -97,6 +97,7 @@
 				this.entryAnimation = 'slide-from-right-animation';
 				this.exitAnimation = 'slide-left-animation';
 				if (this.selected === 1) {
+					this.$$('challenge-register-step').refresh();
 					this.selected = 3;
 					this.user = d;
 					return;
