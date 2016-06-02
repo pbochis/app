@@ -14,7 +14,7 @@
 			handle-as="json"
 			content-type="application/json"
 			with-credentials="true"
-			on-response="_onSingleResponse">
+			on-response="_onPostResponse">
 		</iron-ajax>
 		<iron-ajax
 			id="getSingleUser"
@@ -155,6 +155,10 @@
 				this.error = null;
 				this.user = r.detail.response;
 				this.app.stopLoading();
+			},
+			_onPostResponse: function(r){
+				this._onSingleResponse(r);
+				this.fire('user-saved');
 			},
 			_onMultiResponse: function(r){
 				this.error = null;
