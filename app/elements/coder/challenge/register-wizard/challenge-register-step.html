@@ -26,6 +26,9 @@
 		.title {
 			text-align: center;
 		}
+		.italic {
+			font-style: italic;
+		}
 	</style>
 	<template>
 		<create-team-modal id="createTeamDialog" on-team-created="refresh"></create-team-modal>
@@ -41,9 +44,9 @@
 		</iron-ajax>
 		<base-wizard>
 			<div class="title">
-				<h3>Welcome <span>[[user.username]]</span></h3>
+				<h3>Welcome, <span>[[user.username]]!</span></h3>
 			</div>
-			<p>You can register to <span>[[challenge.name]]</span> alone or with a team</p>
+			<p>You can register to <span class="italic">[[challenge.name]]</span> alone or with a team.</p>
 			<template is="dom-if" if="{{hasTeams}}">
 				<paper-dropdown-menu label="Team" selected-item="{{selectedTeam}}" >
 					<paper-listbox class="dropdown-content" selected="0">

@@ -25,83 +25,82 @@ paper-button {
 	margin-top: 12px !important;
 }
 
-span {
-	@apply(--layout-flex);
-}
 paper-input {
 	margin: 1px;
-		--paper-input-error: {
-			white-space: normal;
-		};
+	--paper-input-error: {
+		white-space: normal;
+	};
+}
+
+.signin {
+
 }
 	</style>
 	<template>
 		<user-service id="userService" on-user-saved="_onResponse" on-error="_onError"></user-service>
 		<cookie-service id="cookieService" on-user-error="_onUserError" on-user-ok="_userOk"></cookie-service>
 		<base-wizard show-back-button="[[externalWidget]]" on-back="prev">
-					<form is="iron-form" id="form">
-						<gold-email-input
-							label="Email"
-							value="{{user.email}}"
-							autofocus="[[!externalWidget]]"
-							on-keydown="onKeydown"
-							error-message="Please enter a valid email"
-							required>
-						</gold-email-input>
-						<paper-input
-							type="text"
-							label="Username"
-							value="{{user.nick}}"
-							autofocus="[[!externalWidget]]"
-							minLength="5"
-							maxLength="60"
-							on-keydown="onKeydown"
-							pattern="^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
-							error-message="Must be between 5 and 40 chars and only contain letters and numbers."
-							required>
-						</paper-input>
-						<paper-input
-							type="text"
-							label="First name"
-							value="{{user.firstName}}"
-							minLength="2"
-							maxLength="40"
-							autofocus="[[!externalWidget]]"
-							pattern="^[\w-\. ]{2,40}$"
-							error-message="Must be between 2 and 40 chars and only contain letters."
-							required="[[externalWidget]]">
-						</paper-input>
-						<paper-input
-							type="text"
-							label="Last name"
-							value="{{user.lastName}}"
-							minLength="2"
-							maxLength="40"
-							autofocus="[[!externalWidget]]"
-							pattern="^[\w-\. ]{2,40}$"
-							error-message="Must be between 2 and 40 chars and only contain letters."
-							required="[[externalWidget]]">
-						</paper-input>
-						<paper-input
-							type="password"
-							label="Password"
-							value="{{user.password}}"
-							autofocus="[[!externalWidget]]"
-							on-keydown="onKeydown"
-							minLength="6"
-							maxLength="40"
-							error-message="Password must be between 6 and 40 characters."
-							required>
-						</paper-input>
-						<paper-input type="password" label="Repeat password" value="{{repeatedPassword}}" autofocus="[[!externalWidget]]" on-keydown="onKeydown" required></paper-input>
-					</form>
-					<paper-button class="primary" disabled="{{saveDisabled}}" on-click="register">Register</paper-button>
-				<div class="horizontal layout">
-					<span></span>
-					<a on-click="_login">Already have an account? Sign in here.</a>
-					<span></span>
-				</div>
-			</base-wizard>
+			<form is="iron-form" id="form">
+				<gold-email-input
+					label="Email"
+					value="{{user.email}}"
+					autofocus="[[!externalWidget]]"
+					on-keydown="onKeydown"
+					error-message="Please enter a valid email"
+					required>
+				</gold-email-input>
+				<paper-input
+					type="text"
+					label="Username"
+					value="{{user.nick}}"
+					autofocus="[[!externalWidget]]"
+					minLength="5"
+					maxLength="60"
+					on-keydown="onKeydown"
+					pattern="^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+					error-message="Must be between 5 and 40 chars and only contain letters and numbers."
+					required>
+				</paper-input>
+				<paper-input
+					type="text"
+					label="First name"
+					value="{{user.firstName}}"
+					minLength="2"
+					maxLength="40"
+					autofocus="[[!externalWidget]]"
+					pattern="^[\w-\. ]{2,40}$"
+					error-message="Must be between 2 and 40 chars and only contain letters."
+					required="[[externalWidget]]">
+				</paper-input>
+				<paper-input
+					type="text"
+					label="Last name"
+					value="{{user.lastName}}"
+					minLength="2"
+					maxLength="40"
+					autofocus="[[!externalWidget]]"
+					pattern="^[\w-\. ]{2,40}$"
+					error-message="Must be between 2 and 40 chars and only contain letters."
+					required="[[externalWidget]]">
+				</paper-input>
+				<paper-input
+					type="password"
+					label="Password"
+					value="{{user.password}}"
+					autofocus="[[!externalWidget]]"
+					on-keydown="onKeydown"
+					minLength="6"
+					maxLength="40"
+					error-message="Password must be between 6 and 40 characters."
+					required>
+				</paper-input>
+				<paper-input type="password" label="Repeat password" value="{{repeatedPassword}}" autofocus="[[!externalWidget]]" on-keydown="onKeydown" required></paper-input>
+			</form>
+			<paper-button class="primary" disabled="{{saveDisabled}}" on-click="register">Register</paper-button>
+			<div class="horizontal layout signin">
+				<a on-click="_login">Already have an account? Sign in here.</a>
+			</div>
+		</base-wizard>
 		<paper-toast id="toast"></paper-toast>
 	</template>
 </dom-module>
@@ -141,14 +140,14 @@ Polymer({
 		this.$.cookieService.login('Basic ' + btoa(this.user.nick + ':' + this.user.password));
 	},
 	_login: function(){
-		if(this.externalWidget){
+		if (this.externalWidget) {
 			this.fire('redirect-login');
 			return;
 		}
 		page('/login');
 	},
 	prev: function() {
-		if(this.externalWidget){
+		if (this.externalWidget) {
 			this.fire('prev-step');
 		}
 	},
@@ -166,7 +165,7 @@ Polymer({
 		}
 	},
 	_userOk: function(e, user){
-		if(this.externalWidget){
+		if (this.externalWidget) {
 			this.fire('next-step', user);
 			return;
 		}
@@ -177,7 +176,7 @@ Polymer({
 		this.$.toast.show();
 	},
 	_onError: function(e, err){
-		if (err.detail.request.xhr.status === 409){
+		if (err.detail.request.xhr.status === 409) {
 			this.$.toast.text = 'Username/email already taken';
 			this.$.toast.show();
 			return;
