@@ -8,19 +8,22 @@
 		<style include="iron-flex">
 			#container {
 				@apply(--layout-horizontal);
+				@apply(--layout-end);
 				width: 100%;
 			}
 			#container > paper-input {
 				@apply(--layout-flex);
 			}
-			#container > div:first-child {
+			#description {
+				margin-left: 10px;
 			}
 		</style>
 		<div id="container">
-			<paper-input readonly label="Name" value="{{location.name}}">
+			<paper-input label="Name" value="{{location.name}}">
 				<iron-icon icon="communication:location-on" prefix></iron-icon>
-				<paper-icon-button suffix on-click="_remove" icon="clear" alt="clear" title="clear"></paper-icon-button>
 			</paper-input>
+			<paper-input id="description" label="Description" value="{{location.description}}"></paper-input>
+			<paper-icon-button on-click="_remove" icon="delete" alt="clear" title="clear"></paper-icon-button>
 		</div>
 	</template>
 	<script>
