@@ -18,7 +18,8 @@
     "gold-elements": "~1.0.1",
     "paper-listbox": "polymerelements/paper-listbox#^1.1.2",
     "google-fonts": "*",
-    "paper-datatable": "^0.9.8"
+    "paper-datatable": "^0.9.8",
+    "google-map": "GoogleWebComponents/google-map#~1.1.10"
   },
   "devDependencies": {
     "web-component-tester": "*",
@@ -26,6 +27,7 @@
   },
   "resolutions": {
     "paper-styles": "^1.1.4",
-    "polymer": "^1.5.0"
+    "polymer": "^1.5.0",
+    "platinum-bluetooth": "^2.0.0"
   }
 }

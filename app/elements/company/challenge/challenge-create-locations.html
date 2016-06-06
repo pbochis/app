@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -16,19 +17,16 @@
 		<div class="desc">
 			<div>If the challenge will have an on-site location search it on the map and confirm your selections</div>
 			<div class="flex"></div>
-			<paper-button id="confirmLocationButton" raised on-click="_confirmLocation">
-				<iron-icon icon="check"></iron-icon>
-				Confirm location
-			</paper-button>
-			<paper-button id="addLocationButton" raised on-click="_toggleMap">
-				<iron-icon icon="add"></iron-icon>
-				Add a location
-			</paper-button>
+			<div id="confirmLocationButton">
+				<paper-icon-button icon="check" on-click="_confirmLocation"></paper-icon-button>
+				<paper-icon-button icon="close" on-click="_toggleMap"></paper-icon-button>
+			</div>
+			<paper-icon-button id="addLocationButton" icon="add" on-click="_toggleMap"></paper-icon-button>
 		</div>
 		<template is="dom-repeat" items="[[locations]]">
 			<short-removable-location location="[[item]]" on-remove-location="_removeLocation"></short-removable-location>
 		</template>
-		<location-finder id="locationFinder" selected-location="{{location}}"></location-finder>
+		<google-location-finder id="locationFinder" selected-place="{{location}}"></google-location-finder>
 		<paper-toast id="toast" text="You need to select a location"></paper-toast>
 	</template>
 	<script>
@@ -42,19 +40,12 @@
 				}
 			},
 			ready: function() {
-				this.$.locationFinder.hide();
-				this.showing = false;
+				this.$.locationFinder.toggleVisibility(true);
 				this.$.confirmLocationButton.style.display = 'none';
 			},
 			_toggleMap: function(){
-				if (this.showing){
-					this.$.locationFinder.hide();
-				}
-				else{
-					this.$.locationFinder.show();
-				}
+				this.$.locationFinder.toggleVisibility(true);
 				this._switchButtons();
-				this.showing = !this.showing;
 			},
 			_confirmLocation: function() {
 				if (!this.locations){
@@ -90,7 +81,6 @@
 				this.$.confirmLocationButton.style.display = this.$.confirmLocationButton.style.display === 'none' ? '' : 'none';
 				this.$.addLocationButton.style.display = this.$.addLocationButton.style.display === 'none' ? '' : 'none';
 			}
-
 		});
 	</script>
 </dom-module>
