@@ -4,7 +4,6 @@ Behaviors.Requests = Behaviors.Requests || {};
 Behaviors.Requests.Handler = {
 	properties: {
 		error: {
-			type: Object,
 			notify: true,
 			reflectToAttribute: true
 		},
