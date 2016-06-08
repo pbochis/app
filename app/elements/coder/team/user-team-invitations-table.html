@@ -14,6 +14,29 @@
 		paper-icon-button {
 			@apply(--layout-self-center);
 		}
+		.placeholder {
+			display: block;
+			height: 70%;
+			width: 90%;
+			margin: 20px auto 0;
+		}
+		#messageWrapper {
+			padding-top: 24px;
+			@apply(--layout-horizontal);
+		}
+		#messageWrapper > span {
+			@apply(--layout-flex);
+		}
+		#messageWrapper > div {
+			color: #c7216e;
+		}
+		a {
+			cursor: pointer;
+		}
+		paper-datatable {
+			height: 100%;
+			overflow-y: auto;
+		}
 	</style>
 	<template>
 		<coduno-iron-ajax
@@ -23,26 +46,34 @@
 			on-request-failed="_onError">
 		</coduno-iron-ajax>
 		<my-team-invitations-provider data="{{invitations}}"></my-team-invitations-provider>
-
-		<paper-datatable data="[[invitations]]" class="fullHeight" on-cell-tap="_onClick">
-			<paper-datatable-column header="Team" property="team" type="Object">
-				<template>
-					<span>{{value.name}}</span>
-				</template>
-			</paper-datatable-column>
-			<paper-datatable-column header="Invited by" property="invitedBy" type="Object">
-				<template>
-					<span>{{value.username}}</span>
-				</template>
-			</paper-datatable-column>
-			<paper-datatable-column header="Options" property="id" width="200">
-				<template>
-					<paper-icon-button icon="check" on-click="_accept"></paper-icon-button>
-					<paper-icon-button icon="close" on-click="_delete"></paper-icon-button>
-				</template>
-			</paper-datatable-column>
-		</paper-datatable>
-
+		<template is="dom-if" if="[[hasInvitations]]">
+			<paper-datatable data="[[invitations]]" class="fullHeight" on-cell-tap="_onClick">
+				<paper-datatable-column header="Team" property="team" type="Object">
+					<template>
+						<span>{{value.name}}</span>
+					</template>
+				</paper-datatable-column>
+				<paper-datatable-column header="Invited by" property="invitedBy" type="Object">
+					<template>
+						<span>{{value.username}}</span>
+					</template>
+				</paper-datatable-column>
+				<paper-datatable-column header="Options" property="id" width="200">
+					<template>
+						<paper-icon-button icon="check" on-click="_accept"></paper-icon-button>
+						<paper-icon-button icon="close" on-click="_delete"></paper-icon-button>
+					</template>
+				</paper-datatable-column>
+			</paper-datatable>
+		</template>
+		<template is="dom-if" if="[[!hasInvitations]]">
+			<iron-image src="/images/invite.png" sizing="contain" class="placeholder"></iron-image>
+			<div id="messageWrapper">
+				<span></span>
+				<div>You'll be notified here when someone invites you to join a team</div>
+				<span></span>
+			</div>
+		</template>
 	</template>
 	<script type="application/javascript" src="../../../scripts/behaviors/providers/user-provider-behavior.js"></script>
 	<script>
@@ -52,6 +83,12 @@
 			behaviors: [
 				Behaviors.Providers.User
 			],
+			observers: [
+				'_dataLoaded(invitations)'
+			],
+			_dataLoaded: function() {
+				this.hasInvitations = !!this.invitations && this.invitations.length > 0;
+			},
 			_onClick: function(e, d){
 				if(d.column.header === 'Options'){
 					return;
