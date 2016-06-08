@@ -110,7 +110,7 @@
 				<template is="dom-if" if="[[showUserTeams]]">
 					<user-teams-table id="teamsGrid" show-progress="true" user="[[user]]" is-current-user="[[isCurrentUser]]"></user-teams-table>
 					<div id="teamsButtons">
-						<paper-button icon="add" on-click="createTeam">New team</paper-button>
+						<paper-icon-button icon="add" on-click="createTeam">New team</paper-icon-button>
 					</div>
 				</template>
 				<template is="dom-if" if="[[showInvitations]]">
