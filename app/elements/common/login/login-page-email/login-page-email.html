@@ -61,7 +61,7 @@ paper-input {
 	<template>
 		<base-wizard show-back-button="[[externalWidget]]" on-back="prev">
 			<div>
-				<paper-input type="text" label="Username or e-mail" value="{{email}}" autofocus="[[!externalWidget]]" on-keydown="onKeydown"></paper-input>
+				<paper-input id="emailInput" type="text" label="Username or e-mail" value="{{email}}" autofocus="[[!externalWidget]]" on-keydown="onKeydown"></paper-input>
 				<paper-button class$="{{empty}}" flat colorful on-change="checkEmpty" on-click="next">Next</paper-button>
 			</div>
 			<div id="socialSignInWrapper">
@@ -146,6 +146,9 @@ Polymer({
 	},
 	_submit: function(e) {
 		document.getElementById('form-' + e.target.getAttribute('provider')).submit();
+	},
+	focus: function(){
+		this.$.emailInput.focus();
 	}
 });
 </script>
