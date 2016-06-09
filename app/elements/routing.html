@@ -7,6 +7,12 @@ window.addEventListener('WebComponentsReady', function() {
 			if (app.user.activeOrganization) {
 				page('/challengetemplates');
 			} else if(app.user && Object.keys(app.user).length !== 0){
+				if(localStorage.contextKey === 'challenge-register'){
+					page('/contest/' + localStorage.contextValue + '/register');
+					localStorage.removeItem('contextKey');
+					localStorage.removeItem('contextValue');
+					return;
+				}
 				page('/contests');
 			} else {
 				page('/login');
@@ -145,6 +151,9 @@ window.addEventListener('WebComponentsReady', function() {
 	});
 
 	page('/contest/:canonicalName/register', function(ctx) {
+		if(app.user && Object.keys(app.user).length !== 0){
+			return page('/contest/' + ctx.params.canonicalName + '/info');
+		}
 		app.customUserOk = function(e){
 			page('/contest/' + ctx.params.canonicalName + '/info');
 		}
