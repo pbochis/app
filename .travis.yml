@@ -24,11 +24,13 @@ after_success:
 deploy:
   - provider: gae
     project: coduno
+    verbosity: debug
     skip_cleanup: true
     on:
       branch: master
   - provider: gae
     project: coduno-lab
+    verbosity: debug
     skip_cleanup: true
     on:
       branch: dev
