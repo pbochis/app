@@ -51,7 +51,7 @@
 		second-step-state="[[secondStepState]]" third-step-state="[[thirdStepState]]"></challenge-register-wizard-nav>
 		<neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 			<challenge-info-step challenge="[[challenge]]"></challenge-info-step>
-			<register-page context="[[context]]" on-redirect-login="_login"></register-page>
+			<register-page context="[[context]]" on-redirect-login="_login" on-social-register="onSocialRegister"></register-page>
 			<login-wizard context="[[context]]" on-redirect-register="_register"></login-wizard>
 			<challenge-location-step user="[[user]]" challenge="[[challenge]]" location="{{location}}"></challenge-location-step>
 			<challenge-register-step user="[[user]]" challenge="[[challenge]]" location="[[location]]"></challenge-register-step>
@@ -115,6 +115,10 @@
 					return;
 				}
 				this.selected++;
+			},
+			onSocialRegister: function(){
+				localStorage.contextKey = 'challenge-register';
+				localStorage.contextValue = this.challenge.canonicalName;
 			},
 			_login: function(){
 				this.entryAnimation = 'slide-from-right-animation';

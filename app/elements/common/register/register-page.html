@@ -32,9 +32,11 @@ paper-input {
 	};
 }
 
-.signin {
-
+#socialSignInWrapper {
+	padding-top: 12px;
+	padding-bottom: 12px;
 }
+
 	</style>
 	<template>
 		<user-service id="userService" on-user-saved="_onResponse" on-error="_onError"></user-service>
@@ -74,6 +76,9 @@ paper-input {
 				</paper-input>
 				<paper-input type="password" label="Repeat password" value="{{repeatedPassword}}" autofocus="[[!externalWidget]]" on-keydown="onKeydown" required></paper-input>
 			</form>
+			<div id="socialSignInWrapper">
+				<social-components label="Register" context="register" control="[[control]]"></social-components>
+			</div>
 			<paper-button class="primary" disabled="{{saveDisabled}}" on-click="register">Register</paper-button>
 			<div class="horizontal layout signin">
 				<a on-click="_login">Already have an account? Sign in here.</a>
@@ -107,6 +112,14 @@ Polymer({
 	],
 	listeners: {
 		'keyup': '_keyup'
+	},
+	ready: function(){
+		var self = this;
+		this.control = {
+			socialCallback: function(){
+				self.fire('social-register');
+			}
+		}
 	},
 	_keyup: function(){
 		this.saveDisabled = !this.$.form.validate();
