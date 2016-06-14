@@ -53,7 +53,7 @@
 
 			<paper-material class="card">
 				<h3>Invited users</h3>
-				<invited-users-table challenge="[[canonicalName]]"></invited-users-table>
+				<invited-users-table id="invitedUsersTable" challenge="[[canonicalName]]"></invited-users-table>
 			</paper-material>
 			<paper-material class="card">
 				<h3>Participants</h3>
@@ -89,7 +89,7 @@
 				this._refresh();
 			},
 			_refresh: function(){
-				this.$$('invited-users-table').refresh();
+				this.$.invitedUsersTable.refresh();
 				this.$$('challenge-by-canonical-name-provider').refresh();
 			},
 			_formatDate: function(date){

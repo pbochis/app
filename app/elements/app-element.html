@@ -124,6 +124,7 @@
 			inviteByToken: function(token){
 				var invitationRequest = document.createElement('iron-ajax');
 				invitationRequest.withCredentials = true;
+				invitationRequest.handleAs = 'text';
 				invitationRequest.url = util.build('/invite/auth/' + token);
 				var self = this;
 				invitationRequest.addEventListener('response', function(r){

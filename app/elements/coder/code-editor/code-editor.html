@@ -65,6 +65,9 @@
 				tree: {
 					type: Object,
 					notify: true,
+					//TODO: When you create an empty tree(i.e. no template)  either make the code editor disabled when
+					// there are no files, or by default create a file (think the first version is better, since it
+					// can be reused to disable teh code editor whenever there are 0 files(all are deleted or some reason)
 					value: function() {
 						return new Tree({});
 					},
