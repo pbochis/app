@@ -13,4 +13,4 @@ cd ${NAME}-${VERSION}
 
 PREFIX=$HOME ./install.sh
 
-git lfs pull
+GIT_TRACE=1 git lfs pull
