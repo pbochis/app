@@ -192,19 +192,19 @@
 				return this.node;
 			},
 			setContent: function(content) {
-				this.node.value = content;
+				this.node = content;
 			},
 			addFolder: function() {
-				this.appendChildItem(new ExplorerItem({}, '', true));
+				this.appendChildItem(new ExplorerItem({}, this.path + '/', true));
 			},
 			addFile: function() {
-				this.appendChildItem(new ExplorerItem('', '', true));
+				this.appendChildItem(new ExplorerItem('', this.path + '/', true));
 			},
 			appendChildItem: function(item) {
 				this.$$('#children').appendChild(item);
 			},
 			_nodeChanged: function() {
-				console.log('Node changed.');
+				console.log('Node changed.', this.node);
 			}
 		});
 	</script>

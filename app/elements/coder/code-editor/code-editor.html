@@ -90,6 +90,7 @@
 				this.$.editor.getSession().on('change', function() {
 					var content = that.$.editor.getValue();
 					that.selectedFile.setContent(content);
+					that.tree.set(that.selectedFile.path, content);
 					console.log(that.tree.root);
 				});
 				this.$.editor.commands.addCommand({
@@ -129,7 +130,7 @@
 				var value = this.tree.get(detail.from);
 				this.tree.remove(detail.from);
 				this.tree.add(detail.to, value);
-				this.tree = new Tree(JSON.parse(JSON.stringify(this.tree.root)));
+				// this.tree = new Tree(JSON.parse(JSON.stringify(this.tree.root)));
 				this.set('tree', this.tree);
 			},
 			handleCreate: function(e, detail) {
