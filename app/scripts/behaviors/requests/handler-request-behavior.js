@@ -6,11 +6,6 @@ Behaviors.Requests.Handler = {
 		error: {
 			notify: true,
 			reflectToAttribute: true
-		},
-		response: {
-			type: Object,
-			notify: true,
-			reflectToAttribute: true
 		}
 	},
 	listeners: {

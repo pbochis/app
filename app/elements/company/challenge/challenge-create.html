@@ -23,9 +23,10 @@
 			id="saveChallenge"
 			method="POST"
 			body="{{challenge}}"
-			path="/challenges"
+			path="challenges"
 			response="{{savedChallenge}}"
 			on-request-finished="_onResponse"
+			handle-as="text"
 			error="{{error}}">
 		</coduno-iron-ajax>
 		<div class="mainContent">
