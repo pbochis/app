@@ -25,7 +25,7 @@
 		<div class$="[[className]]" id="wrapper" on-click="select">
 			<iron-icon icon="[[icon]]"></iron-icon>
 			<template is="dom-if" if="{{renaming}}">
-				<input id="editInput" type="text" value="[[renameValue]]" on-keyup="_handleRename" autofocus>
+				<input id="editInput" type="text" value="[[renameValue]]" on-keyup="_handleEvent" autofocus>
 			</template>
 			<template is="dom-if" if="{{!renaming}}">
 				<div class="name">{{item.name}}</div>
@@ -34,7 +34,7 @@
 		<paper-toast id="toast"></paper-toast>
 		<paper-dialog>
 			<h1>{{dialogTitle}}</h1>
-			<input type="text" on-keyup="_handleDialog" autofocus>
+			<input type="text" on-keyup="_handleEvent" autofocus>
 		</paper-dialog>
 
 	</template>
@@ -60,6 +60,7 @@
 				},
 				renameValue: {
 					type: String,
+					notify: true,
 					computed: 'getRenameValue(path, item)'
 				}
 			},
@@ -93,24 +94,26 @@
 				this.context = 'add-folder';
 				this.$$('paper-dialog').open();
 			},
-			_handleDialog: function(e){
+			_handleEvent: function(e){
 				// "Escape" key.
 				if (e.keyCode === 27) {
+					if(this.context === 'rename'){
+						this.set('renaming', false);
+					}
 					return;
 				}
-
 				// Not "Return" key.
 				if (e.keyCode !== 13) {
 					return;
 				}
-
-				var value = e.target.value;
-				if(!value || value.length === 0){
-					this.$.toast.text = this.isFolder ? 'Folder name cannot be empty.' : 'File name cannot be empty.';
-					this.$.toast.show();
+				if(this.context === 'rename'){
+					this.set('renaming', false);
+				}
+				if(this.context === 'rename'){
+					this.fire('rename', {path: this.path, name: this.item.name, to: e.target.value});
 					return;
 				}
-				this.fire(this.context, {path: this.path +'/' + this.item.name + '/' + value})
+				this.fire(this.context, {path: this.path +'/' + this.item.name + '/' + e.target.value})
 			},
 			getRenameValue: function(path, item){
 				return path + item.name;
@@ -119,30 +122,10 @@
 				if(this.item.name === 'root'){
 					return;
 				}
+				// TODO: check why rename value does not get updated
+				this.renameValue = this.getRenameValue(this.path, this.item);
+				this.context = 'rename';
 				this.renaming = true;
-			},
-			_handleRename: function(e) {
-				// "Escape" key.
-				if (e.keyCode === 27) {
-					this.set('renaming', false);
-					return;
-				}
-
-				// Not "Return" key.
-				if (e.keyCode !== 13) {
-					return;
-				}
-
-				var value = e.target.value;
-				var splitValue = value.split('/');
-				if(splitValue[splitValue.length - 1] === ''){
-					this.$.toast.text = this.isFolder ? 'Folder name cannot be empty.' : 'File name cannot be empty.';
-					this.$.toast.show();
-					return;
-				}
-
-				this.set('renaming', false);
-				this.fire('rename', {path: this.path, name: this.item.name, to: value});
 			},
 			showContextMenu: function(e) {
 				e.preventDefault();

@@ -11,6 +11,7 @@
 		</style>
 
 		<file-explorer-node node="{{tree}}" path="/"></file-explorer-node>
+		<paper-toast id="toast"></paper-toast>
 	</template>
 	<script>
 		Polymer({
@@ -20,8 +21,11 @@
 					type: Object,
 					notify: true
 				},
-				counter:{
-					value: 0
+				names: {
+					value: {
+						good: /^[a-zA-Z0-9-_~\.]{1,255}$/,
+						bad: ['.', '..']
+					}
 				},
 				cachedPath:{
 					value: ''
@@ -79,8 +83,18 @@
 				this.refreshTree(tree);
 			},
 			addItem: function(tree, path, item){
+				var splitValue = path.split('/');
+				var itemName = splitValue[splitValue.length - 1];
+				if(!this.names.good.test(itemName)){
+					this.showToast('Name is not valid.');
+					return false;
+				}
+				if(itemName === ''){
+					this.showToast('Name cannot be empty.');
+					return false;
+				}
 				if(path.indexOf('/root') !== 0){
-					console.log('outside root folder');
+					this.showToast('You cannot create items outside the root folder!')
 					return false;
 				}
 				var path = this.splitPath(path);
@@ -88,7 +102,7 @@
 				var node = this.getNodeForPathArray(tree, path.slice(0, path.length - 1));
 				var name = path.pop();
 				if(!!node[name]){
-					console.log('already exists');
+					this.showToast('Name already exists!')
 					return false;
 				}
 				node[name] = item;
@@ -106,6 +120,7 @@
 				var node = tree;
 				for(var i = 0; i < path.length; i++){
 					if(!node[path[i]]){
+						// TODO: check if name is valid
 						node[path[i]] = {};
 					}
 					node = node[path[i]];
@@ -141,6 +156,10 @@
 					console.log(blob);
 					return blob;
 				});
+			},
+			showToast: function(message){
+				this.$.toast.text = message;
+				this.$.toast.show();
 			}
 		});
 	</script>
