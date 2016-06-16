@@ -29,6 +29,7 @@
 			},
 			listeners: {
 				'rename': 'onRename',
+				'delete': 'onDelete',
 				'add-file': 'onAddFile',
 				'add-folder': 'onAddFolder'
 			},
@@ -54,6 +55,15 @@
 			onAddFolder: function(e){
 				var tree = this.tree;
 				this.addItem(tree, e.detail.path, {});
+				this.refreshTree(tree);
+			},
+			onDelete: function(e){
+				var data = e.detail;
+				var tree = this.tree;
+
+				var toRemove = this.getNodeForPath(tree, data.path);
+				delete toRemove[data.name];
+				
 				this.refreshTree(tree);
 			},
 			onRename: function(e){

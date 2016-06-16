@@ -85,6 +85,9 @@
 				this.context = 'add-file';
 				this.$$('paper-dialog').open();
 			},
+			delete: function(){
+				this.fire('delete', {path: this.path, name: this.item.name})
+			},
 			addFolder: function(){
 				this.dialogTitle = 'Add folder';
 				this.context = 'add-folder';
