@@ -2,7 +2,7 @@
 <link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
 
-<dom-module id="explorer-element-item">
+<dom-module id="file-explorer-node">
 	<template>
 		<style include="iron-flex">
 			.children {
@@ -11,10 +11,10 @@
 		</style>
 		<div >
 			<template id="repeat" is="dom-repeat" items="{{childItems}}">
-				<file-item item="[[item]]" path="[[path]]"></file-item>
+				<file-exporer-item item="[[item]]" path="[[path]]"></file-exporer-item>
 				<template is="dom-if" if="{{!isFile(item)}}">
 					<div class="children">
-						<explorer-element-item node="{{item.value}}" path="{{getPath(item)}}"></explorer-element-item>
+						<file-explorer-node node="{{item.value}}" path="{{getPath(item)}}"></file-explorer-node>
 					</div>
 				</template>
 			</template>
@@ -22,7 +22,7 @@
 	</template>
 	<script>
 		Polymer({
-			is: 'explorer-element-item',
+			is: 'file-explorer-node',
 			properties: {
 				node: {
 					reflectToAttribute: true,

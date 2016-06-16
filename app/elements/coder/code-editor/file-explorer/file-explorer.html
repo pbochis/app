@@ -1,7 +1,7 @@
 <link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
 
-<dom-module id="explorer-element">
+<dom-module id="file-explorer">
 	<template >
 		<style include="iron-flex">
 			:host {
@@ -10,11 +10,11 @@
 			}
 		</style>
 
-		<explorer-element-item node="{{tree}}" path="/"></explorer-element-item>
+		<file-explorer-node node="{{tree}}" path="/"></file-explorer-node>
 	</template>
 	<script>
 		Polymer({
-			is: 'explorer-element',
+			is: 'file-explorer',
 			properties: {
 				tree: {
 					type: Object,
@@ -63,7 +63,7 @@
 
 				var toRemove = this.getNodeForPath(tree, data.path);
 				delete toRemove[data.name];
-				
+
 				this.refreshTree(tree);
 			},
 			onRename: function(e){
