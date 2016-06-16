@@ -1,4 +1,3 @@
-<link rel="import" href="../../../bower_components/google-apis/google-maps-api.html">
 <link rel="import" href="../../../bower_components/google-map/google-map-search.html">
 <link rel="import" href="../../../bower_components/google-map/google-map.html">
 
@@ -33,11 +32,6 @@
 		</style>
 		<div id="container">
 			<input id="searchInput" class="controls" type="text" placeholder="Enter a location">
-			<google-maps-api
-				api-key="[[apiConfig.apiKey]]"
-				version="[[apiConfig.version]]">
-			</google-maps-api>
-
 			<google-map id="map" map="{{map}}" latitude="[[center.lat]]" longitude="[[center.lng]]">
 				<google-map-marker id="placeMarker"
 								   map="[[map]]"
@@ -66,14 +60,6 @@
 				visible: {
 					type: Boolean,
 					value: true
-				},
-				apiConfig: {
-					type : Object,
-					notify: true,
-					value: {
-							apiKey: 'AIzaSyCnqlcAd2M-qW20SDsghrBOOLvs144c3og',
-							version: '3.exp'
-						}
 				},
 				selectedPlace: {
 					type: Object,

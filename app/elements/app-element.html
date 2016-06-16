@@ -1,4 +1,5 @@
 <link rel="import" href="../styles/coduno.html">
+<link rel="import" href="../../bower_components/google-apis/google-maps-api.html">
 
 <dom-module id="app-element">
 	<style include="coduno-style">
@@ -11,6 +12,10 @@
 		}
 	</style>
 	<template>
+		<google-maps-api
+			api-key="[[apiConfig.apiKey]]"
+			version="[[apiConfig.version]]">
+		</google-maps-api>
 		<paper-header-panel class="fullHeight">
 			<app-nav id="appNav" user="{{user}}"></app-nav>
 			<div id="sections" class="content">
@@ -33,6 +38,14 @@
 		Polymer({
 			is: 'app-element',
 			properties: {
+				apiConfig: {
+					type : Object,
+					notify: true,
+					value: {
+						apiKey: 'AIzaSyCnqlcAd2M-qW20SDsghrBOOLvs144c3og',
+						version: '3.24'
+					}
+				},
 				selected: {
 					type: String,
 					notify: true,

@@ -95,8 +95,6 @@
 				this.selected --;
 			},
 			next: function(e, d) {
-				this.entryAnimation = 'slide-from-right-animation';
-				this.exitAnimation = 'slide-left-animation';
 				if (this.selected === pageUserRegister) {
 					this.$$('challenge-location-step').refresh();
 					this.selected = pageChallengeLocation;
