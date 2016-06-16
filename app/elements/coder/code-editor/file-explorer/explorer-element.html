@@ -33,7 +33,8 @@
 				'add-folder': 'onAddFolder'
 			},
 			ready: function(){
-				this.tree = {'root': {'a': 'content', 'c': {'file': 'content', 'd': {'e': { 'f': {'g': 'content'}}}}}};
+				tree = {'a': 'content', 'c': {'file': 'content', 'd': {'e': { 'f': {'g': 'content'}}}}};
+				this.tree = {'root': tree};
 			},
 			get: function(path, name){
 				var node = this.getNodeForPath(this.tree, path + name)
@@ -68,6 +69,10 @@
 				this.refreshTree(tree);
 			},
 			addItem: function(tree, path, item){
+				if(path.indexOf('/root') !== 0){
+					console.log('outside root folder');
+					return false;
+				}
 				var path = this.splitPath(path);
 
 				var node = this.getNodeForPathArray(tree, path.slice(0, path.length - 1));
@@ -119,7 +124,7 @@
 				var tree = this.tree;
 
 				var elements = [];
-				this.getPathsRecursively(tree, elements, '');
+				this.getPathsRecursively(tree.root, elements, '');
 				return elements.map(function(it) {
 					var blob = new Blob([it.value]);
 					blob.name = it.path;

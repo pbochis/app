@@ -113,7 +113,6 @@
 				return path + item.name;
 			},
 			startRenaming: function(){
-				// ez hack for root folder
 				if(this.item.name === 'root'){
 					return;
 				}
@@ -147,7 +146,8 @@
 				this.fire('show-menu', {
 					'element': this,
 					'x': e.pageX,
-					'y': e.pageY
+					'y': e.pageY,
+					'isRoot': this.item.name === 'root'
 				});
 			}
 		});

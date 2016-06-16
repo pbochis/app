@@ -32,14 +32,16 @@
 					Add file
 				</div>
 			</template>
-			<div class="nav-item" on-click="handleRename">
-				<iron-icon icon="create"></iron-icon>
-				Rename
-			</div>
-			<div class="nav-item" on-click="_delete">
-				<iron-icon icon="delete"></iron-icon>
-				Delete
-			</div>
+			<template is="dom-if" if="{{!isRoot}}">
+				<div class="nav-item" on-click="handleRename">
+					<iron-icon icon="create"></iron-icon>
+					Rename
+				</div>
+				<div class="nav-item" on-click="_delete">
+					<iron-icon icon="delete"></iron-icon>
+					Delete
+				</div>
+			</template>
 		</div>
 	</template>
 	<script>
@@ -65,6 +67,7 @@
 				return selectedItem.isFolder;
 			},
 			showMenu: function(data) {
+				this.isRoot = data.isRoot;
 				if (this.pos.x === data.x && this.pos.y === data.y) {
 					return;
 				}
