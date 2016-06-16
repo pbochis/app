@@ -25,7 +25,7 @@
 		<context-menu id="contextMenu"></context-menu>
 		<div class="container">
 			<div class="explorer-container" style$="{{explorerStyle}}">
-				<explorer-item id="rootFolder" node="{{tree.root}}" path=""></explorer-item>
+				<explorer-element style="height: 100%;"></explorer-element>
 			</div>
 			<div class="editor-container">
 				<div>
@@ -54,14 +54,6 @@
 					notify: true,
 					value: 'chevron-left'
 				},
-				tree: {
-					type: Object,
-					notify: true,
-					value: function() {
-						return new Tree({});
-					},
-					observer: '_treeChanged'
-				},
 				explorerStyle: {
 					type: String,
 					value: ''
@@ -74,9 +66,7 @@
 			},
 			listeners: {
 				'show-menu': '_showMenu',
-				'file-selected': '_fileSelected',
-				'rename': 'handleRename',
-				'create': 'handleCreate'
+				'file-selected': '_fileSelected'
 			},
 			ready: function() {
 				this._addContextMenuListener();
@@ -89,9 +79,14 @@
 				var that = this;
 				this.$.editor.getSession().on('change', function() {
 					var content = that.$.editor.getValue();
-					that.selectedFile.setContent(content);
-					that.tree.set(that.selectedFile.path, content);
-					console.log(that.tree.root);
+					if(!that.selectedFile){
+						return console.log('no selected file')
+					}
+					that.$$('explorer-element').update(that.selectedFile.path, that.selectedFile.item.name, content);
+					console.log(that.selectedFile.path, that.selectedFile.item.name);
+					// that.selectedFile.setContent(content);
+					// that.tree.set(that.selectedFile.path, content);
+					// console.log(that.tree.root);
 				});
 				this.$.editor.commands.addCommand({
 					name: 'run',
@@ -118,45 +113,12 @@
 					this.selectedFile = undefined;
 				}
 			},
-			handleRename: function(e, detail) {
-				if (detail.from === detail.to) {
-					return;
-				}
-
-				if (this.tree.contains(detail.to)) {
-					return;
-				}
-
-				var value = this.tree.get(detail.from);
-				this.tree.remove(detail.from);
-				this.tree.add(detail.to, value);
-				// this.tree = new Tree(JSON.parse(JSON.stringify(this.tree.root)));
-				this.set('tree', this.tree);
-			},
-			handleCreate: function(e, detail) {
-				if (this.tree.contains(detail.path)) {
-					return;
-				}
-				this.tree.add(detail.path, '');
-				console.log('Notifying for tree change after create.');
-				this.tree = new Tree(JSON.parse(JSON.stringify(this.tree.root)))
-				this.set('tree', this.tree);
-			},
-			handleAdd: function(e, detail) {
-				if (this.tree.contains(detail.path)) {
-					return;
-				}
-				this.tree.add(detail.path, detail.content);
-				console.log('Notifying for tree change after add.');
-				this.tree = new Tree(JSON.parse(JSON.stringify(this.tree.root)))
-				this.set('tree', this.tree);
-			},
 			_fileSelected: function(e, detail) {
 				if (!!this.selectedFile) {
 					this.selectedFile.unselectFile();
 				}
 				this.selectedFile = detail;
-				this.setValue(this.selectedFile.getContent());
+				this.setValue(this.$$('explorer-element').get(this.selectedFile.path, this.selectedFile.item.name));
 			},
 			_toggle: function() {
 				if (this.toggleExplorerIcon === 'chevron-left') {
@@ -171,13 +133,19 @@
 				this.tree = new Tree(rootFolder);
 				this.notifyPath('tree');
 			},
+			_toArray: function(obj){
+				if(!obj){
+					return;
+				}
+				return Object.keys(obj).map(function(key) {
+					return {
+						name: key,
+						value: obj[key]
+					};
+				});
+			},
 			getFiles: function() {
-				return this.tree.all().map(function(it) {
-					var blob = new Blob([this.tree.get(it)]);
-					blob.name = it;
-					console.log(blob);
-					return blob;
-				}, this);
+				return this.$$('explorer-element').getFiles();
 			},
 			setValue: function(text) {
 				if (text === null || text === undefined) {

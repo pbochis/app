@@ -1,0 +1,132 @@
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
+
+<dom-module id="explorer-element">
+	<template >
+		<style include="iron-flex">
+			:host {
+				display: block;
+				height: 100%;
+			}
+		</style>
+
+		<explorer-element-item node="{{tree}}" path="/"></explorer-element-item>
+	</template>
+	<script>
+		Polymer({
+			is: 'explorer-element',
+			properties: {
+				tree: {
+					type: Object,
+					notify: true
+				},
+				counter:{
+					value: 0
+				},
+				cachedPath:{
+					value: ''
+				}
+			},
+			listeners: {
+				'rename': 'onRename',
+				'add-file': 'onAddFile',
+				'add-folder': 'onAddFolder'
+			},
+			ready: function(){
+				this.tree = {'root': {'a': 'content', 'c': {'file': 'content', 'd': {'e': { 'f': {'g': 'content'}}}}}};
+			},
+			get: function(path, name){
+				var node = this.getNodeForPath(this.tree, path + name)
+				return node;
+			},
+			update: function(path, name, content){
+				var tree = this.tree;
+				var node = this.getNodeForPath(tree, path);
+				node[name] = content;
+				this.tree = tree;
+			},
+			onAddFile: function(e){
+				var tree = this.tree;
+				this.addItem(tree, e.detail.path, '');
+				this.refreshTree(tree);
+			},
+			onAddFolder: function(e){
+				var tree = this.tree;
+				this.addItem(tree, e.detail.path, {});
+				this.refreshTree(tree);
+			},
+			onRename: function(e){
+				var data = e.detail;
+				var tree = this.tree;
+
+				var toRemove = this.getNodeForPath(tree, data.path);
+				if(!this.addItem(tree, data.to, toRemove[data.name])){
+					return;
+				}
+				delete toRemove[data.name];
+
+				this.refreshTree(tree);
+			},
+			addItem: function(tree, path, item){
+				var path = this.splitPath(path);
+
+				var node = this.getNodeForPathArray(tree, path.slice(0, path.length - 1));
+				var name = path.pop();
+				if(!!node[name]){
+					console.log('already exists');
+					return false;
+				}
+				node[name] = item;
+				return true;
+			},
+			splitPath: function(path){
+				return path.split('/').filter(function(elem){
+					return elem !== '';
+				});
+			},
+			getNodeForPath: function(tree, path){
+				return this.getNodeForPathArray(tree, this.splitPath(path));
+			},
+			getNodeForPathArray: function(tree, path){
+				var node = tree;
+				for(var i = 0; i < path.length; i++){
+					if(!node[path[i]]){
+						node[path[i]] = {};
+					}
+					node = node[path[i]];
+				}
+				return node;
+			},
+			refreshTree: function(tree){
+				this.tree = undefined;
+				this.tree = tree;
+			},
+			getPathsRecursively: function(node, elements, base){
+				for(var key in node){
+					if(node.hasOwnProperty(key)){
+						if(typeof node[key] === 'object'){
+							this.getPathsRecursively(node[key], elements, base + '/' + key)
+							continue;
+						}
+						elements.push({
+							path: base + '/' + key,
+							value: node[key]
+						});
+					}
+				}
+			},
+			getFiles: function(){
+				var tree = this.tree;
+
+				var elements = [];
+				this.getPathsRecursively(tree, elements, '');
+				return elements.map(function(it) {
+					var blob = new Blob([it.value]);
+					blob.name = it.path;
+					console.log(blob);
+					return blob;
+				});
+			}
+		});
+	</script>
+</dom-module>

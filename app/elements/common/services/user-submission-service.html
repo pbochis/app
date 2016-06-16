@@ -24,7 +24,7 @@
 			submit: function(taskId, language, files){
 				var body = new FormData();
 				for (var i = 0; i < files.length; i++){
-					body.append('files', files[i], files[i].name);
+					body.append('file', files[i], files[i].name);
 				}
 				body.append('language', language);
 				this.$.post.body = body;
