@@ -38,8 +38,7 @@
 				'add-folder': 'onAddFolder'
 			},
 			ready: function(){
-				tree = {'a': 'content', 'c': {'file': 'content', 'd': {'e': { 'f': {'g': 'content'}}}}};
-				this.tree = {'root': tree};
+				this.tree = {'root': {}};
 			},
 			get: function(path, name){
 				var node = this.getNodeForPath(this.tree, path + name)
@@ -48,17 +47,24 @@
 			update: function(path, name, content){
 				var tree = this.tree;
 				var node = this.getNodeForPath(tree, path);
+				if(!node){
+					return;
+				}
 				node[name] = content;
 				this.tree = tree;
 			},
 			onAddFile: function(e){
 				var tree = this.tree;
-				this.addItem(tree, e.detail.path, '');
+				if(!this.addItem(tree, e.detail.path, '')){
+					return;
+				}
 				this.refreshTree(tree);
 			},
 			onAddFolder: function(e){
 				var tree = this.tree;
-				this.addItem(tree, e.detail.path, {});
+				if(!this.addItem(tree, e.detail.path, {})){
+					return;
+				}
 				this.refreshTree(tree);
 			},
 			onDelete: function(e){
@@ -99,7 +105,15 @@
 				}
 				var path = this.splitPath(path);
 
+
 				var node = this.getNodeForPathArray(tree, path.slice(0, path.length - 1));
+				if(node === undefined){
+					return false;
+				}
+				if(typeof node !== 'object'){
+					this.showToast('You cannot transform files in folders!')
+					return false;
+				}
 				var name = path.pop();
 				if(!!node[name]){
 					this.showToast('Name already exists!')
@@ -119,8 +133,11 @@
 			getNodeForPathArray: function(tree, path){
 				var node = tree;
 				for(var i = 0; i < path.length; i++){
-					if(!node[path[i]]){
-						// TODO: check if name is valid
+					if(!node[path[i]] && node[path[i]] !== ''){
+						if(!this.names.good.test(path[i])){
+							this.showToast('The name ' + path[i] + ' is not valid.');
+							return undefined;
+						}
 						node[path[i]] = {};
 					}
 					node = node[path[i]];

@@ -20,12 +20,15 @@
 		.explorer-container {
 			width: 200px;
 		}
+		file-explorer {
+			height: 100%;
+		}
 	</style>
 	<template>
 		<context-menu id="contextMenu"></context-menu>
 		<div class="container">
 			<div class="explorer-container" style$="{{explorerStyle}}">
-				<file-explorer style="height: 100%;"></file-explorer>
+				<file-explorer></file-explorer>
 			</div>
 			<div class="editor-container">
 				<div>

@@ -113,7 +113,7 @@
 					this.fire('rename', {path: this.path, name: this.item.name, to: e.target.value});
 					return;
 				}
-				this.fire(this.context, {path: this.path +'/' + this.item.name + '/' + e.target.value})
+				this.fire(this.context, {path: this.path + this.item.name + '/' + e.target.value})
 			},
 			getRenameValue: function(path, item){
 				return path + item.name;
