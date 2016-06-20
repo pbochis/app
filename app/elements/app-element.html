@@ -71,38 +71,21 @@
 					value: 0
 				}
 			},
-			ready: function(){
-				this.initUserInfo = true;
-				var element = this;
-				// See https://github.com/Polymer/polymer/issues/1381
-				window.addEventListener('WebComponentsReady', function() {
-					// imports are loaded and elements have been registered
-					if(element.initUserInfo){
-						element.initializeUserInfo();
-					}
-				});
-			},
-			initializeUserInfo: function(){
-				var defaultUserError = function(){
-					page('/login');
-				}
+			loadUser: function(success, error){
 				var self = this;
 				var cookieService = document.createElement('cookie-service');
 				cookieService.addEventListener('user-ok', function(e){
 					self.user = e.detail;
 					self.refreshMenu();
-					if(!!self.customUserOk){
-						self.customUserOk(e);
-						self.customUserOk = null;
+					if(!!success){
+						success();
 					}
 				});
 				cookieService.addEventListener('user-error', function(){
-					if(!!self.customUserError){
-						self.customUserError();
-						self.customUserError = null;
-						return;
+					if(!!error){
+						return error();
 					}
-					defaultUserError();
+					page('/login');
 				});
 				cookieService.login();
 			},
@@ -144,9 +127,7 @@
 				var invitationRequest = document.createElement('iron-ajax');
 				invitationRequest.withCredentials = true;
 				invitationRequest.url = util.build('/invite/auth/' + token);
-				var self = this;
 				invitationRequest.addEventListener('response', function(r){
-					self.initializeUserInfo();
 					page('/contest/' + r.detail.response);
 				});
 				invitationRequest.generateRequest();
