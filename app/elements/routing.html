@@ -7,12 +7,8 @@ window.addEventListener('WebComponentsReady', function() {
 				return success(ctx);
 			}
 			app.loadUser(
-				function() {
-					success(ctx);
-				},
-				function() {
-					error(ctx);
-				}
+				function() { success(ctx); },
+				error ? function() { error(ctx); } : undefined
 			);
 		};
 	}
