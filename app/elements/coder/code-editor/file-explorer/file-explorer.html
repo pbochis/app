@@ -17,6 +17,11 @@
 		Polymer({
 			is: 'file-explorer',
 			properties: {
+				language: {
+					type: String,
+					notify: true,
+					reflectToAttribute: true
+				},
 				tree: {
 					type: Object,
 					notify: true
@@ -35,10 +40,24 @@
 				'rename': 'onRename',
 				'delete': 'onDelete',
 				'add-file': 'onAddFile',
-				'add-folder': 'onAddFolder'
+				'add-folder': 'onAddFolder',
+				'file-selected': '_fileSelected'
 			},
 			ready: function(){
+				if(!!localStorage.cachedCode){
+					this.tree = JSON.parse(localStorage.cachedCode);
+					return;
+				}
 				this.tree = {'root': {}};
+			},
+			clear: function(){
+				this.tree = undefined;
+				this.tree = {'root': {}};
+			},
+			_fileSelected: function(e, detail){
+				if(detail.item.name.indexOf('.') !== -1){
+					this.language = detail.item.name.substring(detail.item.name.lastIndexOf('.') + 1, detail.item.name.length);
+				}
 			},
 			get: function(path, name){
 				var node = this.getNodeForPath(this.tree, path + name)
@@ -52,11 +71,15 @@
 				}
 				node[name] = content;
 				this.tree = tree;
+				localStorage.cachedCode = JSON.stringify(this.tree);
 			},
 			onAddFile: function(e){
 				var tree = this.tree;
 				if(!this.addItem(tree, e.detail.path, '')){
 					return;
+				}
+				if(e.detail.path.indexOf('.') !== -1){
+					this.language = e.detail.path.substring(e.detail.path.lastIndexOf('.') + 1, e.detail.path.length);
 				}
 				this.refreshTree(tree);
 			},

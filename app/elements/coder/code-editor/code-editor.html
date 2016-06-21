@@ -28,7 +28,7 @@
 		<context-menu id="contextMenu"></context-menu>
 		<div class="container">
 			<div class="explorer-container" style$="{{explorerStyle}}">
-				<file-explorer></file-explorer>
+				<file-explorer language="{{language}}"></file-explorer>
 			</div>
 			<div class="editor-container">
 				<div>
@@ -48,6 +48,7 @@
 			properties: {
 				language: {
 					type: String,
+					notify: true,
 					reflectToAttribute: true,
 					observer: '_languageChanged'
 				},
@@ -97,19 +98,19 @@
 					readOnly: true
 				});
 				this.$.editor.$blockScrolling = Infinity;
+				this.disableEditor();
 			},
-			_treeChanged: function(current, previous) {
-				console.log('Tree changed from', (previous ? previous.root : undefined), 'to', current.root);
-				this.$.rootFolder.set('node', current.root);
-				//Polymer.dom(this.$.rootFolder).setAttribute('node', this.tree.root);
+			disableEditor: function(){
+				this.$.editor.container.style.opacity = 0.5
+				this.$.editor.setReadOnly(true);
 			},
-			clearFiles: function() {
-				this.tree = new Tree({});
-				this.notifyPath('tree');
-				if (!!this.selectedFile) {
-					this.selectedFile.unselectFile();
-					this.selectedFile = undefined;
-				}
+			enableEditor: function(){
+				this.$.editor.container.style.opacity = 1;
+				this.$.editor.setReadOnly(false);
+			},
+			clear: function(){
+				this.$.editor.getSession().setValue('');
+				this.$$('file-explorer').clear();
 			},
 			_fileSelected: function(e, detail) {
 				if (!!this.selectedFile) {
@@ -117,6 +118,7 @@
 				}
 				this.selectedFile = detail;
 				this.setValue(this.$$('file-explorer').get(this.selectedFile.path, this.selectedFile.item.name));
+				this.enableEditor();
 			},
 			_toggle: function() {
 				if (this.toggleExplorerIcon === 'chevron-left') {
@@ -126,10 +128,6 @@
 					this.explorerStyle = '';
 					this.toggleExplorerIcon = 'chevron-left';
 				}
-			},
-			setFilesJson: function(rootFolder) {
-				this.tree = new Tree(rootFolder);
-				this.notifyPath('tree');
 			},
 			getFiles: function() {
 				return this.$$('file-explorer').getFiles();
