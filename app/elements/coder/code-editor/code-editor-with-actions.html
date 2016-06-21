@@ -76,7 +76,7 @@
 				<div id="codeEditorCommands">
 					<paper-icon-button on-click="_maximize" icon="{{maximizeIcon}}"></paper-icon-button>
 				</div>
-				<code-editor id="codeEditor" on-code-changed="_setCachedCode" selected-file="{{selectedFile}}"></code-editor>
+				<code-editor id="codeEditor" language="{{language}}" on-code-changed="_setCachedCode" selected-file="{{selectedFile}}"></code-editor>
 				<div id="actions">
 					<paper-fab mini on-click="_goToInstructions" icon="chrome-reader-mode"></paper-fab>
 				<template is="dom-if" if="{{showDownload}}">
@@ -96,7 +96,7 @@
 				language: {
 					type: String,
 					notify: true,
-					observer: '_languageChanged'
+					reflectToAttribute: true
 				},
 				languageOption: {
 					type: Object,
