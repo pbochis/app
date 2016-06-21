@@ -224,7 +224,7 @@
 				}).pop(0).tag);
 			},
 			handleTemplateFetched: function(e, detail) {
-				this.$$('#codeEditor').handleAdd(e, detail);
+				this.$$('#codeEditor').addFile(detail.path, detail.content);
 			}
 		});
 	</script>
