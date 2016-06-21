@@ -44,6 +44,14 @@
 				'file-selected': '_fileSelected'
 			},
 			ready: function(){
+				if(!!localStorage.cachedCode){
+					this.tree = JSON.parse(localStorage.cachedCode);
+					return;
+				}
+				this.tree = {'root': {}};
+			},
+			clear: function(){
+				this.tree = undefined;
 				this.tree = {'root': {}};
 			},
 			_fileSelected: function(e, detail){
@@ -63,6 +71,7 @@
 				}
 				node[name] = content;
 				this.tree = tree;
+				localStorage.cachedCode = JSON.stringify(this.tree);
 			},
 			onAddFile: function(e){
 				var tree = this.tree;

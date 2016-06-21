@@ -74,20 +74,31 @@
 		<template is="dom-if" if="[[!choose]]">
 			<div id="codeEditorWrapper" class$="{{codeEditorWrapperClass}}">
 				<div id="codeEditorCommands">
+					<paper-icon-button id="start-over-button" on-click="_confirmStartOver" icon="refresh"></paper-icon-button>
+					<paper-tooltip for="start-over-button" offset="0">Start over</paper-tooltip>
+					<span class="flex"></span>
 					<paper-icon-button on-click="_maximize" icon="{{maximizeIcon}}"></paper-icon-button>
 				</div>
 				<code-editor id="codeEditor" language="{{language}}" on-code-changed="_setCachedCode" selected-file="{{selectedFile}}"></code-editor>
 				<div id="actions">
 					<paper-fab mini on-click="_goToInstructions" icon="chrome-reader-mode"></paper-fab>
-				<template is="dom-if" if="{{showDownload}}">
-					<paper-fab mini on-click="_download" icon="file-download"></paper-fab>
-				</template>
+					<template is="dom-if" if="{{showDownload}}">
+						<paper-fab mini on-click="_download" icon="file-download"></paper-fab>
+					</template>
 					<paper-fab mini on-click="_addFile" icon="file-upload"></paper-fab>
 					<paper-fab mini on-click="submit" icon="av:play-arrow"></paper-fab>
 				</div>
 				<input type="file" name="fileToRun" id="fileToRun" on-change="_filesUploaded" style="display: none;">
 			</div>
 		</template>
+		<paper-dialog id="confirmStartOverModal" modal>
+			<h4>When you start over you will lose all your progress until now.</h4>
+			<h4>All the code will be gone.</h4>
+			<div id="buttons">
+				<paper-button class="primary" raised on-click="_startOver" dialog-dismiss>Start over</paper-button>
+				<paper-button class="secondary" dialog-dismiss>Cancel</paper-button>
+			</div>
+		</paper-dialog>
 	</template>
 	<script>
 		Polymer({
@@ -155,6 +166,7 @@
 
 				//this._setValue(this._getCachedCode());
 				this.wsUrl = util.getWSUrl('/ws');
+				this.choose = !localStorage.cachedCode;
 			},
 			_addFile: function(){
 				this.$$('#fileToRun').click();
@@ -167,6 +179,14 @@
 				}
 				this.codeEditorWrapperClass = 'maximized';
 				this.maximizeIcon = 'fullscreen-exit';
+			},
+			_confirmStartOver: function(){
+				this.$$('#confirmStartOverModal').toggle();
+			},
+			_startOver: function(){
+				localStorage.cachedCode = '';
+				this.choose = true;
+				this.$$('#codeEditor').clear();
 			},
 			_setValue: function(value){
 				this.$$('#codeEditor').setValue(value);

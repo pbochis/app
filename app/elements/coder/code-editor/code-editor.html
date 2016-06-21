@@ -108,6 +108,10 @@
 				this.$.editor.container.style.opacity = 1;
 				this.$.editor.setReadOnly(false);
 			},
+			clear: function(){
+				this.$.editor.getSession().setValue('');
+				this.$$('file-explorer').clear();
+			},
 			_fileSelected: function(e, detail) {
 				if (!!this.selectedFile) {
 					this.selectedFile.unselectFile();
