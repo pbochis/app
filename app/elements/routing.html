@@ -44,7 +44,7 @@ window.addEventListener('WebComponentsReady', function() {
 		function() {
 			page('/');
 		},
-		function() {
+		function(ctx) {
 			var page = document.createElement('password-reset-page');
 			if(!ctx.querystring){
 				app.swapContent(document.createElement('password-forgot-page'));
