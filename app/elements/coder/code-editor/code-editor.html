@@ -141,13 +141,16 @@
 				}
 				this.$.editor.getSession().setValue(text);
 			},
-			addFile: function(f) {
+			uploadFile: function(f) {
 				var fr = new FileReader();
 				var that = this;
 				fr.onload = function(e) {
 					that.tree.add(f.name, e.target.result);
 				};
 				fr.readAsText(f);
+			},
+			addFile: function(path, content) {
+				this.$$('file-explorer').addFile(path, content);
 			},
 			_languageChanged: function() {
 				if (this.language) {

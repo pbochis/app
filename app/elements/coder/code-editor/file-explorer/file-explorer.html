@@ -74,14 +74,7 @@
 				localStorage.cachedCode = JSON.stringify(this.tree);
 			},
 			onAddFile: function(e){
-				var tree = this.tree;
-				if(!this.addItem(tree, e.detail.path, '')){
-					return;
-				}
-				if(e.detail.path.indexOf('.') !== -1){
-					this.language = e.detail.path.substring(e.detail.path.lastIndexOf('.') + 1, e.detail.path.length);
-				}
-				this.refreshTree(tree);
+				this.addFile(e.detail.path, '');
 			},
 			onAddFolder: function(e){
 				var tree = this.tree;
@@ -111,6 +104,16 @@
 
 				this.refreshTree(tree);
 			},
+			addFile: function(path, content) {
+				var tree = this.tree;
+				if(!this.addItem(tree, path, content)){
+					return;
+				}
+				if(path.indexOf('.') !== -1){
+					this.language = e.detail.path.substring(e.detail.path.lastIndexOf('.') + 1, e.detail.path.length);
+				}
+				this.refreshTree(tree);
+			},
 			addItem: function(tree, path, item){
 				var splitValue = path.split('/');
 				var itemName = splitValue[splitValue.length - 1];
@@ -123,7 +126,7 @@
 					return false;
 				}
 				if(path.indexOf('/root') !== 0){
-					this.showToast('You cannot create items outside the root folder!')
+					this.showToast('You cannot create items outside the root folder!');
 					return false;
 				}
 				var path = this.splitPath(path);

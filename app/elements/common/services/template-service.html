@@ -55,8 +55,17 @@
 					console.log('Got malformed Content-Disposition "' + contentDisposition + '"');
 					return;
 				}
+				var pathStart = e.detail.url.indexOf('/root');
+				if (pathStart === -1) {
+					return;
+				}
+				var completePath = e.detail.url.substring(
+					pathStart,
+					e.detail.url.indexOf(match[1]) + match[1].length
+				);
+
 				this.fire('template-fetched', {
-					path:    '/' + match[1],
+					path:    completePath,
 					content: e.detail.response
 				});
 			}
