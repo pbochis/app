@@ -106,6 +106,7 @@
 				if (e.keyCode !== 13) {
 					return;
 				}
+				this.$$('paper-dialog').close();
 				if(this.context === 'rename'){
 					this.set('renaming', false);
 				}
@@ -133,7 +134,7 @@
 					'element': this,
 					'x': e.pageX,
 					'y': e.pageY,
-					'isRoot': this.item.name === 'root'
+					'isRoot': this.item.name === '/'
 				});
 			}
 		});
