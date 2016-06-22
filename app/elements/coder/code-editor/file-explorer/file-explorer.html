@@ -115,7 +115,7 @@
 					return;
 				}
 				if(path.indexOf('.') !== -1){
-					this.language = e.detail.path.substring(e.detail.path.lastIndexOf('.') + 1, e.detail.path.length);
+					this.language = path.substring(path.lastIndexOf('.') + 1, path.length);
 				}
 				this.refreshTree(tree);
 			},
