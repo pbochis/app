@@ -132,6 +132,21 @@ window.addEventListener('WebComponentsReady', function() {
 		})
 	);
 
+	page('/challenges/:canonicalName/info/edit', base(function(ctx) {
+			var page = document.createElement('challenge-create');
+			page.canonicalName = ctx.params.canonicalName;
+			page.editMode = true;
+			app.swapContent(page);
+		})
+	);
+
+	page('/challenges/:canonicalName/locations/edit', base(function(ctx) {
+			var page = document.createElement('challenge-edit-locations');
+			page.canonicalName = ctx.params.canonicalName;
+			app.swapContent(page);
+		})
+	);
+
 	page('/challengetemplates', base(function() {
 			app.swapContent(document.createElement('challenge-template-list'));
 		})
