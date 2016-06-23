@@ -18,7 +18,7 @@
     "gold-elements": "~1.0.1",
     "paper-listbox": "polymerelements/paper-listbox#^1.1.2",
     "google-fonts": "*",
-    "paper-datatable": "^0.9.8",
+    "paper-datatable": "https://github.com/coduno/paper-datatable.git#0.9.9",
     "google-map": "GoogleWebComponents/google-map#~1.1.10"
   },
   "devDependencies": {
