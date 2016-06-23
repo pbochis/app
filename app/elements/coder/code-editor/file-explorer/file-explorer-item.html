@@ -72,7 +72,7 @@
 				this.icon = this.isFolder ? 'folder' : 'assignment';
 			},
 			select: function() {
-				if (this.isFolder) {
+				if (this.isFolder || this.className === 'selected') {
 					return;
 				}
 				this.set('className', 'selected');
