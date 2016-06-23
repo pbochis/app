@@ -8,9 +8,13 @@
 				display: block;
 				height: 100%;
 			}
+			#content {
+				padding-left: 20px;
+			}
 		</style>
 
-		<file-explorer-node node="{{tree}}" path="/"></file-explorer-node>
+		<file-exporer-item item="[[rootItem]]" path="/"></file-exporer-item>
+		<file-explorer-node id="content" node="{{tree}}" path="/"></file-explorer-node>
 		<paper-toast id="toast"></paper-toast>
 	</template>
 	<script>
@@ -44,15 +48,16 @@
 				'file-selected': '_fileSelected'
 			},
 			ready: function(){
+				this.rootItem = {name: '/', value: {}}
 				if(!!localStorage.cachedCode){
 					this.tree = JSON.parse(localStorage.cachedCode);
 					return;
 				}
-				this.tree = {'root': {}};
+				this.tree = {};
 			},
 			clear: function(){
 				this.tree = undefined;
-				this.tree = {'root': {}};
+				this.tree = {};
 			},
 			_fileSelected: function(e, detail){
 				if(detail.item.name.indexOf('.') !== -1){
@@ -110,7 +115,7 @@
 					return;
 				}
 				if(path.indexOf('.') !== -1){
-					this.language = e.detail.path.substring(e.detail.path.lastIndexOf('.') + 1, e.detail.path.length);
+					this.language = path.substring(path.lastIndexOf('.') + 1, path.length);
 				}
 				this.refreshTree(tree);
 			},
@@ -123,10 +128,6 @@
 				}
 				if(itemName === ''){
 					this.showToast('Name cannot be empty.');
-					return false;
-				}
-				if(path.indexOf('/root') !== 0){
-					this.showToast('You cannot create items outside the root folder!');
 					return false;
 				}
 				var path = this.splitPath(path);
@@ -177,12 +178,13 @@
 			getPathsRecursively: function(node, elements, base){
 				for(var key in node){
 					if(node.hasOwnProperty(key)){
+						var path = base === '' ? key : base + '/' + key;
 						if(typeof node[key] === 'object'){
-							this.getPathsRecursively(node[key], elements, base + '/' + key)
+							this.getPathsRecursively(node[key], elements, path)
 							continue;
 						}
 						elements.push({
-							path: base + '/' + key,
+							path: path,
 							value: node[key]
 						});
 					}
@@ -192,7 +194,7 @@
 				var tree = this.tree;
 
 				var elements = [];
-				this.getPathsRecursively(tree.root, elements, '');
+				this.getPathsRecursively(tree, elements, '');
 				return elements.map(function(it) {
 					var blob = new Blob([it.value]);
 					blob.name = it.path;

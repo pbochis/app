@@ -5,20 +5,21 @@
 <dom-module id="file-explorer-node">
 	<template>
 		<style include="iron-flex">
+			:host {
+				display: block;
+			}
 			.children {
 				padding-left: 20px;
 			}
 		</style>
-		<div >
-			<template id="repeat" is="dom-repeat" items="{{childItems}}">
-				<file-exporer-item item="[[item]]" path="[[path]]"></file-exporer-item>
-				<template is="dom-if" if="{{!isFile(item)}}">
-					<div class="children">
-						<file-explorer-node node="{{item.value}}" path="{{getPath(item)}}"></file-explorer-node>
-					</div>
-				</template>
+		<template id="repeat" is="dom-repeat" items="{{childItems}}">
+			<file-exporer-item item="[[item]]" path="[[path]]"></file-exporer-item>
+			<template is="dom-if" if="{{!isFile(item)}}">
+				<div class="children">
+					<file-explorer-node node="{{item.value}}" path="{{getPath(item)}}"></file-explorer-node>
+				</div>
 			</template>
-		</div>
+		</template>
 	</template>
 	<script>
 		Polymer({

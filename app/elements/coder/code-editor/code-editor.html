@@ -170,6 +170,9 @@
 					'groovy': 'groovy',
 					'php':    'php'
 				};
+				if(!this.$.editor.getSession){
+					return;
+				}
 				this.$.editor.getSession().setMode('ace/mode/' + (languageModeMap[lang] || 'text'));
 			},
 			_showMenu: function(event, data) {
