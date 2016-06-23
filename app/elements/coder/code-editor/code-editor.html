@@ -23,6 +23,17 @@
 		file-explorer {
 			height: 100%;
 		}
+		#editorTopNav {
+			@apply(--layout-horizontal);
+		}
+		#togleExplorerButton {
+			@apply(--layout-self-center);
+		}
+		#currentFileName {
+			padding: 0;
+			margin: 0;
+			@apply(--layout-self-center);
+		}
 	</style>
 	<template>
 		<context-menu id="contextMenu"></context-menu>
@@ -31,8 +42,9 @@
 				<file-explorer language="{{language}}"></file-explorer>
 			</div>
 			<div class="editor-container">
-				<div>
-					<paper-icon-button icon="{{toggleExplorerIcon}}" on-click="_toggle"></paper-icon-button>
+				<div id="editorTopNav">
+					<paper-icon-button id="togleExplorerButton" icon="{{toggleExplorerIcon}}" on-click="_toggle"></paper-icon-button>
+					<p id="currentFileName">{{currentFileName}}</p>
 				</div>
 				<div id="editor"></div>
 			</div>
@@ -118,6 +130,7 @@
 				}
 				this.selectedFile = detail;
 				this.setValue(this.$$('file-explorer').get(this.selectedFile.path, this.selectedFile.item.name));
+				this.currentFileName = this.selectedFile.item.name;
 				this.enableEditor();
 			},
 			_toggle: function() {
