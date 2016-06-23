@@ -178,12 +178,13 @@
 			getPathsRecursively: function(node, elements, base){
 				for(var key in node){
 					if(node.hasOwnProperty(key)){
+						var path = base === '' ? key : base + '/' + key;
 						if(typeof node[key] === 'object'){
-							this.getPathsRecursively(node[key], elements, base + '/' + key)
+							this.getPathsRecursively(node[key], elements, path)
 							continue;
 						}
 						elements.push({
-							path: base + '/' + key,
+							path: path,
 							value: node[key]
 						});
 					}
