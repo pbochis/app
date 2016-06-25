@@ -23,18 +23,12 @@ after_success:
 
 deploy:
   - provider: gae
-    edge:
-      source: coduno/dpl
-      branch: master
     project: coduno
     verbosity: debug
     skip_cleanup: true
     on:
       branch: master
   - provider: gae
-    edge:
-      source: coduno/dpl
-      branch: master
     project: coduno-lab
     verbosity: debug
     skip_cleanup: true
