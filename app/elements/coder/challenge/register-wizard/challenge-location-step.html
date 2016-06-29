@@ -49,7 +49,7 @@
 			</div>
 			<p>You can register to <span>[[challenge.name]]</span> in <span>[[locations.length]]</span> different locations.</p>
 			<paper-dropdown-menu label="Location" selected-item="{{selectedLocation}}" >
-				<paper-listbox class="dropdown-content" selected="0">
+				<paper-listbox class="dropdown-content" selected="[[selectedIndex]]">
 					<template is="dom-repeat" items="{{locations}}">
 						<option value="{{item.id}}">{{item.name}}</option>
 					</template>
@@ -97,7 +97,7 @@
 			],
 			properties: {
 				showNameEdit: {
-					value: false
+					value: true
 				},
 				nextDisabled: {
 					value: false,
@@ -110,10 +110,25 @@
 			},
 			observers: [
 				'_locationsLoaded(locations)',
-				'_selectedLocationChanged(selectedLocation)'
+				'_selectedLocationChanged(selectedLocation)',
+				'_locationSet(location, locations)'
 			],
 			listeners: {
 				'keyup': '_updateNextDisabled'
+			},
+			_locationSet: function() {
+				if (!this.location || !this.locations) {
+					return;
+				}
+				var index = -1;
+				for (var i = 0; i < this.locations.length; i++) {
+					if (this.locations[i].id === this.location.id) {
+						index = i;
+					}
+				}
+				if (index > -1){
+					this.selectedIndex = index;
+				}
 			},
 			_updateNextDisabled: function(){
 				var formValid = !!this.$$('#form') && this.$$('#form').validate() && this.user.firstName !== null && this.user.lastName !== null;
@@ -124,6 +139,7 @@
 					this.locations = [];
 				}
 				this.unshift('locations', {id: 'online', name: 'Online'});
+				this.selectedIndex = 0;
 			},
 			_selectedLocationChanged(selectedLocation){
 				this.showNameEdit = (!!selectedLocation && selectedLocation.value !== 'online');

@@ -57,7 +57,7 @@
 			<p>You can register to <span class="italic">[[challenge.name]]</span> alone or with a team.</p>
 			<template is="dom-if" if="{{hasTeams}}">
 				<paper-dropdown-menu label="Team" selected-item="{{selectedTeam}}" >
-					<paper-listbox class="dropdown-content" selected="0">
+					<paper-listbox id="teamList" class="dropdown-content" selected="[[selectedIndex]]">
 						<template is="dom-repeat" items="{{teams}}">
 							<option value="{{item.canonicalName}}">{{item.name}}</option>
 						</template>
@@ -91,7 +91,8 @@
 			],
 			observers: [
 				'_teamsLoaded(teams)',
-				'_selectedTeamChanged(selectedTeam)'
+				'_selectedTeamChanged(selectedTeam)',
+				'_teamSet(teams, team, hasTeams)'
 			],
 			_selectedTeamChanged: function(){
 				this.registeredAsTeam = !!this.selectedTeam && this.selectedTeam.value !== '';
@@ -101,8 +102,23 @@
 					this.hasTeams = false;
 					return;
 				}
-				this.hasTeams = true;
 				this.unshift('teams', {canonicalName: '', name: 'No team'});
+				this.selectedIndex = 0;
+				this.hasTeams = true;
+			},
+			_teamSet: function() {
+				if (!this.team || !this.teams) {
+					return;
+				}
+				var index = -1;
+				for (var i = 0; i < this.teams.length; i++) {
+					if (this.team === this.teams[i].name) {
+						index = i;
+					}
+				}
+				if (index > -1) {
+					this.selectedIndex = index;
+				}
 			},
 			_openTeamModal: function(){
 				this.$.createTeamDialog.open();
