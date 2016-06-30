@@ -85,9 +85,15 @@
 				'_statusLoaded(status)'
 			],
 			_statusLoaded: function(status){
-				if (!status || status.status !== 'OPEN'){
+				if (!status || (status.status !== 'OPEN' && status.status !== 'REGISTERED')){
 					page('/contest/' + this.challenge.canonicalName + '/info')
 					return;
+				}
+				if (status.status === 'REGISTERED') {
+					this.location = status.location;
+					if (status.registeredAs !== this.user.username){
+						this.$$('challenge-register-step').team = status.registeredAs;
+					}
 				}
 			},
 			factoryImpl: function(canonicalName, user){
