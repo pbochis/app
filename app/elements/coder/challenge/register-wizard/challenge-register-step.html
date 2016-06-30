@@ -142,7 +142,7 @@
 			},
 			_onResponse: function(){
 				if(!this.emails || this.emails.length === 0){
-					return this._onInvitationResponse();
+					return this._redirectToInfoPage();
 				}
 				this.$.participationInvitationRequest.body = {
 					userId: this.user.id,
