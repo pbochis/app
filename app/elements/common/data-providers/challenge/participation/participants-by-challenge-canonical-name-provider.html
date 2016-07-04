@@ -8,7 +8,7 @@
 		<iron-ajax
 			id="request"
 			method="GET"
-			url="[[baseUrl]]/challenges/[[canonicalName]]/participants"
+			url="[[baseUrl]]/challenges/[[canonicalName]]/participants?location=[[location]]"
 			handle-as="json"
 			with-credentials="true"
 			bubbles>
@@ -22,7 +22,7 @@
 				Behaviors.Providers.General
 			],
 			observers: [
-				'_urlChanged(baseUrl, canonicalName)'
+				'_urlChanged(baseUrl, canonicalName, location)'
 			],
 			_urlChanged: function(){
 				this.refresh();
