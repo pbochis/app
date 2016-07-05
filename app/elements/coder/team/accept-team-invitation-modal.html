@@ -19,7 +19,6 @@
 		</coduno-iron-ajax>
 		<paper-dialog id="acceptInviteDialog" modal>
 			<h4>Accept invitation to team <span>{{team}}</span>?</h4>
-
 			<errors-display error="{{error}}"></errors-display>
 			<div class="buttons">
 				<paper-button class="secondary" dialog-dismiss>Decline</paper-button>
@@ -29,13 +28,12 @@
 	</template>
 	<script>
 		Polymer({
+			is: 'accept-team-invitation-modal',
 			properties: {
 				team: {
 					type: String
 				}
-
 			},
-			is: 'accept-team-invitation-modal',
 			toggle: function(invitedby, teamname){ // invited by for possible later use
 				this.team = teamname;
 				this.$.acceptInviteDialog.toggle();
