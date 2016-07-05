@@ -214,18 +214,18 @@
 			_onPrimaryAction: function(){
 				switch(this.status.status){
 					case 'OPEN':
-						page('/contest/' + this.challenge.canonicalName + '/register');
+						page('/challenge/' + this.challenge.canonicalName + '/register');
 						break;
 					case 'INVITED':
 						break;
 					case 'REGISTERED':
-						page('/contest/' + this.challenge.canonicalName);
+						page('/challenge/' + this.challenge.canonicalName);
 						break;
 					case 'IN_PROGRESS':
-						page('/contest/' + this.challenge.canonicalName);
+						page('/challenge/' + this.challenge.canonicalName);
 						break;
 					case 'COMPLETED':
-						page('/contest/' + this.challenge.id + '/result');
+						page('/challenge/' + this.challenge.id + '/result');
 						break;
 				}
 			},
@@ -255,7 +255,7 @@
 				}
 			},
 			_editParticipation: function() {
-				page('/contest/' + this.challenge.canonicalName + '/register');
+				page('/challenge/' + this.challenge.canonicalName + '/register');
 			},
 			_onResponse: function() {
 				this.refresh();

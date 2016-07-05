@@ -94,7 +94,7 @@
 			},
 			_statusLoaded: function(status){
 				if (!status || status.status !== 'OPEN'){
-					page('/contest/' + this.challenge.canonicalName + '/info')
+					page('/challenge/' + this.challenge.canonicalName + '/info')
 					return;
 				}
 			},
@@ -124,7 +124,7 @@
 			},
 			prev: function() {
 				if(this.selected === pageUserRegister){
-					page('/contest/' + this.canonicalName + '/info');
+					page('/challenge/' + this.canonicalName + '/info');
 					return;
 				}
 				this.entryAnimation = 'slide-from-left-animation';
