@@ -15,7 +15,6 @@
 			path="/teams/[[team]]/invitation/accept"
 			on-request-finished="_onResponse"
 			error="{{error}}">
-			on-succ
 		</coduno-iron-ajax>
 		<paper-dialog id="acceptInviteDialog" modal>
 			<h4>Accept invitation to team <span>{{team}}</span>?</h4>
@@ -34,8 +33,8 @@
 					type: String
 				}
 			},
-			toggle: function(invitedby, teamname){ // invited by for possible later use
-				this.team = teamname;
+			toggle: function(invitedBy, teamName){ // invited by for possible later use
+				this.team = teamName;
 				this.$.acceptInviteDialog.toggle();
 			},
 			_acceptInvite: function(){
