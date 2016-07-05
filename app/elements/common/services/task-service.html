@@ -82,7 +82,7 @@
 			},
 			getById: function(id){
 				this.app.startLoading();
-				this.$.getSingleTask.url = util.build('/tasks/' + id);
+				this.$.getSingleTask.url = util.build('/task/' + id);
 				this.$.getSingleTask.generateRequest();
 			},
 			startTask: function(resultId, taskId){
