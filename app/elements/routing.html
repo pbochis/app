@@ -95,6 +95,12 @@ window.addEventListener('WebComponentsReady', function() {
 					page.createTeam();
 					return;
 				}
+				if(qs[i].indexOf('invitedby=') === 0 && qs[i + 1].indexOf('teamname=') === 0) {
+					vInvitedBy = qs[i].split('=')[1];
+					vTeamName = qs[i + 1].split('=')[1];
+					page.acceptTeamInvitation(vInvitedBy, vTeamName);
+					return;
+				}
 			}
 		})
 	);

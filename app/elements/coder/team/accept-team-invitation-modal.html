@@ -1,0 +1,52 @@
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+
+<dom-module id="accept-team-invitation-modal">
+	<template>
+		<coduno-iron-ajax
+			id="acceptInviteRequest"
+			method="POST"
+			path="/teams/[[team]]/invitation/accept"
+			on-request-finished="_onResponse"
+			error="{{error}}">
+			on-succ
+		</coduno-iron-ajax>
+		<paper-dialog id="acceptInviteDialog" modal>
+			<h4>Accept invitation to team <span>{{team}}</span>?</h4>
+
+			<errors-display error="{{error}}"></errors-display>
+			<div class="buttons">
+				<paper-button class="secondary" dialog-dismiss>Decline</paper-button>
+				<paper-button on-click="_acceptInvite" class="primary">Accept</paper-button>
+			</div>
+		</paper-dialog>
+	</template>
+	<script>
+		Polymer({
+			properties: {
+				team: {
+					type: String
+				}
+
+			},
+			is: 'accept-team-invitation-modal',
+			toggle: function(invitedby, teamname){ // invited by for possible later use
+				this.team = teamname;
+				this.$.acceptInviteDialog.toggle();
+			},
+			_acceptInvite: function(){
+				this.$.acceptInviteRequest.generateRequest();
+			},
+			_onResponse: function(){
+				this.$.acceptInviteDialog.close();
+				this.fire('invitation-accepted');
+			}
+		});
+	</script>
+</dom-module>
