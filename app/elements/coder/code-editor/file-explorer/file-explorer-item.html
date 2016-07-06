@@ -2,6 +2,7 @@
 <link rel="import" href="../../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
 
 <dom-module id="file-exporer-item">
 	<template>
@@ -32,9 +33,9 @@
 			</template>
 		</div>
 		<paper-toast id="toast"></paper-toast>
-		<paper-dialog>
-			<h1>{{dialogTitle}}</h1>
-			<input type="text" on-keyup="_handleEvent" autofocus>
+		<paper-dialog modal>
+			<h3>{{dialogTitle}}</h3>
+			<paper-input on-keyup="_handleEvent" autofocus></paper-input>
 		</paper-dialog>
 
 	</template>
@@ -99,6 +100,9 @@
 				if (e.keyCode === 27) {
 					if(this.context === 'rename'){
 						this.set('renaming', false);
+					} else {
+						this.$$('paper-dialog').close();
+						this.$$('paper-input').value = '';
 					}
 					return;
 				}
@@ -115,6 +119,7 @@
 					return;
 				}
 				this.fire(this.context, {path: this.path + this.item.name + '/' + e.target.value})
+				this.$$('paper-input').value = '';
 			},
 			getRenameValue: function(path, item){
 				return path + item.name;
