@@ -89,12 +89,13 @@ window.addEventListener('WebComponentsReady', function() {
 			if (!ctx.querystring) {
 				return;
 			}
-			var qs = ctx.querystring.split('&');
-			for (var i = 0; i < qs.length; i++) {
-				if (qs[i].indexOf('teamCreate=') === 0 && qs[i].split('=')[1] === 'true') {
-					page.createTeam();
-					return;
-				}
+			if (getQueryParam(ctx, 'teamCreate') === true) {
+				return page.createTeam();
+			}
+			var invitedBy = getQueryParam(ctx, 'invitedby');
+			var teamName = getQueryParam(ctx, 'teamname');
+			if (!!invitedBy && !!teamName) {
+				return page.acceptTeamInvitation(invitedBy, teamName);
 			}
 		})
 	);
