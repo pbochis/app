@@ -46,8 +46,12 @@
 					<h2>{{challengeTemplate.name}}</h2>
 					<description-list>
 						<description-list-item label="Duration" value="[[duration]]"></description-list-item>
-						<description-list-item label="Description" value="[[challengeTemplate.description]]"></description-list-item>
-						<description-list-item label="Instructions" value="[[challengeTemplate.instructions]]"></description-list-item>
+						<description-list-item label="Description" content>
+							<render-markdown markdown="[[challengeTemplate.description]]"></render-markdown>
+						</description-list-item>
+						<description-list-item label="Instructions" content>
+							<render-markdown markdown="[[challengeTemplate.instructions]]"></render-markdown>
+						</description-list-item>
 					</description-list>
 				</paper-material>
 				<!--TODO: skills?-->

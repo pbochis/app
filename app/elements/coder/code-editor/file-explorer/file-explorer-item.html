@@ -35,7 +35,7 @@
 		<paper-toast id="toast"></paper-toast>
 		<paper-dialog modal>
 			<h3>{{dialogTitle}}</h3>
-			<paper-input on-keyup="_handleEvent" autofocus></paper-input>
+			<paper-input on-keyup="_handleEvent" label="[[inputLabel]]" no-label-float autofocus></paper-input>
 		</paper-dialog>
 
 	</template>
@@ -83,6 +83,7 @@
 				this.set('className', '');
 			},
 			addFile: function(){
+				this.inputLabel = 'File name';
 				this.dialogTitle = 'Add file';
 				this.context = 'add-file';
 				this.$$('paper-dialog').open();
@@ -91,6 +92,7 @@
 				this.fire('delete', {path: this.path, name: this.item.name})
 			},
 			addFolder: function(){
+				this.inputLabel = 'Folder name';
 				this.dialogTitle = 'Add folder';
 				this.context = 'add-folder';
 				this.$$('paper-dialog').open();
