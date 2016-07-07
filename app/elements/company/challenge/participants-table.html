@@ -29,7 +29,7 @@
 		}
 	</style>
 	<template>
-		<participants-by-challenge-canonical-name-provider canonical-name="[[challenge]]" data="{{participants}}" location="[[location]]"></participants-by-challenge-canonical-name-provider>
+		<participants-by-challenge-canonical-name-provider canonical-name="[[challenge]]" data="{{participants}}"></participants-by-challenge-canonical-name-provider>
 		<locations-by-challenge-canonical-name-provider canonical-name="[[challenge]]" data="{{locations}}" auto="true"></locations-by-challenge-canonical-name-provider>
 
 		<paper-material class="card">
@@ -44,7 +44,7 @@
 					</paper-listbox>
 				</paper-dropdown-menu>
 			</div>
-			<paper-datatable data="{{participants}}" style="overflow-y: auto;" on-row-tap="_onClick">
+			<paper-datatable data="[[filteredParticipants]]" style="overflow-y: auto;" on-row-tap="_onClick">
 				<paper-datatable-column header="Username" property="username" sortable></paper-datatable-column>
 				<paper-datatable-column header="Email" property="email" sortable></paper-datatable-column>
 				<paper-datatable-column header="Team" property="teamName" type="String">
@@ -65,7 +65,7 @@
 			},
 			observers: [
 				'_locationsLoaded(locations)',
-				'_selectedLocationChanged(selectedIndex)'
+				'_participantsLoaded(participants, selectedIndex)'
 			],
 			_onClick: function(e, d){
 				if(!!d.item.teamCanonicalName){
@@ -82,9 +82,16 @@
 				this.unshift('locations', {id: null, name: 'All'});
 				this.selectedIndex = 0;
 			},
-			_selectedLocationChanged: function() {
-				var location = this.locations[this.selectedIndex];
-				this.location = location.id;
+			_participantsLoaded: function() {
+				var selectedLocationId = this.locations[this.selectedIndex].id;
+				this.filteredParticipants = [];
+				for (var i = 0; i < this.participants.length; i++) {
+					if (selectedLocationId === null ||
+						(selectedLocationId === 'online' && this.participants[i].location === null) ||
+						(!!this.participants[i].location && selectedLocationId === this.participants[i].location.id)) {
+						this.push('filteredParticipants', this.participants[i]);
+					}
+				}
 			}
 		});
 	</script>
