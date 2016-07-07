@@ -25,7 +25,7 @@ var util = {
 		}
 
 		if (location.origin.indexOf('coduno-lab') !== -1) {
-			prefix = 'wss://ws.cod.uno:8081';
+			prefix = 'wss://ws.cod.uno:8085';
 		}
 
 		return prefix + suffix;
@@ -38,7 +38,7 @@ var util = {
 		}
 		
 		if (location.origin.indexOf('coduno-lab') !== -1) {
-			prefix = 'wss://ws.cod.uno:8081';
+			prefix = 'wss://ws.cod.uno:8085';
 		}
 
 		return prefix + suffix;
