@@ -249,7 +249,7 @@
 						//TODO: decline invitation
 						break;
 					case 'REGISTERED':
-						this.$.request.path = '/challenges/' + this.challenge.canonicalName + '/participation';
+						this.$.request.path = 'challenges/' + this.challenge.canonicalName + '/participation';
 						this.$.request.generateRequest();
 						break;
 				}
